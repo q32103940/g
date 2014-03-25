@@ -20,7 +20,7 @@ function Frame( tick )
 		return dmg
 	end
 
-	local creeps = entityList:FindEntities({classId=CDOTA_BaseNPC_Creep_Lane})	
+	local creeps = entityList:GetEntities({classId=CDOTA_BaseNPC_Creep_Lane})	
 	for i,v in ipairs(creeps) do local OnScreen, pos = client:ScreenPosition(v.position)
 	
 		if not rect[v.handle] then rect[v.handle] = {}  rect[v.handle] = drawMgr:CreateRect(0,0,0,0,0xFF8AB160) rect[v.handle].visible = false end
