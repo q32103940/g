@@ -13,7 +13,7 @@ function Tick(tick)
 	for i,v in ipairs(hero) do local OnScreen = client:ScreenPosition(v.position)
 
 		if not bara then
-			if v.playerId == 9 then
+			if #hero == 10 then
 				allpick = true
 			end
 			if allpick then
