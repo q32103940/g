@@ -8,8 +8,10 @@ function Tick(tick)
 	if not client.connected or client.loading or client.console or not entityList:GetMyHero() or not SleepCheck() or not LatSleepCheck(lat) then return end
 	
 	me = entityList:GetMyHero()
+	
+	local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO,alive=true,illusion=false,visible=true})
 
-	for i,v in ipairs(entityList:FindEntities({type=LuaEntity.TYPE_HERO,alive=true,illusion=false})) do
+	for i,v in ipairs(enemy) do
 		if v.team ~= me.team then
 			--conter spell before cast
 			--print(v:GetProperty("CBaseAnimating","m_nSequence")) -- show animation flag
