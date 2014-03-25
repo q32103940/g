@@ -5,7 +5,7 @@ function Tick()
 	if not client.connected or client.loading or client.console or not entityList:GetMyHero() then return end 
 
 	me = entityList:GetMyHero()
-		local hero = entityList:FindEntities({type=LuaEntity.TYPE_HERO, alive = true, illusion = false})
+		local hero = entityList:GetEntities({type=LuaEntity.TYPE_HERO, alive = true, illusion = false})
 		for i, v in ipairs(hero) do local OnScreen = client:ScreenPosition(v.position)	
 			if OnScreen and v.team == me.team then
 			
