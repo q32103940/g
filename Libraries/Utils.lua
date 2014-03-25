@@ -1491,7 +1491,7 @@ function LuaEntityNPC:DamageTaken(dmg,dmgType,source)
 					--Only sources are enemies but failsafe
 					if v.sourceTeam == -1 then
 						--Find enemy that has the spell
-						for k,l in pairs(entityList:FindEntities({type=LuaEntity.TYPE_HERO})) do
+						for k,l in pairs(entityList:GetEntities({type=LuaEntity.TYPE_HERO})) do
 							if not l.illusion and l.team ~= self.team then
 								local spell = l:FindSpell(v.sourceSpellName)
 								if spell then
@@ -1556,7 +1556,7 @@ function LuaEntityNPC:DamageTaken(dmg,dmgType,source)
 		--	Amplification is dynamic, related to distance to the flesh golem
 		if self:DoesHaveModifier("modifier_undying_flesh_golem_plague_aura") then
 			--Find flesh golem
-			for k,l in pairs(entityList:FindEntities({type=LuaEntity.TYPE_HERO})) do
+			for k,l in pairs(entityList:GetEntities({type=LuaEntity.TYPE_HERO})) do
 				if not l.illusion and l.team ~= self.team then					
 					local spell = l:FindSpell("undying_flesh_golem")
 					--If flesh golem is found do the calculation related to distance
@@ -1594,7 +1594,7 @@ function LuaEntityNPC:DamageTaken(dmg,dmgType,source)
 						--If source is allied hero
 						if v.sourceTeam == 1 then
 							--Find spell and locate reduce from spell level
-							for k,l in pairs(entityList:FindEntities({type=LuaEntity.TYPE_HERO, team = self.team})) do
+							for k,l in pairs(entityList:GetEntities({type=LuaEntity.TYPE_HERO, team = self.team})) do
 								if not l.illusion then
 									local spell = l:FindSpell(v.sourceSpellName)
 									if spell then
@@ -1631,7 +1631,7 @@ function LuaEntityNPC:DamageTaken(dmg,dmgType,source)
 							--If source is allied hero
 							if v.sourceTeam == 1 then
 								--Find spell and locate reduce from spell level
-								for k,l in pairs(entityList:FindEntities({type=LuaEntity.TYPE_HERO, team = self.team})) do
+								for k,l in pairs(entityList:GetEntities({type=LuaEntity.TYPE_HERO, team = self.team})) do
 									if not l.illusion then
 										local spell = l:FindSpell(v.sourceSpellName)
 										if spell then
