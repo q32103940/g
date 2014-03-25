@@ -103,7 +103,7 @@ function Frame()
 	
 	local t1,t2 = 0,0	
 	
-	local enemies = entityList:FindEntities({type=LuaEntity.TYPE_HERO ,illusion=false})
+	local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO ,illusion=false})
 	for i,v in ipairs(enemies) do
 			
 		if v.team ~= me.team then
