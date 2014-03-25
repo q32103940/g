@@ -51,7 +51,7 @@ function Tick(tick)
 		if activated then rect.color = 0xFFFFFF90
 			if mename == "npc_dota_hero_windrunner" and Skill.channelTime ~= 0 and client.gameTime > Skill.channelTime + .59 then me:Move(me.position) end
 			if Skill.level > 0 and me.alive and not me:IsChanneling() and SleepCheck() then
-				local enemies = entityList:FindEntities({type=LuaEntity.TYPE_HERO,visible=true,alive = true,illusion = false})
+				local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,visible=true,alive = true,illusion = false})
 				for i, v in ipairs(enemies) do
 					if v.team ~= me.team and GetDistance2D(me,v) < range and v.health > 0 and CanDie(v) and NotDieFromSpell(Skill,v) and not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") then
 						if not list[mename].Cast and mename ~= "npc_dota_hero_life_stealer" and mename ~= "npc_dota_hero_furion" and mename ~= "npc_dota_hero_zuus" then
