@@ -13,7 +13,7 @@ function Tick( tick )
 
 	local me = entityList:GetMyHero()
 
-	cast = entityList:FindEntities({classId=CDOTA_BaseNPC})
+	cast = entityList:GetEntities({classId=CDOTA_BaseNPC})
 	for i,v in ipairs(cast) do
 		if v.team ~= me.team and #v.modifiers > 0 then
 			local modifiers = v.modifiers			
