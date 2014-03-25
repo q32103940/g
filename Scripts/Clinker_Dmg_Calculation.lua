@@ -50,7 +50,7 @@ function Frame( tick )
 	end
 
 -- Таблица героев
-	local enemies = entityList:FindEntities({type=LuaEntity.TYPE_HERO,illusion = false})
+	local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,illusion = false})
 	
 	--Калькулятор урона
 		for i,v in ipairs(enemies) do
