@@ -221,7 +221,7 @@ function Frame(tick)
 	
 	if activatedD then dmgCalc.color = 0xFFFFFF90 clear = true
 		if start == true and Skill.level > 0 then 
-			local enemi = entityList:FindEntities({type=LuaEntity.TYPE_HERO,illusion=false})
+			local enemi = entityList:GetEntities({type=LuaEntity.TYPE_HERO,illusion=false})
 			for i, v in ipairs(enemi) do
 				if v.team ~= me.team then				
 				test = v.position
@@ -336,7 +336,7 @@ function Frame(tick)
 		
 	else dmgCalc.color = 0xFF0D0D90
 		if clear then
-			local vrag = entityList:FindEntities({type=LuaEntity.TYPE_HERO,illusion=false})
+			local vrag = entityList:GetEntities({type=LuaEntity.TYPE_HERO,illusion=false})
 			for i, v in ipairs(vrag) do
 				if hero[v.handle] then
 					hero[v.handle].txt.visible = false
