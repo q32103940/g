@@ -7,7 +7,8 @@ function Tick(tick)
 
 	if not client.connected or client.loading or client.console or not entityList:GetMyHero() then return end
 	
-	local me = entityList:GetMyHero()
+	me = entityList:GetMyHero()
+	
 	local hero = entityList:FindEntities({type=LuaEntity.TYPE_HERO,illusion=false,alive = true})
 		
 	for i,v in ipairs(hero) do local OnScreen = client:ScreenPosition(v.position)
