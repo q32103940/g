@@ -20,10 +20,10 @@ function Tick(tick)
 	me = entityList:GetMyHero() 
        
 	local dagon = me:FindItem("item_dagon_5")
-    dagon = dagon or me:FindItem("item_dagon_4")
-    dagon = dagon or me:FindItem("item_dagon_3")
-    dagon = dagon or me:FindItem("item_dagon_2")
-    dagon = dagon or me:FindItem("item_dagon")
+	dagon = dagon or me:FindItem("item_dagon_4")
+    	dagon = dagon or me:FindItem("item_dagon_3")
+    	dagon = dagon or me:FindItem("item_dagon_2")
+    	dagon = dagon or me:FindItem("item_dagon")
  
 	if not dagon then
 		rect.visible = false
