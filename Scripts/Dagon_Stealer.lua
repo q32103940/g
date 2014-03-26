@@ -42,7 +42,7 @@ function Tick(tick)
 		icon.textureId = drawMgr:GetTextureId("NyanUI/items/dagon")
 		local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO,illusion = false,alive=true,visible=true})
 		for i, v in ipairs(enemy) do
-			if  v.health > 0 and GetDistance2D(v,me) < dagon.castRange and v:CanDie() and SleepCheck() and not me:IsChanneling() then
+			if v.team ~= me.team and v.health > 0 and GetDistance2D(v,me) < dagon.castRange and v:CanDie() and SleepCheck() and not me:IsChanneling() then
 				if not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") then
 					if v.health < v:DamageTaken(dmgD, DAMAGE_MAGC, me) then
 						me:SafeCastAbility(dagon,v)
