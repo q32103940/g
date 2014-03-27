@@ -1,5 +1,5 @@
 --Test.
---[[  Caps Lock - neutral controlled units cast spells on the nearest mouse to target.
+--[[  Caps Lock - neutral controlled units cast spells on the nearest to mouse target.
       Если нажать на капс, то подконтрольные юниты используют спелы на ближайшего к курсору вражеского героя.
 ]]--
 
