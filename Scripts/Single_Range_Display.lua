@@ -1,46 +1,38 @@
 -------config--------
-Range = 500
+range = 500
 key = string.byte("B")
 ----------------------
- 
-cc = true
-AcOp = false  
-a_ = nil
- 
-function Tick()
- 
-        if not client.connected or client.loading or client.console or not entityList:GetMyHero() then return end
-       
-        me = entityList:GetMyHero()
-                       
-        if AcOp then
-                if a_ == nil then
-                        a_ = Effect(me,"range_display")
-                        a_:SetVector( 1, Vector(Range,0,0))
-                end
-        else
-                if a_ ~= nil then
-                        a_ = nil
-                        collectgarbage("collect")
-                end
-        end
- 
-end
- 
+
+activated = false
+effect = nil 
 function Key(msg,code)
-        if not client.chat then
-                if IsKeyDown(key) and cc then                                  
-                        AcOp = (not AcOp)                                      
-                end
-                        cc = (not cc)
-        end            
+	-- check if ingame and not chatting
+    if msg ~= KEY_UP or code ~= key or client.chat or not client.connected or client.loading or client.console then
+    	return
+    end
+
+    -- check if we already picked a hero
+    local me = entityList:GetMyHero()
+    if not me then
+    	return
+    end
+
+    -- toggle activation
+	activated = not activated
+
+	if activated then
+		-- add effect
+		effect = Effect(me,"range_display")
+		effect:SetVector(1,Vector(range,0,0))
+	else
+		RemoveEffect()
+	end    
 end
  
-function GameClose()
-        AcOp = false
-        a_ = nil
+function RemoveEffect()
+	effect = nil
+	collectgarbage("collect")
 end
  
-script:RegisterEvent(EVENT_CLOSE,GameClose)
-script:RegisterEvent(EVENT_TICK,Tick)
+script:RegisterEvent(EVENT_CLOSE,RemoveEffect) -- remove effect on game close
 script:RegisterEvent(EVENT_KEY,Key)
