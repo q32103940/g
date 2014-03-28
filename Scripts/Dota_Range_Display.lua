@@ -89,22 +89,22 @@ function Frame()
                                         img[a].y = yy
                                         img[a].textureId = drawMgr:GetTextureId("NyanUI/spellicons/doom_bringer_empty1")                                       
                                 elseif me:GetAbility(spellcount[a]).name ~= nil then
-										img[a].visible = true
-										img[a].x = xx+38*a
-										img[a].y = yy
-										img[a].textureId = drawMgr:GetTextureId("NyanUI/spellicons/"..me:GetAbility(spellcount[a]).name)
-									   
-										if spellname[a] == true then
-											rect[a].visible = true
-											rect[a].x = xx-2+38*a
-											rect[a].y = yy-2
-											rect[a].color = 0xFFFFFFff                                                     
-										else
-											rect[a].visible = true
-											rect[a].x = xx-2+38*a
-											rect[a].y = yy-2
-											rect[a].color = 0x000000ff                                                     
-										end
+					img[a].visible = true
+					img[a].x = xx+38*a
+					img[a].y = yy
+					img[a].textureId = drawMgr:GetTextureId("NyanUI/spellicons/"..me:GetAbility(spellcount[a]).name)
+				   
+					if spellname[a] == true then
+						rect[a].visible = true
+						rect[a].x = xx-2+38*a
+						rect[a].y = yy-2
+						rect[a].color = 0xFFFFFFff                                                     
+					else
+						rect[a].visible = true
+						rect[a].x = xx-2+38*a
+						rect[a].y = yy-2
+						rect[a].color = 0x000000ff                                                     
+					end
                                      
                                 end
                         end
