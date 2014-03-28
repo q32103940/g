@@ -3,9 +3,11 @@ rect = {}
 
 function Frame( tick )
 
-	if not client.connected or client.loading or client.console or not entityList:GetMyHero() then return end
+	if not client.connected or client.loading or client.console then return end
 	
-	me = entityList:GetMyHero()
+	local me = entityList:GetMyHero()
+	
+	if not me then return end
 	
 	function Damage()
 		dmg =  me.dmgMin + me.dmgBonus
@@ -24,7 +26,7 @@ function Frame( tick )
 	for i,v in ipairs(creeps) do local OnScreen, pos = client:ScreenPosition(v.position)
 	
 		if not rect[v.handle] then rect[v.handle] = {}  rect[v.handle] = drawMgr:CreateRect(0,0,0,0,0xFF8AB160) rect[v.handle].visible = false end
-		
+				
 		if OnScreen and v.visible and v.alive then
 			if v.health > 0 and v.health < (Damage()*(1-v.dmgResist)+1) then				
 				rect[v.handle].visible = true
