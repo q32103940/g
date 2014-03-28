@@ -1,33 +1,48 @@
 eff = {}
- 
-function Tick()
- 
-	if not client.connected or client.loading or client.console or not entityList:GetMyHero() then return end 
+sleeptick = 0
 
-	me = entityList:GetMyHero()
-		local hero = entityList:GetEntities({type=LuaEntity.TYPE_HERO, alive = true, illusion = false})
-		for i, v in ipairs(hero) do local OnScreen = client:ScreenPosition(v.position)	
-			if OnScreen and v.team == me.team then
-			
-				if v.name == me.name then 
+function Tick(tick)
+	if not client.connected or client.loading or client.console or tick < sleeptick then 
+		return 
+	end 
+
+	sleeptick = tick + 250 -- 4 times a second should be enough
+
+	local me = entityList:GetMyHero()
+	if not me then
+		return
+	end
+
+	local hero = entityList:GetEntities({type=LuaEntity.TYPE_HERO, alive = true})
+	local effectDeleted = false
+	for _,v in ipairs(hero) do 
+		if v.team == me.team then
+			local OnScreen = client:ScreenPosition(v.position)	
+			if OnScreen then
+
+				local effect = nil
+				if v == me then -- comparing handles
 					effect = "aura_shivas" 
 				else 
 					effect = "ambient_gizmo_model" 
 				end
-				
+
 				local visible = v.visibleToEnemy
-				if eff[v.handle] == nil and visible then	
-					if v:GetProperty("CDOTA_BaseNPC","m_iTaggedAsVisibleByTeam") == 30 then						    
-						eff[v.handle] = Effect(v,effect)
-						eff[v.handle]:SetVector(1,Vector(0,0,0))
-					end
+				if eff[v.handle] == nil and visible then						    
+					eff[v.handle] = Effect(v,effect)
+					eff[v.handle]:SetVector(1,Vector(0,0,0))
 				elseif not visible and eff[v.handle] ~= nil then
 					eff[v.handle] = nil
-					collectgarbage("collect")					
+					effectDeleted = true
+
 				end					
 			end
 		end
+	end
 
+	if effectDeleted then -- only call it once even when 1000 effects are deleted
+		collectgarbage("collect")
+	end
 end
 
 function GameClose()
@@ -35,6 +50,5 @@ function GameClose()
 	collectgarbage("collect")
 end
 
-
 script:RegisterEvent(EVENT_CLOSE, GameClose)
-script:RegisterEvent(EVENT_TICK,Tick)
+script:RegisterEvent(EVENT_TICK, Tick)
