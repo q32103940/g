@@ -16,14 +16,17 @@ dmg = {400,500,600,700,800}
 function Frame( tick )
 
 -- Проверка играем ли мы
-	if not client.connected or client.loading or client.console or not entityList:GetMyHero() or not SleepCheck() then return end
+	if not client.connected or client.loading or client.console then return end
 	
 -- Мой герой
 
-	me = entityList:GetMyHero() 
+	local me = entityList:GetMyHero() 
+	
+	if not me then return end
 	
 -- Проверка на героя
-	if me.name ~= "npc_dota_hero_tinker" then		
+	if me.name ~= "npc_dota_hero_tinker" then
+		script:Disable()
 		return
 	end
 
@@ -111,7 +114,6 @@ function Frame( tick )
 				end
 			end
 		end
-		Sleep(10)
 end
 
 function GameClose()
