@@ -21,7 +21,7 @@ function Tick(tick)
 			if OnScreen then
 
 				local effect = nil
-				if v == me then -- comparing handles
+				if v.name == me.name then -- comparing handles
 					effect = "aura_shivas" 
 				else 
 					effect = "ambient_gizmo_model" 
