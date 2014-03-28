@@ -22,12 +22,14 @@ end
  
 function Tick()
  
-        if not client.connected or client.loading or client.console or not entityList:GetMyHero() then return end
+        if not client.connected or client.loading or client.console then return end
+		
+		me = entityList:GetMyHero()
+		
+		if not me then return end
        
         if xx == 180 and yy == 80 then LoadGUIConfig() end
-        if xx == nil and yy == nil then xx=180 yy = 80 end
- 
-        me = entityList:GetMyHero()
+        if xx == nil and yy == nil then xx=180 yy = 80 end       
  
         for a,spells in ipairs(me.abilities) do			
 			if me:GetAbility(a).name ~= "attribute_bonus" and not me:GetAbility(a).hidden then
@@ -67,10 +69,10 @@ end
  
 function Frame()
  
-        if #spellcount < 1 then return end
+        if #spellcount < 1 then return end		
                
-        if activated then
- 
+        if activated then vis = true 
+		
                 if move == true then
                         xx = client.mouseScreenPosition.x - 39*#spellcount/2 - 20 yy = client.mouseScreenPosition.y + 15
                 end
@@ -86,36 +88,36 @@ function Frame()
                                         img[a].x = xx+38*a
                                         img[a].y = yy
                                         img[a].textureId = drawMgr:GetTextureId("NyanUI/spellicons/doom_bringer_empty1")                                       
-                                end
-                               
-                                if spellcount[a] ~= nil then
-                                        if me:GetAbility(spellcount[a]).name ~= nil then
-                                                img[a].visible = true
-                                                img[a].x = xx+38*a
-                                                img[a].y = yy
-                                                img[a].textureId = drawMgr:GetTextureId("NyanUI/spellicons/"..me:GetAbility(spellcount[a]).name)
-                                               
-                                                if spellname[a] == true then
-                                                        rect[a].visible = true
-                                                        rect[a].x = xx-2+38*a
-                                                        rect[a].y = yy-2
-                                                        rect[a].color = 0xFFFFFFff                                                     
-                                                else
-                                                        rect[a].visible = true
-                                                        rect[a].x = xx-2+38*a
-                                                        rect[a].y = yy-2
-                                                        rect[a].color = 0x000000ff                                                     
-                                                end
-                                        end
+                                elseif me:GetAbility(spellcount[a]).name ~= nil then
+										img[a].visible = true
+										img[a].x = xx+38*a
+										img[a].y = yy
+										img[a].textureId = drawMgr:GetTextureId("NyanUI/spellicons/"..me:GetAbility(spellcount[a]).name)
+									   
+										if spellname[a] == true then
+											rect[a].visible = true
+											rect[a].x = xx-2+38*a
+											rect[a].y = yy-2
+											rect[a].color = 0xFFFFFFff                                                     
+										else
+											rect[a].visible = true
+											rect[a].x = xx-2+38*a
+											rect[a].y = yy-2
+											rect[a].color = 0x000000ff                                                     
+										end
+                                     
                                 end
                         end
                 end
                
         else
-			for a = 1,7 do
-					img[a].visible = false
-					rect[a].visible = false
-					text.visible = false
+			if vis then
+				for a = 1,7 do
+						img[a].visible = false
+						rect[a].visible = false
+						text.visible = false
+				end
+				vis = false
 			end
         end
        
