@@ -17,7 +17,7 @@ function Tick(tick)
  
 	if not client.connected or client.loading or client.console or not entityList:GetMyHero() then return end
 
-	me = entityList:GetMyHero() 
+	local me = entityList:GetMyHero() 
        
 	local dagon = me:FindItem("item_dagon_5")
 	dagon = dagon or me:FindItem("item_dagon_4")
