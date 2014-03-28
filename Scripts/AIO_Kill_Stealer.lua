@@ -396,10 +396,10 @@ function RangePred(spell,t,speed,cast)
 end
 
 function CanDie(target)
-	if target:CanReincarnate() then
+	if mename ~= "npc_dota_hero_axe" and target:CanReincarnate() then
 		return false
 	end
-	if mename ~= "axe" and target:DoesHaveModifier("modifier_dazzle_shallow_grave") then
+	if mename ~= "npc_dota_hero_axe" and target:DoesHaveModifier("modifier_dazzle_shallow_grave") then
 		return false
 	end
 	return true
