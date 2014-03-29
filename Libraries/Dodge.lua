@@ -97,15 +97,15 @@ npc_dota_hero_lion = {
 modifier = "modifier_lion_finger_of_death",
 ability = {"ember_spirit_sleight_of_fist","phoenix_supernova","abaddon_borrowed_time"},
 vector = {"specialE","non","non"},
-items = {"item_bloodstone","item_black_king_bar"},
-vectors = {"me","non"}},
+items = {"item_bloodstone","item_black_king_bar","item_manta"},
+vectors = {"me","non","non"}},
 
 npc_dota_hero_lina = {
 modifier = "modifier_lina_laguna_blade",
 ability = {"ember_spirit_sleight_of_fist","phoenix_supernova","abaddon_borrowed_time"},
 vector = {"specialE","non","non"},
-items = {"item_bloodstone","item_black_king_bar"},
-vectors = {"me","non"}},
+items = {"item_bloodstone","item_black_king_bar","item_manta"},
+vectors = {"me","non","non"}},
 
 }
 
