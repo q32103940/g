@@ -1,5 +1,3 @@
---for test
-
 require("libs.Utils")
 require("libs.Dodge")
 
@@ -18,8 +16,11 @@ function Tick(tick)
 			--conter spell before cast
 			--print(v:GetProperty("CBaseAnimating","m_nSequence")) -- show animation flag
 			if AnimationList[v.name] then
+				if AnimationList[v.name].ability then
 				SpellA = MySpell(AnimationList[v.name].ability)
+				elseif AnimationList[v.name].items then
 				ItemsA = MyItem(AnimationList[v.name].items)
+				end
 				if (SpellA and SpellA.state == -1) or (ItemsA and ItemsA.state == -1) then		
 					if v:GetProperty("CBaseAnimating","m_nSequence") == AnimationList[v.name].animation then						
 						if not AnimationList[v.name].toface or (AnimationList[v.name].toface and ToFace(me,v)) then
@@ -134,7 +135,7 @@ end
 function MyItem(tab)
 	for i,v in ipairs(tab) do
 		local items = me.items
-		for _,item in ipairs(me.items) do
+		for _,item in ipairs(items) do
 			if item and item.name == v then
 				return item
 			end
