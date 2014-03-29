@@ -18,7 +18,8 @@ function Tick(tick)
 			if AnimationList[v.name] then
 				if AnimationList[v.name].ability then
 				SpellA = MySpell(AnimationList[v.name].ability)
-				elseif AnimationList[v.name].items then
+				end
+				if AnimationList[v.name].items then
 				ItemsA = MyItem(AnimationList[v.name].items)
 				end
 				if (SpellA and SpellA.state == -1) or (ItemsA and ItemsA.state == -1) then		
