@@ -31,21 +31,21 @@ animation = 6,
 range = 300,
 ability = {"ember_spirit_sleight_of_fist"},
 vector = {"specialE"},
-latency = 150},
+spellLat = 150},
 
 npc_dota_hero_mirana = {
 animation = 11,
 range = 625,
 ability = {"ember_spirit_sleight_of_fist"},
 vector = {"specialE"},
-latency = 150},
+spellLat = 150},
 
 npc_dota_hero_earthshaker = {
 animation = 10,
 range = 300,
 ability = {"ember_spirit_sleight_of_fist"},
 vector = {"specialE"},
-latency = 250},
+spellLat = 250},
 
 npc_dota_hero_bounty_hunter = {
 animation = 4,
@@ -53,7 +53,7 @@ range = 700,
 toface = 1,
 ability = {"ember_spirit_sleight_of_fist"},
 vector = {"specialE"},
-latency = "10"},
+spellLat = "10"},
 
 npc_dota_hero_vengefulspirit = {
 animation = 12,
@@ -61,7 +61,7 @@ range = 600,
 toface = 1,
 ability = {"ember_spirit_sleight_of_fist"},
 vector = {"specialE"},
-latency = "10"},
+spellLat = "10"},
 
 npc_dota_hero_skeleton_king = {
 animation = 7,
@@ -69,7 +69,7 @@ range = 700,
 toface = 1,
 ability = {"ember_spirit_sleight_of_fist"},
 vector = {"specialE"},
-latency = "60"},
+spellLat = "100"},
 
 npc_dota_hero_sand_king = {
 animation = 8,
@@ -77,7 +77,7 @@ range = 700,
 toface = 1,
 ability = {"ember_spirit_sleight_of_fist"},
 vector = {"specialE"},
-latency = "50"},
+spellLat = "50"},
 
 }
 
