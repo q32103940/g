@@ -53,11 +53,13 @@ function Tick()
 					hero[v.handle].item[c].txt = drawMgr:CreateText(xx+6+26*c,yy+4+26*i,0xFFFFFFff,"",F12) hero[v.handle].item[c].txt.visible = false
 					hero[v.handle].item[c].rcr = drawMgr:CreateRect(xx+26*c, yy+26*i,22,18,0x00000030) hero[v.handle].item[c].rcr.visible = false
 					hero[v.handle].item[c].charg = drawMgr:CreateText(xx+18+26*c,yy+9+26*i,0xFFFFFFff,"",F10) hero[v.handle].item[c].charg.visible = false
+					hero[v.handle].item[c].vvv = true
 				end	
 
 				local Items = v:GetItem(c)
 
 				if Items ~= nil then
+					hero[v.handle].item[c].vvv = true
 					if string.find(Items.name, "recipe") then
 						hero[v.handle].item[c].bg.textureId = drawMgr:GetTextureId("NyanUI/items/recipe")
 					else
@@ -81,8 +83,14 @@ function Tick()
 							hero[v.handle].item[c].txt.visible = false
 						end
 					end
-				else						
+				else	
+					if hero[v.handle].item[c].vvv == true then
 					hero[v.handle].item[c].bg.textureId = drawMgr:GetTextureId("NyanUI/items/emptyitembg")
+					hero[v.handle].item[c].charg.visible = false
+					hero[v.handle].item[c].txt.visible = false
+					hero[v.handle].item[c].rcr.visible = false
+					hero[v.handle].item[c].vvv = false
+					end
 				end
 			end	
 		end
