@@ -34,7 +34,7 @@ function Tick()
 		for i = 1, 20 do
 			local h = enemies[i]
 			if h ~= nil and h.team ~= me.team  then				
-				table.insert(herotab, h)
+				table.insert(herotab, h)	
 			end
         end			
 		for i,v in ipairs(herotab) do
@@ -149,8 +149,9 @@ function Clear()
 	collectgarbage("collect")
 end
 
-function GameClose()
+function GameClose()	
 	Clear()
+	script:Reload()
 end
 
 
