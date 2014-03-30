@@ -2,7 +2,7 @@
 key = string.byte("O")
 ----------------------
 activated = true
-item = {} hero = {} hero = {}
+item = {} hero = {}
 F12 = drawMgr:CreateFont("F11","Arial",12,500)
 F10 = drawMgr:CreateFont("F11","Arial",10,500)
 xx = 50
