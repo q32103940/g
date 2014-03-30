@@ -31,12 +31,12 @@ function Tick()
 		end	
 
 		local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO ,illusion=false})
-		for i = 1, 20 do
+		for i = 1, #enemies do
 			local h = enemies[i]
 			if h ~= nil and h.team ~= me.team  then				
-				table.insert(herotab, h)	
+				table.insert(herotab, h)
 			end
-		end			
+        end
 		for i,v in ipairs(herotab) do
 			
 			if not hero[v.handle] then hero[v.handle] = {}
