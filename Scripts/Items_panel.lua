@@ -2,14 +2,14 @@
 key = string.byte("O")
 ----------------------
 activated = true
-item = {} hero = {} hero = {}
+item = {} hero = {}
 F12 = drawMgr:CreateFont("F11","Arial",12,500)
 F10 = drawMgr:CreateFont("F11","Arial",10,500)
 xx = 50
 yy = 300
 clear = true
 move = false
-zxc = {true,true,true,true,true}
+zxc = {true,true,true,true,true,true,true,true}
 
 function Tick()
 
@@ -39,13 +39,20 @@ function Tick()
 			end
         end
 		for i,v in ipairs(herotab) do
-		
-			for z = 1,5 do
-				if #herotab == z then
-					if zxc[z] == true then Clear() zxc[z] = false end
-					if not hero[v.handle] then hero[v.handle] = {}
-					hero[v.handle].her = drawMgr:CreateRect(xx+1, yy+26*i,18,18,0x000000D0,drawMgr:GetTextureId("NyanUI/miniheroes/"..v.name:gsub("npc_dota_hero_","")))
+			
+			if #herotab < 5 then
+				for z = 1,4 do
+					if #herotab == z then
+						if zxc[z] == true then hero[v.handle] = {} Clear() zxc[z] = false end
+						if not hero[v.handle] then hero[v.handle] = {}
+						hero[v.handle].her = drawMgr:CreateRect(xx+1, yy+26*i,18,18,0x000000D0,drawMgr:GetTextureId("NyanUI/miniheroes/"..v.name:gsub("npc_dota_hero_","")))
+						end
 					end
+				end
+			else
+				if zxc[#herotab] == true then hero[v.handle] = {} Clear() zxc[#herotab] = false end
+				if not hero[v.handle] then hero[v.handle] = {}
+					hero[v.handle].her = drawMgr:CreateRect(xx+1, yy+26*i,18,18,0x000000D0,drawMgr:GetTextureId("NyanUI/miniheroes/"..v.name:gsub("npc_dota_hero_","")))
 				end
 			end
 
@@ -157,6 +164,7 @@ end
 
 function GameClose()
 	Clear()
+	zxc = {true,true,true,true,true,true,true,true}
 	script:Reload()
 end
 
