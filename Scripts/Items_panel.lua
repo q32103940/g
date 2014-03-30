@@ -2,13 +2,14 @@
 key = string.byte("O")
 ----------------------
 activated = true
-item = {} hero = {}
+item = {} hero = {} hero = {}
 F12 = drawMgr:CreateFont("F11","Arial",12,500)
 F10 = drawMgr:CreateFont("F11","Arial",10,500)
 xx = 50
 yy = 300
 clear = true
 move = false
+zxc = {true,true,true,true,true}
 
 function Tick()
 
@@ -36,12 +37,17 @@ function Tick()
 			if h ~= nil and h.team ~= me.team  then				
 				table.insert(herotab, h)
 			end
-		end
+        end
 		for i,v in ipairs(herotab) do
-			
-			if not hero[v.handle] then hero[v.handle] = {}
-			hero[v.handle].her = drawMgr:CreateRect(xx+1, yy+26*i,18,18,0x000000D0,drawMgr:GetTextureId("NyanUI/miniheroes/"..v.name:gsub("npc_dota_hero_","")))
-			end					
+		
+			for z = 1,5 do
+				if #herotab == z then
+					if zxc[z] == true then Clear() zxc[z] = false end
+					if not hero[v.handle] then hero[v.handle] = {}
+					hero[v.handle].her = drawMgr:CreateRect(xx+1, yy+26*i,18,18,0x000000D0,drawMgr:GetTextureId("NyanUI/miniheroes/"..v.name:gsub("npc_dota_hero_","")))
+					end
+				end
+			end
 
 			for c= 1, 6 do					
 				if not item[c] then item[c] = {} end
@@ -149,7 +155,7 @@ function Clear()
 	collectgarbage("collect")
 end
 
-function GameClose()	
+function GameClose()
 	Clear()
 	script:Reload()
 end
