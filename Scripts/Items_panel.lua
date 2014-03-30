@@ -36,7 +36,7 @@ function Tick()
 			if h ~= nil and h.team ~= me.team  then				
 				table.insert(herotab, h)	
 			end
-        end			
+		end			
 		for i,v in ipairs(herotab) do
 			
 			if not hero[v.handle] then hero[v.handle] = {}
