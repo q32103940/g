@@ -26,6 +26,13 @@ vector = {"specialE","non","non"},
 vectors = {"non"},
 itemLat = 10},
 
+npc_dota_hero_zuus = {
+animation = 11,
+range = 50000,
+items = {"item_cyclone"},
+vectors = {"ONme"},
+},
+
 npc_dota_hero_centaur = {
 animation = 6,
 range = 300,
