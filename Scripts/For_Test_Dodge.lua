@@ -10,30 +10,30 @@ function Tick(tick)
 	me = entityList:GetMyHero()
 	
 	local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO,alive=true,illusion=false,visible=true})
-
+	
 	for i,v in ipairs(enemy) do
 		if v.team ~= me.team then
 			--conter spell before cast
 			--print(v:GetProperty("CBaseAnimating","m_nSequence")) -- show animation flag
-			if AnimationList[v.name] then
+			if AnimationList[v.name] then				
 				if AnimationList[v.name].ability then
 				SpellA = MySpell(AnimationList[v.name].ability)
 				end
 				if AnimationList[v.name].items then
 				ItemsA = MyItem(AnimationList[v.name].items)
-				end
-				if (SpellA and SpellA.state == -1) or (ItemsA and ItemsA.state == -1) then		
-					if v:GetProperty("CBaseAnimating","m_nSequence") == AnimationList[v.name].animation then						
+				end				
+				if (SpellA and SpellA.state == -1) or (ItemsA and ItemsA.state == -1) then
+					if v:GetProperty("CBaseAnimating","m_nSequence") == AnimationList[v.name].animation then				
 						if not AnimationList[v.name].toface or (AnimationList[v.name].toface and ToFace(me,v)) then
 							if GetDistance2D(v,me) < AnimationList[v.name].range then
-								if AnimationList[v.name].spellLat or AnimationList[v.name].itemLat then
+								if (AnimationList[v.name].spellLat and SpellA and SpellA.state == -1) or (AnimationList[v.name].itemLat and ItemsA and ItemsA.state == -1) then
 									if (SpellA and SpellA.state == -1) then 
 										latency = AnimationList[v.name].spellLat 
 									elseif (ItemsA and ItemsA.state == -1) then 
 										latency = AnimationList[v.name].itemLat
 									end
 									me:Attack(v)								
-									if not sleep[v.handle] then									
+									if sleep[v.handle] == false then
 										SmartSleep(latency,v)
 										sleep[v.handle] = true
 										return
@@ -154,6 +154,8 @@ function SmartCast(spell,tab1,tab2,target)
 					me:CastAbility(spell,target.position)
 				elseif vector == "me" then
 					me:CastAbility(spell,me.position)
+				elseif vector == "ONme" then
+					me:CastAbility(spell,me)
 				elseif vector == "target" then
 					me:CastAbility(spell,target)
 				elseif vector == "non" then
