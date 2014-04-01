@@ -367,8 +367,8 @@ function Frame()
 			end
 			
 			--gliph cooldown		
-			if me.team == 2 then team = 3 else team = 2 end
-			local Time = client:GetGlyphCooldown(team)
+			local team = 5 - entityList:GetMyHero().team
+			local Time = client:GetGlyphCooldown(team)			
 			if Time == 0 then sms = "Ry" else sms = Time end
 			glyph.visible = true glyph.text = ""..sms
 		end
@@ -385,6 +385,14 @@ function GameClose()
 	collectgarbage("collect")
 end
 
+function Roshan( death )
+	local kill = death.name
+    if kill == "dota_roshan_kill" then               
+		client:ExecuteCmd("chatwheel_say 53")
+		client:ExecuteCmd("chatwheel_say 57")        
+    end
+end
 
+script:RegisterEvent(EVENT_DOTA,Roshan)
 script:RegisterEvent(EVENT_CLOSE, GameClose)
 script:RegisterEvent(EVENT_FRAME,Frame)
