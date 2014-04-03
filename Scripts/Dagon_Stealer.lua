@@ -1,16 +1,16 @@
+require("libs.Utils")
+
 --config
 key =  string.byte("0")
-
-activated = true 
 xx = client.screenSize.x/300 
 yy = client.screenSize.y/1.45
-icon = drawMgr:CreateRect(xx,yy,24,16,0x000000ff)
-icon.visible = false
-rect = drawMgr:CreateRect(xx-1,yy-1,18,17,0xFF0D0D90,true)
-rect.visible = false
+
+activated = true 
+
+icon = drawMgr:CreateRect(xx,yy,24,16,0x000000ff) icon.visible = false
+rect = drawMgr:CreateRect(xx-1,yy-1,18,17,0xFF0D0D90,true) rect.visible = false
 
 dmg = {400,500,600,700,800}
-
  
 --Главная функция
 function Tick(tick)
@@ -21,18 +21,16 @@ function Tick(tick)
        
 	local dagon = me:FindItem("item_dagon_5")
 	dagon = dagon or me:FindItem("item_dagon_4")
-    	dagon = dagon or me:FindItem("item_dagon_3")
-    	dagon = dagon or me:FindItem("item_dagon_2")
-    	dagon = dagon or me:FindItem("item_dagon")
+	dagon = dagon or me:FindItem("item_dagon_3")
+	dagon = dagon or me:FindItem("item_dagon_2")
+	dagon = dagon or me:FindItem("item_dagon")
  
 	if not dagon then
-		rect.visible = false
-		icon.visible = false
+		rect.visible = false icon.visible = false
 		return 
 	end
-	
-	rect.visible = true
-	icon.visible = true
+
+	rect.visible = true icon.visible = true
 
 	local lvl = string.match (dagon.name, "%d+")
 	if not lvl then lvl = 1 end dmgD = dmg[lvl*1]
@@ -63,7 +61,7 @@ function Key()
 	if IsKeyDown(key) then
 		activated = not activated
 	end
-	
+
 end
 
 function GameClose()
