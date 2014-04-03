@@ -2,10 +2,10 @@ require("libs.Utils")
 require("libs.Deadly")
 
 ------------------------[[Config]]-------------------------
-						sleep = 100 				--increase sleep - > increase performance
-				xx = client.screenSize.x/300 	--x coordinate
-				yy = client.screenSize.y/1.375	--y coordinate
-				toggleKey = string.byte("L")
+		sleep = 100 				--increase sleep - > increase performance
+		xx = client.screenSize.x/300 	--x coordinate
+		yy = client.screenSize.y/1.375	--y coordinate
+		toggleKey = string.byte("L")
 ------------------------------------------------------------
 
 PreKill = 0 text = {} real = {} hero = {} global = {}
