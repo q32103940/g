@@ -2,10 +2,10 @@ require("libs.Utils")
 require("libs.Deadly")
 
 ------------------------[[Config]]-------------------------
-		sleep = 100 				--increase sleep - > increase performance
-		xx = client.screenSize.x/300 	--x coordinate
-		yy = client.screenSize.y/1.375	--y coordinate
-		toggleKey = string.byte("L")
+						sleep = 100 				--increase sleep - > increase performance
+				xx = client.screenSize.x/300 	--x coordinate
+				yy = client.screenSize.y/1.375	--y coordinate
+				toggleKey = string.byte("L")
 ------------------------------------------------------------
 
 PreKill = 0 text = {} real = {} hero = {} global = {}
@@ -59,7 +59,7 @@ function Tick(tick)
 				for i, v in ipairs(enemies) do
 					if v.team ~= me.team and GetDistance2D(me,v) < range and v.health > 0 and CanDie(v) and NotDieFromSpell(Skill,v) and not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") then
 						if not list[mename].Cast and mename ~= "npc_dota_hero_life_stealer" and mename ~= "npc_dota_hero_furion" and mename ~= "npc_dota_hero_zuus" then
-							if v.health + 1 < v:DamageTaken(Dmg[Skill.level], list[mename].Type, me) - Pipe(v) and NotDieFromBM(v,Skill) then
+							if v.health + 1 < v:DamageTaken(Dmg[Skill.level], list[mename].Type, me) and NotDieFromBM(v,Skill) then
 								if list[mename].Time == nil then
 									local target = list[mename].Target
 									if target == "target" then
@@ -87,62 +87,62 @@ function Tick(tick)
 							end
 						elseif mename == "npc_dota_hero_doom_bringer" then
 								local DmgM = math.floor((v:GetProperty("CDOTA_BaseNPC","m_iCurrentLevel") == 25 or v:GetProperty("CDOTA_BaseNPC","m_iCurrentLevel") % list[mename].Doom[Skill.level].levelMultiplier == 0) and (v.maxHealth * 0.20 + list[mename].Doom[Skill.level].dmg)	or	(list[mename].Doom[Skill.level].dmg))
-								if v.health + 1 < v:DamageTaken(DmgM, list[mename].Type, me) - Pipe(v) and NotDieFromBM(v,Skill) then
+								if v.health + 1 < v:DamageTaken(DmgM, list[mename].Type, me) and NotDieFromBM(v,Skill) then
 								me:SafeCastAbility(Skill,v)
 								Sleep(100)
 								end
 						elseif mename == "npc_dota_hero_nyx_assassin" then		
 								local DmgM = Dmg[Skill.level] * v.intellectTotal
-								if v.health + 1 < v:ManaBurnDamageTaken(DmgM,1,list[mename].Type,me) - Pipe(v) and NotDieFromBM(v,Skill) then
+								if v.health + 1 < v:ManaBurnDamageTaken(DmgM,1,list[mename].Type,me) and NotDieFromBM(v,Skill) then
 								me:SafeCastAbility(Skill,v)
 								Sleep(100)
 								end
 						elseif mename == "npc_dota_hero_mirana" then
 								if GetDistance2D(v,me) < 200 then DmgM = Dmg[Skill.level]*1.75 else DmgM = Dmg[Skill.level] end
-								if v.health + 1 < v:DamageTaken(DmgM, list[mename].Type, me) - Pipe(v) and NotDieFromBM(v,Skill) then
+								if v.health + 1 < v:DamageTaken(DmgM, list[mename].Type, me) and NotDieFromBM(v,Skill) then
 								me:SafeCastAbility(Skill)
 								Sleep(100)
 								end
 						elseif mename == "npc_dota_hero_elder_titan" then
 								if me:GetAbility(3).level ~= 0 and not v:FindModifier("modifier_elder_titan_natural_order") then local DmgS = list[mename].DmgM DmgM = DmgS[me:GetAbility(3).level]*Dmg[Skill.level] else DmgM = Dmg[Skill.level] end
-								if v.health + 1 < v:DamageTaken(DmgM, list[mename].Type, me) - Pipe(v) and NotDieFromBM(v,Skill) then
+								if v.health + 1 < v:DamageTaken(DmgM, list[mename].Type, me) and NotDieFromBM(v,Skill) then
 								me:SafeCastAbility(Skill,v.position)
 								Sleep(100)
 								end
 						elseif mename == "npc_dota_hero_necrolyte" then
 								local DmgM = (v.maxHealth - v.health) * Dmg[Skill.level]
-								if v.health + 1 < v:DamageTaken(DmgM, list[mename].Type, me) - Pipe(v) and NotDieFromBM(v,Skill) then
+								if v.health + 1 < v:DamageTaken(DmgM, list[mename].Type, me) and NotDieFromBM(v,Skill) then
 								me:SafeCastAbility(Skill,v)
 								Sleep(100)
 								end
 						elseif mename == "npc_dota_hero_antimage" then
 								local DmgM = (v.maxMana - v.mana) * Dmg[Skill.level]
-								if v.health + 1 < v:DamageTaken(DmgM, list[mename].Type, me) - Pipe(v) and NotDieFromBM(v,Skill) then
+								if v.health + 1 < v:DamageTaken(DmgM, list[mename].Type, me) and NotDieFromBM(v,Skill) then
 								me:SafeCastAbility(Skill,v)
 								Sleep(100)
 								end
 						elseif mename == "npc_dota_hero_morphling" then local as = me.agilityTotal/me.strengthTotal
 								if as > 1.5 then DmgM = 0.5*Skill.level elseif as < 0.5 then DmgM = 0.25 elseif (as >= 0.5 and as <= 1.5) then DmgM = 0.25+((as-0.5)*(0.5*Skill.level-0.25)) end
-								if v.health + 1 < v:DamageTaken((DmgM)*me.agilityTotal + Dmg[Skill.level], list[mename].Type, me) - Pipe(v) and NotDieFromBM(v,Skill) then
+								if v.health + 1 < v:DamageTaken((DmgM)*me.agilityTotal + Dmg[Skill.level], list[mename].Type, me) and NotDieFromBM(v,Skill) then
 								me:SafeCastAbility(Skill,v)
 								Sleep(100)
 								end
 						elseif mename == "npc_dota_hero_obsidian_destroyer" then local DmgM = 0
 								if me.intellectTotal > v.intellectTotal then DmgM = (me.intellectTotal - v.intellectTotal)*Dmg[Skill.level] end
-								if v.health + 1 < v:DamageTaken(DmgM, list[mename].Type, me) - Pipe(v) and NotDieFromBM(v,Skill) then
+								if v.health + 1 < v:DamageTaken(DmgM, list[mename].Type, me) and NotDieFromBM(v,Skill) then
 								me:SafeCastAbility(Skill,v.position)
 								Sleep(100)
 								end
 						elseif mename == "npc_dota_hero_visage" then
 								local DmgM = 20 + (ModifierStacks("modifier_visage_soul_assumption",me) * 65)
-								if v.health + 1 < v:DamageTaken(DmgM, list[mename].Type, me) - Pipe(v) and NotDieFromBM(v,Skill) then
+								if v.health + 1 < v:DamageTaken(DmgM, list[mename].Type, me) and NotDieFromBM(v,Skill) then
 								me:SafeCastAbility(Skill,v)
 								Sleep(100)
 								end
 						elseif mename == "npc_dota_hero_shadow_demon" then local DmgS = list[mename].DmgM local Mod = ModifierStacks("modifier_shadow_demon_shadow_poison",v)								
 								if Mod ~= 0 and Mod < 6 then DmgM = (DmgS[ModifierStacks("modifier_shadow_demon_shadow_poison",v)]) * Dmg[Skill.level] elseif Mod > 5 then DmgM = ((Dmg[Skill.level]*16) + ((Mod-5)*50)) end
 								if DmgM ~= nil then									
-									if v.health + 1 < v:DamageTaken(DmgM, list[mename].Type, me) - Pipe(v) and NotDieFromBM(v,Skill) then
+									if v.health + 1 < v:DamageTaken(DmgM, list[mename].Type, me) and NotDieFromBM(v,Skill) then
 									me:SafeCastAbility(me:GetAbility(4))
 									Sleep(100)
 									end
@@ -154,7 +154,7 @@ function Tick(tick)
 								Sleep(100)
 								end
 						elseif mename == "npc_dota_hero_nevermore" then
-								if v.health + 1 < v:DamageTaken(Dmg[Skill.level], list[mename].Type, me) - Pipe(v) and NotDieFromBM(v,Skill) then
+								if v.health + 1 < v:DamageTaken(Dmg[Skill.level], list[mename].Type, me) and NotDieFromBM(v,Skill) then
 									if GetDistance2D(v,me) < 350 then
 										entityList:GetMyPlayer():Attack(v)
 										me:SafeCastAbility(me:GetAbility(1))
@@ -170,7 +170,7 @@ function Tick(tick)
 									end
 								end
 						elseif mename == "npc_dota_hero_zuus" or mename == "npc_dota_hero_furion" then
-							if v.health + 1 < v:DamageTaken(Dmg[Skill.level], list[mename].Type, me) - Pipe(v) and NotDieFromBM(v,Skill) then
+							if v.health + 1 < v:DamageTaken(Dmg[Skill.level], list[mename].Type, me) and NotDieFromBM(v,Skill) then
 								table.insert(real,v)
 								for k,l in ipairs(real) do
 									if k == PreKill then
@@ -399,13 +399,6 @@ function NotDieFromBM(target,spell)
 		return false
 	end
 	return true
-end
-
-function Pipe(target)
-	if target:DoesHaveModifier("modifier_item_pipe_barrier") and list[mename].Type == DAMAGE_MAGC then
-		return 400
-	end
-	return 0
 end
 
 function ModifierStacks(name,target)
