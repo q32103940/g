@@ -19,7 +19,6 @@ npc_dota_hero_tinker = {
 npc_dota_hero_lich = {
  Spell = "lich_frost_nova",
  Dmg = {50, 100, 150, 200},
- Range = 2500,
  Type = DAMAGE_MAGC,
  Target = "target"},
 
