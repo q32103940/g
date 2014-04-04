@@ -25,12 +25,18 @@
 	|             Changelog            |
 	====================================
 
-		v1.2e:
+		v1.3:
 		 - Adapted library for Ensage rework
 		 - Removed LuaEntityNPC:GetAllItems(), LuaEntityNPC:GetAllSpells() and LuaEntityNPC:FindFlag(row)
 		 - Added LuaEntityAbility:FindCastPoint(), LuaEntityNPC:IsUnitState(flag) and other unitState checking functions
 		 - Added a "not" option to IsKeysDown()
 		 - Added latency sensitive sleep and sleepcheck
+		 - Added GetCallerScript(index)
+		 - Fixed LuaEntityNPC:AghanimState()
+		 - Restructured the inheritance tables for new or renamed classes.
+		 - Added queueing to LuaEntityNPC action functions
+		 - Removed (x,y,z) targeting from LuaEntityNPC action functions
+		 - Added Pipe of Insight: Barrier to damage reduction calculations
 
 		v1.2d:
 		 - Fixed a bug in SafeCastAbility.
@@ -118,6 +124,9 @@
 
 		----- Global Functions -----
 
+			GetCallerScript([level]): Returns the script name that called the function which this function is placed.
+				level: Changes the location on the stack, allowing to get the script names of other levels of calling.
+
 			GetDistance2D(a[,b]): Returns the 2D (ignoring height) distance between 2 units, locations or one unit and one location.
 				a: First Unit/Location.
 				b: Second Unit/Location. If not entered it defaults as "me" value.
@@ -136,6 +145,13 @@
 				time: Amount of time in miliseconds.
 				id: Identification for a sleep instance. If not entered sleeps the global sleep instance.
 
+			LatSleepCheck([id]): Returns "true" if given id will finish sleep period with the latency to server
+				id: Identification for a sleep instance. If not entered checks the global sleep instance.
+
+			LatSleep(time[,id]):: Sleeps given sleep instance for given amount of ms + latency to server. If sleep instance is sleeping for more than given time already it will not overwrite it.
+				time: Amount of time in miliseconds.
+				id: Identification for a sleep instance. If not entered sleeps the global sleep instance.
+
 
 			SetDebugState(): Sets debug state of the script.
 
@@ -150,9 +166,6 @@
 				table: Table of units which will be selected back. Primary source for this table is "SelectUnit" function
 
 
-
-
-
 		----- Class Functions -----
 
 
@@ -162,37 +175,21 @@
 
 			-----> LuaEntityNPC (CDOTA_BaseNPC) Functions <-----
 
-				LuaEntityNPC:Move(x[,y,z]): Selects the unit and gives a Move order then selects back the previous selection
-					Possible Parameters:
-						--(Vector)
-						--(Number,Number,Number)
+				LuaEntityNPC:Move(pos[,queue]): Selects the unit and gives a Move order then selects back the previous selection
 
-				LuaEntityNPC:AttackMove(x[,y,z]): Selects the unit and gives a AttackMove order then selects back the previous selection
-					Possible Parameters:
-						--(Vector)
-						--(Number,Number,Number)
+				LuaEntityNPC:AttackMove(pos[,queue]): Selects the unit and gives a AttackMove order then selects back the previous selection
 
-				LuaEntityNPC:Attack(unit): Selects the unit and gives a Attack order then selects back the previous selection
+				LuaEntityNPC:Attack(unit[,queue]): Selects the unit and gives a Attack order then selects back the previous selection
 
-				LuaEntityNPC:Follow(unit): Selects the unit and gives a Follow order then selects back the previous selection
+				LuaEntityNPC:Follow(unit[,queue]): Selects the unit and gives a Follow order then selects back the previous selection
 
-				LuaEntityNPC:Stop(): Selects the unit and gives a Stop order then selects back the previous selection
+				LuaEntityNPC:Stop([queue]): Selects the unit and gives a Stop order then selects back the previous selection
 
 				LuaEntityNPC:FindSpell(spellName): If unit owns an ability with the given name, returns the ability.
 
-				LuaEntityNPC:CastSpell(spellName[,x,y,z]): If units own an ability with the given name; selects unit, uses ability then selects back the previous selection
-					Possible Parameters:
-						--(String)
-						--(String,Vector)
-						--(String,LuaEntity)
-						--(String,Number,Number,Number)
+				LuaEntityNPC:CastSpell(spellName[,target][,queue]): If units own an ability with the given name; selects unit, uses ability then selects back the previous selection
 
-				LuaEntityNPC:SafeCastSpell(spellName[,x,y,z]): Same as CastSpell, but both spell and unit should be able to cast/be casted and it checks for Linkens Interaction if target is a unit.
-					Possible Parameters:
-						--(String)
-						--(String,Vector)
-						--(String,LuaEntity)
-						--(String,Number,Number,Number)
+				LuaEntityNPC:SafeCastSpell(spellName[,target][,queue]): Same as CastSpell, but both spell and unit should be able to cast/be casted and it checks for Linkens Interaction if target is a unit.
 
 				LuaEntityNPC:ToggleSpell(spellName): Same as CastSpell, but for toggle abilities
 
@@ -200,51 +197,26 @@
 
 				LuaEntityNPC:FindItem(itemName): If unit owns an item with the given name, returns the item.
 
-				LuaEntityNPC:SetPowerTreadsState(state): If unit owns a Power Treads; selects unit, sets its state then selects back the previous selection
+				LuaEntityNPC:SetPowerTreadsState(state[,queue]): If unit owns a Power Treads; selects unit, sets its state then selects back the previous selection
 
-				LuaEntityNPC:CastItem(itemName[,x,y,z]): If units own an item with the given name; selects unit, uses item then selects back the previous selection. If the item is Armlet of Mordiggian or Radiance then toggles it instad of using.
-					Possible Parameters:
-						--(String)
-						--(String,Vector)
-						--(String,LuaEntity)
-						--(String,Number,Number,Number)
+				LuaEntityNPC:CastItem(itemName[,target]): If units own an item with the given name; selects unit, uses item then selects back the previous selection. If the item is toggleable then toggles it instad of using.
 				
-				LuaEntityNPC:SafeCastItem(itemName[,x,y,z]): Same as CastItem, but both item and unit should be able to cast/be casted and it checks for Linkens Interaction if target is a unit.
-					Possible Parameters:
-						--(String)
-						--(String,Vector)
-						--(String,LuaEntity)
-						--(String,Number,Number,Number)
+				LuaEntityNPC:SafeCastItem(itemName[,target][,queue]): Same as CastItem, but both item and unit should be able to cast/be casted and it checks for Linkens Interaction if target is a unit.
 				
-				LuaEntityNPC:CastAbility(ability[,x,y,z]): Selects unit, uses ability then selects back the previous selection
-					Possible Parameters:
-						--(CDOTABaseAbility)
-						--(CDOTABaseAbility,Vector)
-						--(CDOTABaseAbility,LuaEntity)
-						--(CDOTABaseAbility,Number,Number,Number)
+				LuaEntityNPC:CastAbility(ability[,target][,queue]): Selects unit, uses ability then selects back the previous selection
 				
-				LuaEntityNPC:SafeCastAbility(ability[,x,y,z]): Same as CastAbility, but both item and unit should be able to cast/be casted and it checks for Linkens Interaction if target is a unit.
-					Possible Parameters:
-						--(CDOTABaseAbility)
-						--(CDOTABaseAbility,Vector)
-						--(CDOTABaseAbility,LuaEntity)
-						--(CDOTABaseAbility,Number,Number,Number)
-				
-				LuaEntityNPC:GetAllSpells(): Returns a table consisting of all of the spells unit owns.
-				
-				LuaEntityNPC:GetAllItems(): Returns a table consisting of all of the items unit owns.
-				
+				LuaEntityNPC:SafeCastAbility(ability[,target][,queue]): Same as CastAbility, but both item and unit should be able to cast/be casted and it checks for Linkens Interaction if target is a unit.
 				LuaEntityNPC:IsChanneling(): Returns "true" if unit is channeling a spell/item.
 				
 				LuaEntityNPC:GetChanneledAbility(): Returns the spell/item the unit channels if there is any.
 
-				LuaEntityNPC:FindRelativeAngle(a): Returns the relative angle of the given unit or location. 0 means unit is facing -+PI means its behind the unit.
+				LuaEntityNPC:GetDistance2D(a): Returns the 2D (ignoring height) distance between the unit and given unit or location.
 					Possible Parameters:
 						--(Vector)
 						--(Vector2D)
 						--(LuaEntity)
 
-				LuaEntityNPC:GetDistance2D(a): Returns the 2D (ignoring height) distance between the unit and given unit or location.
+				LuaEntityNPC:FindRelativeAngle(a): Returns the relative angle of the given unit or location. 0 means unit is facing -+PI means its behind the unit.
 					Possible Parameters:
 						--(Vector)
 						--(Vector2D)
@@ -272,10 +244,32 @@
 				
 				LuaEntityNPC:CanReincarnate(): Returns true if unit can reincarnate.
 				
-				LuaEntityNPC:IsInvul(): Returns true if unit is Invulnerable.
-				
-				LuaEntityNPC:IsUnitState(flag): Returns true if the unit has the specified flag in it's states
-				
+				LuaEntityNPC:IsUnitState(flag): Returns true if unit has the given flag.
+
+				LuaEntityNPC:IsRooted(): Returns true if unit is rooted.
+
+				LuaEntityNPC:IsDisarmed(): Returns true if unit is disarmed.
+
+				LuaEntityNPC:IsAttackImmune(): Returns true if unit cannot be attacked.
+
+				LuaEntityNPC:IsSilenced(): Returns true if unit is silenced.
+
+				LuaEntityNPC:IsMuted(): Returns true if unit is muted.
+
+				LuaEntityNPC:IsStunned(): Returns true if unit is stunned.
+
+				LuaEntityNPC:IsHexed(): Returns true if unit is hexed.
+
+				LuaEntityNPC:IsInvisible(): Returns true if unit is invisible.
+
+				LuaEntityNPC:IsInvul(): Returns true if unit is invulnerable.
+
+				LuaEntityNPC:IsMagicImmune(): Returns true if unit is magic immune.
+
+				LuaEntityNPC:IsFlying(): Returns true if unit is flying/cliffwalking.
+
+				LuaEntityNPC:IsUnitWalking(): Returns true if unit is phased/unitwalking.
+
 				LuaEntityNPC:CanMove(): Returns true if the unit can move.
 				
 				LuaEntityNPC:CanCast(): Returns true if the unit can cast spells.
@@ -283,11 +277,12 @@
 				LuaEntityNPC:CanAttack(): Returns true if the unit can attack.
 				
 				LuaEntityNPC:CanUseItems(): Returns true if the unit can use items.
- 
 
+				LuaEntityNPC:IsIllusion(): Returns true if the unit is an actual illusion (checks if unit is a DWS clone which returns .illusion as false)
+				
 
 			-----> LuaEntityAbility  (CDOTABaseAbility) Functions<-----
-
+			
 				LuaEntityAbility :CanBeCasted(): Returns true if the ability can be casted.
 
 				LuaEntityAbility :CanBeBlockedByLinkens(): Returns true if the ability can be blocked by Linken's Shere.
@@ -305,6 +300,8 @@
 				LuaEntityAbility:IsDamageType(flag): Returns true if the ability has the specified flag in it's Damage Type
 
 				LuaEntityAbility:GetSpecialData(name[,level]): Returns the special data with the given name if it exists
+
+				LuaEntityAbility:FindCastPoint(): Returns the cast point of the ability.
 
 ]]
 
@@ -329,6 +326,8 @@ PT_AGI = 2 -- Agility
 utils = {}
 
 utils.sleepDB = {}
+
+utils.debugState = {}
 
 utils.externalDmgReducs = {
 	--Spectre: Dispersion
@@ -387,6 +386,14 @@ utils.externalDmgReducs = {
 		sourceTeam = 0,
 		sourceSpellName = "ember_spirit_flame_guard",
 		reduce = {50,200,350,500},
+		magicOnly = true,
+	},
+
+	--Pipe of Insight: Barrier
+	{
+		modifierName = "modifier_item_pipe_barrier",
+		type = 0,
+		reduce = 400,
 		magicOnly = true,
 	},
 }
@@ -757,7 +764,7 @@ utils.invulModifiers = {
 	--Eul: Cyclone
 	modifier_cyclone = true,
 	--Invoker: Tornado
-	modifier_invoker_tornado,
+	modifier_invoker_tornado = true,
 	--Bane: Nightmare
 	modifier_bane_nightmare_invulnerable = true,
 	--Faceless Void: Time Walk
@@ -779,6 +786,14 @@ utils.invulModifiers = {
 
 --== GLOBAL FUNCTIONS ==--
 
+--Returns the name of the script that called the function
+function GetCallerScript(index)
+	if not index then index = 3 end
+	local source = debug.getinfo(index, "S").source
+	return source:sub(source:match('^.*()\\') + 1)
+end
+
+--Regular assert but if assert fails it traces the error
 function smartAssert(bool,string)
 	if not bool then
     	print(debug.traceback())
@@ -789,8 +804,6 @@ end
 --Returns the 2D distance (ignoring height) between 2 units.
 --	Returns distance between unit and user's hero if only one unit is given.
 function GetDistance2D(a,b)
-    if type(a) == "table" then
-    end
 	smartAssert(GetType(a) == "LuaEntity" or GetType(a) == "Vector" or GetType(a) == "Vector2D" or GetType(a) == "Projectile", "GetDistance2D: Invalid First Parameter:"..GetType(a))
 	smartAssert(GetType(b) == "LuaEntity" or GetType(b) == "Vector" or GetType(b) == "Vector2D" or GetType(a) == "Projectile" or GetType(b) == "nil", "GetDistance2D: Invalid Second Parameter:"..GetType(b))
 	if not b then b = entityList:GetMyHero() end
@@ -805,7 +818,7 @@ end
 
 --Returns the base class of an obj
 function GetType(obj)
-	if obj and type(obj) == "userdata" then
+	if obj and (type(obj) == "userdata" or type(obj) == "table")then
 		if type(obj.IsZero) == "function" then
 			if type(obj.z) == "number" then
 				return "Vector"
@@ -883,20 +896,20 @@ end
 --Sets debug state for IsDebugActive checks and DebugPrint.
 function SetDebugState(state)
 	smartAssert(type(state) == "boolean", debug.getinfo(1, "n").name..": Invalid State")
-	utils.debugState = state
+	utils.debugState[GetCallerScript()] = state
 end
 
 --Returns the debug state.
 function IsDebugActive()
-	return utils.debugState
+	return utils.debugState[GetCallerScript()]
 end
 
 --Prints a debug message in a format:
 --	[SCRIPTNAME] YourMessage
 function DebugPrint(text)
 	smartAssert(type(tostring(text)) == "string", debug.getinfo(1, "n").name..": Invalid Text")
-	if IsDebugActive() then
-		print("["..script.name.."] "..tostring(text))
+	if utils.debugState[GetCallerScript()] then
+		print("["..GetCallerScript().."] "..tostring(text))
 	end
 end
 
@@ -904,44 +917,28 @@ end
 
 --Returns the sleeping status of the sleep engine with the given id (not entering id will return the state of the global sleep engine).
 function SleepCheck(id)
-	if id then
-		return not utils.sleepDB[id] or GetTick() > utils.sleepDB[id]
-	else
-		return not utils.sleepTick or GetTick() > utils.sleepTick
-	end
+	if not id then id = GetCallerScript() else id = id..GetCallerScript() end
+	return not utils.sleepDB[id] or GetTick() > utils.sleepDB[id]
 end
 
 --Sleeps the sleeping engine with the given id for given ms (not entering id will sleep the global sleep engine).
 --	If engine is already sleeping for more than the given time it will ignore it.
 function Sleep(ms,id)
-	if id then
-		if not utils.sleepDB[id] or utils.sleepDB[id] < GetTick() + ms then
-			utils.sleepDB[id] = GetTick() + ms
-		end
-	else
-		if not utils.sleepTick or utils.sleepTick < GetTick() + ms then
-			utils.sleepTick = GetTick() + ms
-		end
+	if not id then id = GetCallerScript() else id = id..GetCallerScript() end
+	if not utils.sleepDB[id] or utils.sleepDB[id] < GetTick() + ms then
+		utils.sleepDB[id] = GetTick() + ms
 	end
 end
 
 function LatSleepCheck(id)
-	if id then
-		return not utils.sleepDB[id] or GetTick() > utils.sleepDB[id] - client.latency
-	else
-		return not utils.sleepTick or GetTick() > utils.sleepTick - client.latency
-	end
+	if not id then id = GetCallerScript() else id = id..GetCallerScript() end
+	return not utils.sleepDB[id] or GetTick() > utils.sleepDB[id] - client.latency
 end
 
 function LatSleep(ms,id)
-	if id then
-		if not utils.sleepDB[id] or utils.sleepDB[id] - client.latency < GetTick() + ms then
-			utils.sleepDB[id] = GetTick() + ms + client.latency
-		end
-	else
-		if not utils.sleepTick or utils.sleepTick - client.latency < GetTick() + ms then
-			utils.sleepTick = GetTick() + ms + client.latency
-		end
+	if not id then id = GetCallerScript() else id = id..GetCallerScript() end
+	if not utils.sleepDB[id] or utils.sleepDB[id] - client.latency < GetTick() + ms then
+		utils.sleepDB[id] = GetTick() + ms + client.latency
 	end
 end
 
@@ -981,56 +978,61 @@ end
 --== LuaEntityNPC (CDOTA_BaseNPC) FUNCTIONS ==--
 
 --Selects LuaEntity, Gives a Move command and Selects back the previous selection.
-function LuaEntityNPC:Move(x,y,z)
-	smartAssert(x, debug.getinfo(1, "n").name..": Invalid Parameters")
-	if x ~= nil and y ~= nil and z ~= nil then
-		smartAssert(type(x) == "number" and type(y) == "number" and type(z) == "number", debug.getinfo(1, "n").name..": Invalid Coordinates")
-		local prev = SelectUnit(self)
-		entityList:GetMyPlayer():Move(Vector(x,y,z))
-		SelectBack(prev)
-	elseif x ~= nil then
-		smartAssert(GetType(x) == "Vector", debug.getinfo(1, "n").name..": Invalid Vector")
-		local prev = SelectUnit(self)
-		entityList:GetMyPlayer():Move(x)
-		SelectBack(prev)
+function LuaEntityNPC:Move(vec,queue)
+	smartAssert(GetType(vec) == "Vector", debug.getinfo(1, "n").name..": Invalid Parameters")
+	local prev = SelectUnit(self)
+	if type(queue) == "boolean" then
+		entityList:GetMyPlayer():Move(vec,queue)
+	else
+		entityList:GetMyPlayer():Move(vec)
 	end
+	SelectBack(prev)
 end
 
 --Selects LuaEntity, Gives an AttackMove command it and Selects back the previous selection.
-function LuaEntityNPC:AttackMove(x,y,z)
-	if x and y and z then
-		smartAssert(type(x) == "number" and type(y) == "number" and type(z) == "number", debug.getinfo(1, "n").name..": Invalid Coordinates")
-		local prev = SelectUnit(self)
-		entityList:GetMyPlayer():AttackMove(Vector(x,y,z))
-		SelectBack(prev)
-	elseif x then
-		smartAssert(GetType(x) == "Vector", debug.getinfo(1, "n").name..": Invalid Vector")
-		local prev = SelectUnit(self)
-		entityList:GetMyPlayer():AttackMove(x)
-		SelectBack(prev)
+function LuaEntityNPC:AttackMove(vec,queue)
+	smartAssert(GetType(vec) == "Vector", debug.getinfo(1, "n").name..": Invalid Parameters")
+	local prev = SelectUnit(self)
+	if type(queue) == "boolean" then
+		entityList:GetMyPlayer():AttackMove(vec,queue)
+	else
+		entityList:GetMyPlayer():AttackMove(vec)
 	end
+	SelectBack(prev)
 end
 
 --Selects LuaEntity, Gives an Attack command it and Selects back the previous selection.
-function LuaEntityNPC:Attack(unit)
+function LuaEntityNPC:Attack(unit,queue)
 	smartAssert(GetType(unit) == "LuaEntity", debug.getinfo(1, "n").name..": Invalid Unit")
 	local prev = SelectUnit(self)
-	entityList:GetMyPlayer():Attack(unit)
+	if type(queue) == "boolean" then
+		entityList:GetMyPlayer():Attack(unit,queue)
+	else
+		entityList:GetMyPlayer():Attack(unit)
+	end
 	SelectBack(prev)
 end
 
 --Selects LuaEntity, Gives an Follow command it and Selects back the previous selection.
-function LuaEntityNPC:Follow(unit)
+function LuaEntityNPC:Follow(unit,queue)
 	smartAssert(GetType(unit) == "LuaEntity", debug.getinfo(1, "n").name..": Invalid Unit")
 	local prev = SelectUnit(self)
-	entityList:GetMyPlayer():Follow(unit)
+	if type(queue) == "boolean" then
+		entityList:GetMyPlayer():Follow(unit,queue)
+	else
+		entityList:GetMyPlayer():Follow(unit)
+	end
 	SelectBack(prev)
 end
 
 --Selects LuaEntity, Gives an Stop command it and Selects back the previous selection.
-function LuaEntityNPC:Stop()
+function LuaEntityNPC:Stop(queue)
 	local prev = SelectUnit(self)
-	entityList:GetMyPlayer():Stop()
+	if type(queue) == "boolean" then
+		entityList:GetMyPlayer():Stop(queue)
+	else
+		entityList:GetMyPlayer():Stop()
+	end
 	SelectBack(prev)
 end
 
@@ -1049,19 +1051,25 @@ end
 
 --Finds the spell with given name; If there is one selects LuaEntity, casts it and selects back the previous selection.
 --	Returns true if cast order is given.
-function LuaEntityNPC:CastSpell(spellName,x,y,z)
+function LuaEntityNPC:CastSpell(spellName,target,queue)
 	smartAssert(type(spellName) == "string", debug.getinfo(1, "n").name..": Invalid Spell Name")
+	if type(target) == "boolean" then queue = target target = nil end
 	local spell = self:FindSpell(spellName)
 	if spell then
 		local prev = SelectUnit(self)
-		if not x and not y and not z then
-			entityList:GetMyPlayer():UseAbility(spell)
-		elseif not y and not z then
-			smartAssert(GetType(x) == "Vector" or GetType(x) == "LuaEntity", debug.getinfo(1, "n").name..": Invalid parameters")
-			entityList:GetMyPlayer():UseAbility(spell,x)
+		if not target then
+			if type(queue) == "boolean" then
+				entityList:GetMyPlayer():UseAbility(spell,queue)
+			else
+				entityList:GetMyPlayer():UseAbility(spell)
+			end
 		else
-			smartAssert(type(x) == "number" and type(y) == "number" and type(z) == "number", debug.getinfo(1, "n").name..": Invalid Coordinates")
-			entityList:GetMyPlayer():UseAbility(spell,x,y,z)
+			smartAssert(GetType(target) == "Vector" or GetType(target) == "LuaEntity", debug.getinfo(1, "n").name..": Invalid parameters")
+			if type(queue) == "boolean" then
+				entityList:GetMyPlayer():UseAbility(spell,target,queue)
+			else
+				entityList:GetMyPlayer():UseAbility(spell,target)
+			end
 		end
 		SelectBack(prev)
 		return true
@@ -1070,12 +1078,16 @@ end
 
 --Finds the spell with given name; If there is one selects LuaEntity, toggles it and selects back the previous selection.
 --	Returns true if toggle order is given.
-function LuaEntityNPC:ToggleSpell(spellName)
+function LuaEntityNPC:ToggleSpell(spellName,queue)
 	smartAssert(type(spellName) == "string", debug.getinfo(1, "n").name..": Invalid Spell Name")
 	local spell = self:FindSpell(spellName)
 	if spell then
 		local prev = SelectUnit(self)
-		entityList:GetMyPlayer():ToggleAbility(spell)
+		if type(queue) == "boolean" then
+			entityList:GetMyPlayer():ToggleAbility(spell,queue)
+		else
+			entityList:GetMyPlayer():ToggleAbility(spell)
+		end
 		SelectBack(prev)
 		return true
 	end
@@ -1084,19 +1096,25 @@ end
 --Finds the spell with given name; If there is one selects LuaEntity, casts it and selects back the previous selection.
 --	Checks both hero's state and spells state to cast successfully
 --	Returns true if cast order is "successfully" given.
-function LuaEntityNPC:SafeCastSpell(spellName,x,y,z)
+function LuaEntityNPC:SafeCastSpell(spellName,target,queue)
 	smartAssert(type(spellName) == "string", debug.getinfo(1, "n").name..": Invalid Spell Name")
 	local spell = self:FindSpell(spellName)
-	if spell and spell:CanBeCasted() and self:CanCast() and not (x and x.IsLinkensProtected and x:IsLinkensProtected() and spell:CanBeBlockedByLinkens() == true) then
+	if type(target) == "boolean" then queue = target target = nil end
+	if spell and spell:CanBeCasted() and self:CanCast() and not (target and target.IsLinkensProtected and target:IsLinkensProtected() and spell:CanBeBlockedByLinkens() == true) then
 		local prev = SelectUnit(self)
-		if not x and not y and not z then
-			entityList:GetMyPlayer():UseAbility(spell)
-		elseif not y and not z then
-			smartAssert(GetType(x) == "Vector" or GetType(x) == "LuaEntity", debug.getinfo(1, "n").name..": Invalid parameters")
-			entityList:GetMyPlayer():UseAbility(spell,x)
+		if not target then
+			if type(queue) == "boolean" then
+				entityList:GetMyPlayer():UseAbility(spell,queue)
+			else
+				entityList:GetMyPlayer():UseAbility(spell)
+			end
 		else
-			smartAssert(type(x) == "number" and type(y) == "number" and type(z) == "number", debug.getinfo(1, "n").name..": Invalid Coordinates")
-			entityList:GetMyPlayer():UseAbility(spell,x,y,z)
+			smartAssert(GetType(target) == "Vector" or GetType(target) == "LuaEntity", debug.getinfo(1, "n").name..": Invalid parameters")
+			if type(queue) == "boolean" then
+				entityList:GetMyPlayer():UseAbility(spell,target,queue)
+			else
+				entityList:GetMyPlayer():UseAbility(spell,target)
+			end
 		end
 		SelectBack(prev)
 		return true
@@ -1106,12 +1124,16 @@ end
 --Finds the spell with given name; If there is one selects LuaEntity, toggles it and selects back the previous selection.
 --	Checks both hero's state and spells state to cast successfully
 --	Returns true if toggle order is "successfully" given.
-function LuaEntityNPC:SafeToggleSpell(spellName)
+function LuaEntityNPC:SafeToggleSpell(spellName,queue)
 	smartAssert(type(spellName) == "string", debug.getinfo(1, "n").name..": Invalid Spell Name")
 	local spell = self:FindSpell(spellName)
 	if spell and spell:CanBeCasted() and self:CanCast() then
 		local prev = SelectUnit(self)
-		entityList:GetMyPlayer():ToggleAbility(spell)
+		if type(queue) == "boolean" then
+			entityList:GetMyPlayer():ToggleAbility(spell,queue)
+		else
+			entityList:GetMyPlayer():ToggleAbility(spell)
+		end
 		SelectBack(prev)
 		return true
 	end
@@ -1136,10 +1158,11 @@ function LuaEntityNPC:SetPowerTreadsState(state,queue)
 	if pt then
 		local prev = SelectUnit(self)
 		for i = 1, (state - pt.bootsState) % 3 do
-			if queue then
-				QueueNextAction()
+			if type(queue) == "boolean" then
+				entityList:GetMyPlayer():UseAbility(pt,queue)
+			else
+				entityList:GetMyPlayer():UseAbility(pt)
 			end
-			entityList:GetMyPlayer():UseAbility(pt)
 		end
 		SelectBack(prev)
 	end
@@ -1148,21 +1171,31 @@ end
 --Finds the spell with given name; If there is one selects LuaEntity, casts it and selects back the previous selection.
 --	If the item is a toggle item then toggles it.
 --	Returns true if cast order is given.
-function LuaEntityNPC:CastItem(itemName,x,y,z)
+function LuaEntityNPC:CastItem(itemName,target,queue)
 	smartAssert(type(itemName) == "string", debug.getinfo(1, "n").name..": Invalid Item Name")
 	local item = self:FindItem(itemName)
+	if type(target) == "boolean" then queue = target target = nil end
 	if item then
 		local prev = SelectUnit(self)
 		if item:IsBehaviourType(LuaEntityAbility.BEHAVIOR_TOGGLE) then
-			entityList:GetMyPlayer():ToggleAbility(item)
-		elseif not x and not y and not z then
-			entityList:GetMyPlayer():UseAbility(item)
-		elseif not y and not z then
-			smartAssert(GetType(x) == "Vector" or GetType(x) == "LuaEntity", debug.getinfo(1, "n").name..": Invalid parameters")
-			entityList:GetMyPlayer():UseAbility(item,x)
+			if type(queue) == "boolean" then
+				entityList:GetMyPlayer():ToggleAbility(item,queue)
+			else
+				entityList:GetMyPlayer():ToggleAbility(item)
+			end
+		elseif not target then
+			if type(queue) == "boolean" then
+				entityList:GetMyPlayer():UseAbility(item,queue)
+			else
+				entityList:GetMyPlayer():UseAbility(item)
+			end
 		else
-			smartAssert(type(x) == "number" and type(y) == "number" and type(z) == "number", debug.getinfo(1, "n").name..": Invalid Coordinates")
-			entityList:GetMyPlayer():UseAbility(item,x,y,z)
+			smartAssert(GetType(target) == "Vector" or GetType(target) == "LuaEntity", debug.getinfo(1, "n").name..": Invalid parameters")
+			if type(queue) == "boolean" then
+				entityList:GetMyPlayer():UseAbility(item,target,queue)
+			else
+				entityList:GetMyPlayer():UseAbility(item,target)
+			end
 		end
 		SelectBack(prev)
 		return true
@@ -1173,21 +1206,31 @@ end
 --	If the item is a toggle item then toggles it.
 --	Checks both hero's state and item state to cast successfully
 --	Returns true if cast order is "successfully" given.
-function LuaEntityNPC:SafeCastItem(itemName,x,y,z)
+function LuaEntityNPC:SafeCastItem(itemName,target,queue)
 	smartAssert(type(itemName) == "string", debug.getinfo(1, "n").name..": Invalid Item Name")
 	local item = self:FindItem(itemName)
+	if type(target) == "boolean" then queue = target target = nil end
 	if item and item:CanBeCasted() and self:CanUseItems() and not (x and x.IsLinkensProtected and x:IsLinkensProtected() and spell:CanBeBlockedByLinkens() == true) then
 		local prev = SelectUnit(self)
-		if  item:IsBehaviourType(LuaEntityAbility.BEHAVIOR_TOGGLE) then
-			entityList:GetMyPlayer():ToggleAbility(item)
-		elseif not x and not y and not z then
-			entityList:GetMyPlayer():UseAbility(item)
-		elseif not y and not z then
-			smartAssert(GetType(x) == "Vector" or GetType(x) == "LuaEntity", debug.getinfo(1, "n").name..": Invalid parameters")
-			entityList:GetMyPlayer():UseAbility(item,x)
+		if item:IsBehaviourType(LuaEntityAbility.BEHAVIOR_TOGGLE) then
+			if type(queue) == "boolean" then
+				entityList:GetMyPlayer():ToggleAbility(item,queue)
+			else
+				entityList:GetMyPlayer():ToggleAbility(item)
+			end
+		elseif not target then
+			if type(queue) == "boolean" then
+				entityList:GetMyPlayer():UseAbility(item,queue)
+			else
+				entityList:GetMyPlayer():UseAbility(item)
+			end
 		else
-			smartAssert(type(x) == "number" and type(y) == "number" and type(z) == "number", debug.getinfo(1, "n").name..": Invalid Coordinates")
-			entityList:GetMyPlayer():UseAbility(item,x,y,z)
+			smartAssert(GetType(target) == "Vector" or GetType(target) == "LuaEntity", debug.getinfo(1, "n").name..": Invalid parameters")
+			if type(queue) == "boolean" then
+				entityList:GetMyPlayer():UseAbility(item,target,queue)
+			else
+				entityList:GetMyPlayer():UseAbility(item,target)
+			end
 		end
 		SelectBack(prev)
 		return true
@@ -1196,14 +1239,12 @@ end
 
 function LuaEntityNPC:FindAbility(abilityName)
 	smartAssert(type(abilityName) == "string")
-	local items = self.items
-	for i,v in ipairs(items) do
+	for i,v in ipairs(self.items) do
 		if v.name == abilityName then
 			return v
 		end
 	end
-	local abilities = self.abilities
-	for i,v in ipairs(abilities) do
+	for i,v in ipairs(self.abilities) do
 		if v.name == abilityName then
 			return v
 		end
@@ -1213,18 +1254,24 @@ end
 
 --Selects LuaEntity, casts ability and selects back the previous selection.
 --	Returns true if cast order is given.
-function LuaEntityNPC:CastAbility(ability,x,y,z)
+function LuaEntityNPC:CastAbility(ability,target,queue)
 	smartAssert(GetType(ability) == "LuaEntity", debug.getinfo(1, "n").name..": Invalid Ability")
+	if type(target) == "boolean" then queue = target target = nil end
 	if ability then
 		local prev = SelectUnit(self)
-		if not x and not y and not z then
-			entityList:GetMyPlayer():UseAbility(ability)
-		elseif not y and not z then
-			smartAssert(GetType(x) == "Vector" or GetType(x) == "LuaEntity", debug.getinfo(1, "n").name..": Invalid parameters")
-			entityList:GetMyPlayer():UseAbility(ability,x)
+		if not target then
+			if type(queue) == "boolean" then
+				entityList:GetMyPlayer():UseAbility(ability,queue)
+			else
+				entityList:GetMyPlayer():UseAbility(ability)
+			end
 		else
-			smartAssert(type(x) == "number" and type(y) == "number" and type(z) == "number", debug.getinfo(1, "n").name..": Invalid Coordinates")
-			entityList:GetMyPlayer():UseAbility(ability,x,y,z)
+			smartAssert(GetType(target) == "Vector" or GetType(target) == "LuaEntity", debug.getinfo(1, "n").name..": Invalid parameters")
+			if type(queue) == "boolean" then
+				entityList:GetMyPlayer():UseAbility(ability,target,queue)
+			else
+				entityList:GetMyPlayer():UseAbility(ability,target)
+			end
 		end
 		SelectBack(prev)
 		return true
@@ -1235,18 +1282,24 @@ end
 --Selects LuaEntity, casts ability and selects back the previous selection.
 --	Returns true if cast order is given.
 --	Checks both hero's state and item state to cast successfully
-function LuaEntityNPC:SafeCastAbility(ability,x,y,z)
+function LuaEntityNPC:SafeCastAbility(ability,target,queue)
 	smartAssert(GetType(ability) == "LuaEntity", debug.getinfo(1, "n").name..": Invalid Ability")
+	if type(target) == "boolean" then queue = target target = nil end
 	if ability and ability:CanBeCasted() and ((ability.item and self:CanUseItems()) or (not ability.item and self:CanCast())) and not (x and x.IsLinkensProtected and x:IsLinkensProtected() and ability:CanBeBlockedByLinkens() == true) then
 		local prev = SelectUnit(self)
-		if not x and not y and not z then
-			entityList:GetMyPlayer():UseAbility(ability)
-		elseif not y and not z then
-			smartAssert(GetType(x) == "Vector" or GetType(x) == "LuaEntity", debug.getinfo(1, "n").name..": Invalid parameters")
-			entityList:GetMyPlayer():UseAbility(ability,x)
+		if not target then
+			if type(queue) == "boolean" then
+				entityList:GetMyPlayer():UseAbility(ability,queue)
+			else
+				entityList:GetMyPlayer():UseAbility(ability)
+			end
 		else
-			smartAssert(type(x) == "number" and type(y) == "number" and type(z) == "number", debug.getinfo(1, "n").name..": Invalid Coordinates")
-			entityList:GetMyPlayer():UseAbility(ability,x,y,z)
+			smartAssert(GetType(target) == "Vector" or GetType(target) == "LuaEntity", debug.getinfo(1, "n").name..": Invalid parameters")
+			if type(queue) == "boolean" then
+				entityList:GetMyPlayer():UseAbility(ability,target,queue)
+			else
+				entityList:GetMyPlayer():UseAbility(ability,target)
+			end
 		end
 		SelectBack(prev)
 		return true
@@ -1254,15 +1307,13 @@ function LuaEntityNPC:SafeCastAbility(ability,x,y,z)
 end
 
 --Returns if LuaEntity is currently channeling an ability.
-function LuaEntityNPC:IsChanneling()	
-	local items = self.items
-	for i,v in ipairs(items) do
+function LuaEntityNPC:IsChanneling()
+	for i,v in ipairs(self.items) do
 		if v:IsBeingChanneled() then
 			return true
 		end
 	end
-	local abilities = self.abilities
-	for i,v in ipairs(abilities) do
+	for i,v in ipairs(self.abilities) do
 		if v:IsBeingChanneled() then
 			return true
 		end
@@ -1272,7 +1323,13 @@ end
 
 --Returns the LuaEntity of the spell if LuaEntity is currently channeling an ability.
 function LuaEntityNPC:GetChanneledAbility()
+	local items = self:GetAllItems()
 	local spells = self:GetAllSpells()
+	for i,v in ipairs(self.items) do
+		if v:IsBeingChanneled() then
+			return v
+		end
+	end
 	for i,v in ipairs(self.abilities) do
 		if v:IsBeingChanneled() then
 			return v
@@ -1326,9 +1383,8 @@ end
 --Returns the modifier if LuaEntity has the particular modifier.
 function LuaEntityNPC:FindModifier(name)
 	smartAssert(type(name) == "string", debug.getinfo(1, "n").name..": Invalid Modifier Name")
-	local modifiers = self.modifiers
-	if modifiers then
-		for i,v in ipairs(modifiers) do
+	if self.modifiers then
+		for i,v in ipairs(self.modifiers) do
 			if v.name == name then
 				return v
 			end
@@ -1345,12 +1401,12 @@ end
 
 --Returns if LuaEntity can use Aghanim's Scepter upgrades
 function LuaEntityNPC:AghanimState()
-	return self:FindItem("item_ultimate_scepter") or self.stolenScepter
+	return self:FindItem("item_ultimate_scepter")
 end
 
 --Returns if LuaEntity is ranged
 function LuaEntityNPC:IsRanged()
-	return self.attackType == LuaEntityNPC.ATTACK_RANGED and self.name ~= "npc_dota_hero_tiny"
+	return self.attackType == LuaEntityNPC.ATTACK_RANGED and self.name ~= "Tiny"
 end
 
 --Returns if LuaEntity can die from the next instance of Damage
@@ -1379,6 +1435,10 @@ end
 
 --Returns damage LuaEntity takes from a manaburn attack
 function LuaEntityNPC:ManaBurnDamageTaken(burnAmount,percent,dmgType,source)
+	smartAssert(type(burnAmount) == "number", debug.getinfo(1, "n").name..": Invalid Burned Mana")
+	smartAssert(GetType(source) == "LuaEntity", debug.getinfo(1, "n").name..": Invalid Source")
+	smartAssert(dmgType == 0 or dmgType == 1 or dmgType == 2 or dmgType == 3 or dmgType == 4 or dmgType == 5, debug.getinfo(1, "n").name..": Invalid Damage Type")
+	smartAssert(type(percent) == "number", debug.getinfo(1, "n").name..": Invalid Damage Percent")
 	local tempBurn =  burnAmount
 	if self.mana < tempBurn then tempBurn = self.mana end
 	return self:DamageTaken(tempBurn*percent,dmgType,source)
@@ -1491,7 +1551,7 @@ function LuaEntityNPC:DamageTaken(dmg,dmgType,source)
 					--Only sources are enemies but failsafe
 					if v.sourceTeam == -1 then
 						--Find enemy that has the spell
-						for k,l in pairs(entityList:GetEntities({type=LuaEntity.TYPE_HERO})) do
+						for k,l in pairs(entityList:FindEntities({type = TYPE_HERO})) do
 							if not l.illusion and l.team ~= self.team then
 								local spell = l:FindSpell(v.sourceSpellName)
 								if spell then
@@ -1556,8 +1616,8 @@ function LuaEntityNPC:DamageTaken(dmg,dmgType,source)
 		--	Amplification is dynamic, related to distance to the flesh golem
 		if self:DoesHaveModifier("modifier_undying_flesh_golem_plague_aura") then
 			--Find flesh golem
-			for k,l in pairs(entityList:GetEntities({type=LuaEntity.TYPE_HERO})) do
-				if not l.illusion and l.team ~= self.team then					
+			for k,l in pairs(entityList:FindEntities({type = TYPE_HERO})) do
+				if not l.illusion and l.team ~= self.team then
 					local spell = l:FindSpell("undying_flesh_golem")
 					--If flesh golem is found do the calculation related to distance
 					if spell then
@@ -1594,7 +1654,7 @@ function LuaEntityNPC:DamageTaken(dmg,dmgType,source)
 						--If source is allied hero
 						if v.sourceTeam == 1 then
 							--Find spell and locate reduce from spell level
-							for k,l in pairs(entityList:GetEntities({type=LuaEntity.TYPE_HERO, team = self.team})) do
+							for k,l in pairs(entityList:FindEntities({type = TYPE_HERO, team = self.team})) do
 								if not l.illusion then
 									local spell = l:FindSpell(v.sourceSpellName)
 									if spell then
@@ -1631,7 +1691,7 @@ function LuaEntityNPC:DamageTaken(dmg,dmgType,source)
 							--If source is allied hero
 							if v.sourceTeam == 1 then
 								--Find spell and locate reduce from spell level
-								for k,l in pairs(entityList:GetEntities({type=LuaEntity.TYPE_HERO, team = self.team})) do
+								for k,l in pairs(entityList:FindEntities({type = TYPE_HERO, team = self.team})) do
 									if not l.illusion then
 										local spell = l:FindSpell(v.sourceSpellName)
 										if spell then
@@ -1774,6 +1834,11 @@ end
 function LuaEntityNPC:CanUseItems()
 	return not self:IsSilenced() and not self:IsStunned() and self.alive and not self.illusion
 end
+
+--Returns if LuaEntity can use items.
+function LuaEntityNPC:IsIllusion()
+	return self.illusion and self.meepoIllusion ~= false
+end
 --== LuaEntityAbility (CDOTABaseAbility) FUNCTIONS ==--
 
 --Returns if LuaEntity can be casted.
@@ -1850,74 +1915,78 @@ function LuaEntityAbility:FindCastPoint()
 	end
 end
 
-	--Code to apply all functions to the old LuaEntities.--
+	--Inheritance Algorithm--
 
 utils.entityFuncs = {
-	{"Move",					"LuaEntityNPC"},
-	{"AttackMove",				"LuaEntityNPC"},
-	{"Attack",					"LuaEntityNPC"},
-	{"Follow",					"LuaEntityNPC"},
-	{"Stop",					"LuaEntityNPC"},
-	{"FindSpell",				"LuaEntityNPC"},
-	{"CastSpell",				"LuaEntityNPC"},
-	{"SafeCastSpell",			"LuaEntityNPC"},
-	{"ToggleSpell",				"LuaEntityNPC"},
-	{"SafeToggleSpell",			"LuaEntityNPC"},
-	{"FindAbility",				"LuaEntityNPC"},
-	{"CastAbility",				"LuaEntityNPC"},
-	{"SafeCastAbility",			"LuaEntityNPC"},
-	{"FindItem",				"LuaEntityNPC"},
-	{"SetPowerTreadsState",		"LuaEntityNPC"},
-	{"CastItem",				"LuaEntityNPC"},
-	{"SafeCastItem",			"LuaEntityNPC"},
-	{"IsChanneling",			"LuaEntityNPC"},
-	{"GetChanneledAbility",		"LuaEntityNPC"},
-	{"GetDistance2D",			"LuaEntityNPC"},
-	{"IsMagicDmgImmune",		"LuaEntityNPC"},
-	{"IsPhysDmgImmune",			"LuaEntityNPC"},
-	{"DoesHaveModifier",		"LuaEntityNPC"},
-	{"FindModifier",			"LuaEntityNPC"},
-	{"IsLinkensProtected",		"LuaEntityNPC"},
-	{"IsRanged",				"LuaEntityNPC"},
-	{"CanDie",					"LuaEntityNPC"},
-	{"CanReincarnate",			"LuaEntityNPC"},
-	{"DamageTaken",				"LuaEntityNPC"},
-	{"ManaBurnDamageTaken",		"LuaEntityNPC"},
-	{"IsRooted",				"LuaEntityNPC"},
-	{"IsDisarmed",				"LuaEntityNPC"},
-	{"IsAttackImmune",			"LuaEntityNPC"},
-	{"IsSilenced",				"LuaEntityNPC"},
-	{"IsMuted",					"LuaEntityNPC"},
-	{"IsStunned",				"LuaEntityNPC"},
-	{"IsHexed",					"LuaEntityNPC"},
-	{"IsInvisible",				"LuaEntityNPC"},
-	{"IsInvul",					"LuaEntityNPC"},
-	{"IsMagicImmune",			"LuaEntityNPC"},
-	{"IsFlying",				"LuaEntityNPC"},
-	{"IsUnitWalking",			"LuaEntityNPC"},
-	{"FindRelativeAngle",		"LuaEntityNPC"},
-	{"IsUnitState",				"LuaEntityNPC"},
-	{"CanMove",					"LuaEntityNPC"},
-	{"CanCast",					"LuaEntityNPC"},
-	{"CanAttack",				"LuaEntityNPC"},
-	{"CanUseItems",				"LuaEntityNPC"},
-	{"CanBeCasted",				"LuaEntityAbility"},
-	{"CanBeBlockedByLinkens",	"LuaEntityAbility"},
-	{"IsBeingChanneled",		"LuaEntityAbility"},
-	{"IsBehaviourType",			"LuaEntityAbility"},
-	{"IsTargetType",			"LuaEntityAbility"},
-	{"IsTargetTeam",			"LuaEntityAbility"},
-	{"IsAbilityType",			"LuaEntityAbility"},
-	{"IsDamageType",			"LuaEntityAbility"},
-	{"GetSpecialData",			"LuaEntityAbility"},
-	{"FindCastPoint",			"LuaEntityAbility"},
+	{"Move",                  "LuaEntityNPC"},
+	{"AttackMove",            "LuaEntityNPC"},
+	{"Attack",                "LuaEntityNPC"},
+	{"Follow",                "LuaEntityNPC"},
+	{"Stop",                  "LuaEntityNPC"},
+	{"FindSpell",             "LuaEntityNPC"},
+	{"CastSpell",             "LuaEntityNPC"},
+	{"ToggleSpell",           "LuaEntityNPC"},
+	{"SafeCastSpell",         "LuaEntityNPC"},
+	{"SafeToggleSpell",       "LuaEntityNPC"},
+	{"FindItem",              "LuaEntityNPC"},
+	{"SetPowerTreadsState",   "LuaEntityNPC"},
+	{"CastItem",              "LuaEntityNPC"},
+	{"SafeCastItem",          "LuaEntityNPC"},
+	{"FindAbility",           "LuaEntityNPC"},
+	{"CastAbility",           "LuaEntityNPC"},
+	{"SafeCastAbility",       "LuaEntityNPC"},
+	{"IsChanneling",          "LuaEntityNPC"},
+	{"GetChanneledAbility",   "LuaEntityNPC"},
+	{"GetDistance2D",         "LuaEntityNPC"},
+	{"IsMagicDmgImmune",      "LuaEntityNPC"},
+	{"IsPhysDmgImmune",       "LuaEntityNPC"},
+	{"DoesHaveModifier",      "LuaEntityNPC"},
+	{"FindModifier",          "LuaEntityNPC"},
+	{"IsLinkensProtected",    "LuaEntityNPC"},
+	{"AghanimState",          "LuaEntityNPC"},
+	{"IsRanged",              "LuaEntityNPC"},
+	{"CanDie",                "LuaEntityNPC"},
+	{"CanReincarnate",        "LuaEntityNPC"},
+	{"ManaBurnDamageTaken",   "LuaEntityNPC"},
+	{"DamageTaken",           "LuaEntityNPC"},
+	{"IsInvul",               "LuaEntityNPC"},
+	{"FindRelativeAngle",     "LuaEntityNPC"},
+	{"IsUnitState",           "LuaEntityNPC"},
+	{"IsRooted",              "LuaEntityNPC"},
+	{"IsDisarmed",            "LuaEntityNPC"},
+	{"IsAttackImmune",        "LuaEntityNPC"},
+	{"IsSilenced",            "LuaEntityNPC"},
+	{"IsMuted",               "LuaEntityNPC"},
+	{"IsStunned",             "LuaEntityNPC"},
+	{"IsHexed",               "LuaEntityNPC"},
+	{"IsInvisible",           "LuaEntityNPC"},
+	{"IsInvul",               "LuaEntityNPC"},
+	{"IsMagicImmune",         "LuaEntityNPC"},
+	{"IsFlying",              "LuaEntityNPC"},
+	{"IsUnitWalking",         "LuaEntityNPC"},
+	{"CanMove",               "LuaEntityNPC"},
+	{"CanCast",               "LuaEntityNPC"},
+	{"CanAttack",             "LuaEntityNPC"},
+	{"CanUseItems",           "LuaEntityNPC"},
+	{"IsIllusion",            "LuaEntityNPC"},
+	{"CanBeCasted",           "LuaEntityAbility"},
+	{"CanBeBlockedByLinkens", "LuaEntityAbility"},
+	{"IsBeingChanneled",      "LuaEntityAbility"},
+	{"IsBehaviourType",       "LuaEntityAbility"},
+	{"IsTargetType",          "LuaEntityAbility"},
+	{"IsTargetTeam",          "LuaEntityAbility"},
+	{"IsAbilityType",         "LuaEntityAbility"},
+	{"IsDamageType",          "LuaEntityAbility"},
+	{"GetSpecialData",        "LuaEntityAbility"},
+	{"FindCastPoint",         "LuaEntityAbility"},
 }
 
 utils.entityClassInheritance = {
-	LuaEntity  = {"LuaEntityNPC", "LuaEntityAbility"},
+	LuaEntity  = {"LuaEntityNPC", "LuaEntityAbility","LuaEntityItemPhysical","LuaEntityRune"},
 	LuaEntityNPC  = {"LuaEntityHero", "LuaEntityCreep", "LuaEntityCourier"},
 	LuaEntityAbility  = {"LuaEntityItem"},
 	LuaEntityItem  = {"LuaEntityBottle", "LuaEntityPowerTreads"},
+	LuaEntityHero = {"LuaEntityMeepo"},
 }
 
 function InheritFunction(className,functionName)
