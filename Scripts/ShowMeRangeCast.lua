@@ -1,5 +1,3 @@
-require("libs.Utils")
-
 list = 
 {
 npc_dota_hero_mirana = 
