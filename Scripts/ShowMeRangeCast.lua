@@ -1,3 +1,5 @@
+require("libs.Utils")
+
 list = 
 {
 npc_dota_hero_mirana = 
@@ -21,8 +23,8 @@ npc_dota_hero_windrunner =
 Spell = 2,
 Start = {890,890,890,890},
 End = {710,710,710,710},
-Count = 10,
-Range = {182,182,182,182},
+Count = 15,
+Range = {122,122,122,122},
 }
 }
 
