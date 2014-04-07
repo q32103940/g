@@ -1,3 +1,5 @@
+require("libs.Utils")
+
 list = 
 {
 npc_dota_hero_mirana = 
@@ -43,27 +45,29 @@ function Tick(tick)
 		if v.team ~= me.team then
 			if list[v.name] then
 				local number = list[v.name].Spell
-				local spell = v:GetAbility(number)								
-				if spell.cd ~= 0 then					
-					local ind = list[v.name].End
-					local count = list[v.name].Count
-					local range = list[v.name].Range
-					local srart = list[v.name].Start
-					if math.floor(spell.cd*100) > srart[spell.level] and not ss[v.handle] then
-						ss[v.handle] = true
-						for z = 1, count do											
-							local p = Vector(v.position.x + range[spell.level]*z * math.cos(v.rotR), v.position.y + range[spell.level]*z * math.sin(v.rotR), v.position.z+50)
-							eff[z] = Effect(p, "fire_torch" )
-							eff[z]:SetVector(1,Vector(0,0,0))
-							eff[z]:SetVector(0, p )							
+				if number then
+					local spell = v:GetAbility(number+0)								
+					if spell.cd ~= 0 then					
+						local ind = list[v.name].End
+						local count = list[v.name].Count
+						local range = list[v.name].Range
+						local srart = list[v.name].Start
+						if math.floor(spell.cd*100) > srart[spell.level] and not ss[v.handle] then
+							ss[v.handle] = true
+							for z = 1, count do											
+								local p = Vector(v.position.x + range[spell.level]*z * math.cos(v.rotR), v.position.y + range[spell.level]*z * math.sin(v.rotR), v.position.z+50)
+								eff[z] = Effect(p, "fire_torch" )
+								eff[z]:SetVector(1,Vector(0,0,0))
+								eff[z]:SetVector(0, p )							
+							end
+							
+						elseif math.floor(spell.cd*100) < ind[spell.level] and ss[v.handle] then
+							ss[v.handle] = nil
+							for z = 1, count do
+								eff[z] = nil							
+							end
+							collectgarbage("collect")
 						end
-						
-					elseif math.floor(spell.cd*100) < ind[spell.level] and ss[v.handle] then
-						ss[v.handle] = nil
-						for z = 1, count do
-							eff[z] = nil							
-						end
-						collectgarbage("collect")
 					end
 				end
 			end
