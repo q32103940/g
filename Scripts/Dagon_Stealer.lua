@@ -15,9 +15,11 @@ dmg = {400,500,600,700,800}
 --Главная функция
 function Tick(tick)
  
-	if not client.connected or client.loading or client.console or not entityList:GetMyHero() then return end
+	if not client.connected or client.loading or client.console then return end
 
 	local me = entityList:GetMyHero() 
+	
+	if not me then return end
        
 	local dagon = me:FindItem("item_dagon_5")
 	dagon = dagon or me:FindItem("item_dagon_4")
@@ -39,15 +41,17 @@ function Tick(tick)
 		rect.color = 0xFFFFFF90		
 		icon.textureId = drawMgr:GetTextureId("NyanUI/items/dagon")
 		local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO,illusion = false,alive=true,visible=true})
-		for i, v in ipairs(enemy) do
-			if v.team ~= me.team and v.health > 0 and GetDistance2D(v,me) < dagon.castRange and v:CanDie() and SleepCheck() and not me:IsChanneling() then
-				if not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") then
-					if v.health < v:DamageTaken(dmgD, DAMAGE_MAGC, me) then
-						me:SafeCastAbility(dagon,v)
-						Sleep(250)
+		if SleepCheck() and not me:IsChanneling() then
+			for i, v in ipairs(enemy) do
+				if v.team ~= me.team and v.health > 0 and GetDistance2D(v,me) < dagon.castRange and v:CanDie() then
+					if not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") then
+						if v.health < v:DamageTaken(dmgD, DAMAGE_MAGC, me) then
+							me:SafeCastAbility(dagon,v)
+							Sleep(250)
+						end
 					end
-				end
-			end                                    
+				end      
+			end
 		end  
 	else
 		rect.color = 0xFF0D0D90		
