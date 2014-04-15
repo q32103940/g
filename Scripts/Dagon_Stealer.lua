@@ -1,3 +1,6 @@
+--AutoDagon stop work if you're in the nyx_vindetta.
+
+
 require("libs.Utils")
 
 --config
@@ -41,7 +44,7 @@ function Tick(tick)
 		rect.color = 0xFFFFFF90		
 		icon.textureId = drawMgr:GetTextureId("NyanUI/items/dagon")
 		local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO,illusion = false,alive=true,visible=true})
-		if SleepCheck() and not me:IsChanneling() then
+		if SleepCheck() and not me:IsChanneling() and NynNyxNyx(me) then
 			for i, v in ipairs(enemy) do
 				if v.team ~= me.team and v.health > 0 and GetDistance2D(v,me) < dagon.castRange and v:CanDie() then
 					if not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") then
@@ -58,6 +61,14 @@ function Tick(tick)
 	end
 
 
+end
+
+function NynNyxNyx(target)
+	if target.name == "npc_dota_hero_nyx_assassin" and target:DoesHaveModifier("modifier_nyx_assassin_vendetta") then
+		return false
+	else
+		return true
+	end
 end
 
 function Key()
