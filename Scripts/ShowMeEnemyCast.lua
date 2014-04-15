@@ -9,9 +9,11 @@ spells = {
 }
 
 function Tick( tick )
-	if not client.connected or client.loading or client.console or (sleeptick and tick < sleeptick) or not entityList:GetMyHero() then return end		
+	if not client.connected or client.loading or client.console or (sleeptick and tick < sleeptick) then return end		
 
 	local me = entityList:GetMyHero()
+	
+	if not me then return end
 
 	cast = entityList:GetEntities({classId=CDOTA_BaseNPC})
 	for i,v in ipairs(cast) do
