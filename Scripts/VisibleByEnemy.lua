@@ -6,7 +6,7 @@ function Tick(tick)
 		return 
 	end 
 
-	sleeptick = tick + 200 -- 5 times a second should be enough
+	sleeptick = tick + 250 -- 5 times a second should be enough
 
 	local me = entityList:GetMyHero()
 	if not me then
