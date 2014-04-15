@@ -8,11 +8,8 @@ xx = client.screenSize.x/1.33 yy = client.screenSize.y/100
 
 function Tick( tick )
 
-        if not client.connected or client.loading or client.console then 
-			return
-		end	
-				
-		local player = entityList:GetMyPlayer()		
+        if not client.connected or client.loading or client.console then return	end	
+		
 		local me = entityList:GetMyHero()	
 		
 		if not me then
