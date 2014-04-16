@@ -130,7 +130,7 @@ end
 
 function Key(msg,code)
 
-	if client.chat and  not start then 
+	if client.chat or start == nil then 
 		return
 	end
 	
