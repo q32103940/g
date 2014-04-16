@@ -21,6 +21,7 @@ function Tick( tick )
 		end	
 	
 		herotab = {}
+		start = true
 		
 		if me:FindItem("item_ultimate_scepter") then
 			range = 1600
@@ -129,7 +130,7 @@ end
 
 function Key(msg,code)
 
-	if client.chat then 
+	if client.chat and start then 
 		return
 	end
 	
@@ -169,6 +170,7 @@ end
 
 function GameClose()
 	Clear()
+	start = nil
 	herotab = {} hero = {} ls = {} ult = {}
 	collectgarbage("collect")
 	script:Reload()
