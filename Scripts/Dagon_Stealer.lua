@@ -1,4 +1,4 @@
---AutoDagon stop work if you're in the nyx_vindetta.
+--Don't use dagon under Vindetta
 
 
 require("libs.Utils")
@@ -24,11 +24,7 @@ function Tick(tick)
 	
 	if not me then return end
        
-	local dagon = me:FindItem("item_dagon_5")
-	dagon = dagon or me:FindItem("item_dagon_4")
-	dagon = dagon or me:FindItem("item_dagon_3")
-	dagon = dagon or me:FindItem("item_dagon_2")
-	dagon = dagon or me:FindItem("item_dagon")
+	local dagon = me:FindDagon()
  
 	if not dagon then
 		rect.visible = false icon.visible = false
