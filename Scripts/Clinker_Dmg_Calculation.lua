@@ -40,11 +40,7 @@ function Frame( tick )
 	end
 
 -- Определение дагона
-	local dagon = me:FindItem("item_dagon_5")
-    dagon = dagon or me:FindItem("item_dagon_4")
-    dagon = dagon or me:FindItem("item_dagon_3")
-    dagon = dagon or me:FindItem("item_dagon_2")
-    dagon = dagon or me:FindItem("item_dagon")
+	local dagon = me:FindDagon()
 	
 -- Модификатор урона с дагона
 	if dagon then
