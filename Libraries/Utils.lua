@@ -24,6 +24,10 @@
 	====================================
 	|             Changelog            |
 	====================================
+		v1.3a:
+		 - Improved performance of several functions
+		 - Added LuaEntity:GetEnemyTeam()
+		 - Added LuaEntityNPC:FindDagon()
 
 		v1.3:
 		 - Adapted library for Ensage rework
@@ -173,6 +177,8 @@
 
 				LuaEntity:GetOwner(): Returns the owner entity of the entity. 	
 
+				LuaEntity:GetEnemyTeam(): Returns enemy team if entity is in dire or radiant team. Else just returns the same team.
+
 			-----> LuaEntityNPC (CDOTA_BaseNPC) Functions <-----
 
 				LuaEntityNPC:Move(pos[,queue]): Selects the unit and gives a Move order then selects back the previous selection
@@ -196,6 +202,8 @@
 				LuaEntityNPC:SafeToggleSpell(spellName): Same as SafeCastSpell, but for toggle abilities
 
 				LuaEntityNPC:FindItem(itemName): If unit owns an item with the given name, returns the item.
+
+				LuaEntityNPC:FindDagon(): Returns a dagon if the unit owns it.
 
 				LuaEntityNPC:SetPowerTreadsState(state[,queue]): If unit owns a Power Treads; selects unit, sets its state then selects back the previous selection
 
@@ -975,6 +983,21 @@ function SelectBack(units)
 	end
 end
 
+--== LuaEntity (CDOTA_BaseEntity) FUNCTIONS ==--
+
+function LuaEntity:GetEnemyTeam()
+	if self then
+		local team = self.team
+		if team == LuaEntity.TEAM_DIRE then
+			return LuaEntity.TEAM_RADIANT
+		elseif team == LuaEntity.TEAM_RADIANT then
+			return LuaEntity.TEAM_DIRE
+		else
+			return team
+		end
+	end
+end
+
 --== LuaEntityNPC (CDOTA_BaseNPC) FUNCTIONS ==--
 
 --Selects LuaEntity, Gives a Move command and Selects back the previous selection.
@@ -1144,6 +1167,15 @@ function LuaEntityNPC:FindItem(itemName)
 	local i = 1
 	for i,item in ipairs(self.items) do
 		if item and item.name == itemName then
+			return item
+		end
+	end
+end
+
+--Searchs the LuaEntity's inventory for a dagon if there is any.
+function LuaEntityNPC:FindDagon()
+	for i,item in ipairs(self.items) do
+		if item and item.name:sub(1,10) == "item_dagon" then
 			return item
 		end
 	end
@@ -1917,6 +1949,7 @@ end
 	--Inheritance Algorithm--
 
 utils.entityFuncs = {
+	{"GetEnemyTeam",          "LuaEntity"},
 	{"Move",                  "LuaEntityNPC"},
 	{"AttackMove",            "LuaEntityNPC"},
 	{"Attack",                "LuaEntityNPC"},
@@ -1928,6 +1961,7 @@ utils.entityFuncs = {
 	{"SafeCastSpell",         "LuaEntityNPC"},
 	{"SafeToggleSpell",       "LuaEntityNPC"},
 	{"FindItem",              "LuaEntityNPC"},
+	{"FindDagon",             "LuaEntityNPC"},
 	{"SetPowerTreadsState",   "LuaEntityNPC"},
 	{"CastItem",              "LuaEntityNPC"},
 	{"SafeCastItem",          "LuaEntityNPC"},
