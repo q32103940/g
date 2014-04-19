@@ -2,14 +2,13 @@ require("libs.Utils")
 require("libs.Deadly")
 
 ------------------------[[Config]]-------------------------
-						sleep = 100 				--increase sleep - > increase performance
 				xx = client.screenSize.x/300 	--x coordinate
 				yy = client.screenSize.y/1.375	--y coordinate
 				toggleKey = string.byte("Z")
 ------------------------------------------------------------
 
 PreKill = 0 text = {} real = {} hero = {} global = {}
-start = false activated = false activatedD = false clear = false
+start = false activated = false activatedD = false clear = false sleeptick = 0
 
 
 F14 = drawMgr:CreateFont("F14","Calibri",14,500)
@@ -27,7 +26,7 @@ end
 function Tick(tick)
 
 		if not client.connected or client.loading or client.console or not entityList:GetMyHero() then start = false return end		
-
+		
 		me = entityList:GetMyHero()
 
 		mename = me.name
@@ -216,7 +215,9 @@ end
 
 function Frame(tick)
 
-	if not client.connected or client.loading or client.console or not entityList:GetMyHero() or not list[mename] then return end
+	if not client.connected or client.loading or client.console or not entityList:GetMyHero() or not list[mename] or tick < sleeptick then return end
+	
+	sleeptick = tick + 100
 
 	dmgCalc.visible = true
 	rect.visible = true
@@ -239,47 +240,47 @@ function Frame(tick)
 				if offset ~= -1 and v.visible and v.alive and v.health > 0 then
 					hero[v.handle].txt.visible = true
 					if not list[mename].Cast then														
-						if SleepCheck(v.handle) then hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(Dmg[Skill.level], list[mename].Type, me)) Sleep(sleep,v.handle) end
+						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(Dmg[Skill.level], list[mename].Type, me))
 					elseif mename == "npc_dota_hero_doom_bringer" then														
-						if SleepCheck(v.handle) then local DmgM = math.floor((v:GetProperty("CDOTA_BaseNPC","m_iCurrentLevel") == 25 or v:GetProperty("CDOTA_BaseNPC","m_iCurrentLevel") % list[mename].Doom[Skill.level].levelMultiplier == 0) and (v.maxHealth * 0.20 + list[mename].Doom[Skill.level].dmg)	or	(list[mename].Doom[Skill.level].dmg))
-						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me)) Sleep(sleep,v.handle) end
+						local DmgM = math.floor((v:GetProperty("CDOTA_BaseNPC","m_iCurrentLevel") == 25 or v:GetProperty("CDOTA_BaseNPC","m_iCurrentLevel") % list[mename].Doom[Skill.level].levelMultiplier == 0) and (v.maxHealth * 0.20 + list[mename].Doom[Skill.level].dmg)	or	(list[mename].Doom[Skill.level].dmg))
+						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me))
 					elseif mename == "npc_dota_hero_necrolyte" then												
-						if SleepCheck(v.handle) then local DmgM = (v.maxHealth - v.health) * Dmg[Skill.level]
-						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me)) Sleep(sleep,v.handle) end							
+						local DmgM = (v.maxHealth - v.health) * Dmg[Skill.level]
+						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me))							
 					elseif mename == "npc_dota_hero_antimage" then												
-						if SleepCheck(v.handle) then local DmgM = (v.maxMana - v.mana) * Dmg[Skill.level]
-						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me)) Sleep(sleep,v.handle) end							
+						local DmgM = (v.maxMana - v.mana) * Dmg[Skill.level]
+						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me))					
 					elseif mename == "npc_dota_hero_invoker" then						
-						if SleepCheck(v.handle) then local DmgM = Dmg[me:GetAbility(3).level]
-						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me)) Sleep(sleep,v.handle) end							
+						local DmgM = Dmg[me:GetAbility(3).level]
+						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me))					
 					elseif mename == "npc_dota_hero_morphling" then 							
-						if SleepCheck(v.handle) then local as = me.agilityTotal/me.strengthTotal
+						local as = me.agilityTotal/me.strengthTotal
 						if as > 1.5 then DmgM = 0.5*Skill.level elseif as < 0.5 then DmgM = 0.25 elseif (as >= 0.5 and as <= 1.5) then DmgM = 0.25+((as-0.5)*(0.5*Skill.level-0.25)) end
-						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken((DmgM)*me.agilityTotal + Dmg[Skill.level], list[mename].Type, me)) Sleep(sleep,v.handle) end						
+						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken((DmgM)*me.agilityTotal + Dmg[Skill.level], list[mename].Type, me))					
 					elseif mename == "npc_dota_hero_visage" then														
-						if SleepCheck(v.handle) then local DmgM = 20 + (ModifierStacks("modifier_visage_soul_assumption",me) * 65)
-						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me))  Sleep(sleep,v.handle) end							
+						local DmgM = 20 + (ModifierStacks("modifier_visage_soul_assumption",me) * 65)
+						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me))						
 					elseif mename == "npc_dota_hero_alchemist" then 													
-						if SleepCheck(v.handle) then local MMTT = list[mename].Mod
+						local MMTT = list[mename].Mod
 						if Elapsed("modifier_alchemist_unstable_concoction",me) < 4.6 then bomb = Elapsed("modifier_alchemist_unstable_concoction",me) else bomb = 4.6 end MMTT = list[mename].Mod DmgM = (bomb * MMTT[Skill.level])
-						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me))  Sleep(sleep,v.handle) end							
+						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me))						
 					elseif mename == "npc_dota_hero_mirana" then													
-						if SleepCheck(v.handle) then if GetDistance2D(v,me) < 200 then DmgM = Dmg[Skill.level]*1.75 else DmgM = Dmg[Skill.level] end
-						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me))  Sleep(sleep,v.handle) end							
+						if GetDistance2D(v,me) < 200 then DmgM = Dmg[Skill.level]*1.75 else DmgM = Dmg[Skill.level] end
+						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me))					
 					elseif mename == "npc_dota_hero_obsidian_destroyer" then							
-						if SleepCheck(v.handle) then local DmgM = 0 if me.intellectTotal > v.intellectTotal then DmgM = (me.intellectTotal - v.intellectTotal)*Dmg[Skill.level] end
-						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me))  Sleep(sleep,v.handle) end							
+						local DmgM = 0 if me.intellectTotal > v.intellectTotal then DmgM = (me.intellectTotal - v.intellectTotal)*Dmg[Skill.level] end
+						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me))						
 					elseif mename == "npc_dota_hero_elder_titan" then							
-						if SleepCheck(v.handle) then if me:GetAbility(3).level ~= 0 and not v:FindModifier("modifier_elder_titan_natural_order") then DmgS = list[mename].DmgM DmgM = DmgS[me:GetAbility(3).level]*Dmg[Skill.level] else DmgM = Dmg[Skill.level] end
-						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me))  Sleep(sleep,v.handle) end							
+						if me:GetAbility(3).level ~= 0 and not v:FindModifier("modifier_elder_titan_natural_order") then DmgS = list[mename].DmgM DmgM = DmgS[me:GetAbility(3).level]*Dmg[Skill.level] else DmgM = Dmg[Skill.level] end
+						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me))						
 					elseif mename == "npc_dota_hero_shadow_demon" then							
-						if SleepCheck(v.handle) then local DmgS = list[mename].DmgM local Mod = ModifierStacks("modifier_shadow_demon_shadow_poison",v)
+						local DmgS = list[mename].DmgM local Mod = ModifierStacks("modifier_shadow_demon_shadow_poison",v)
 						if Mod ~= 0 and Mod < 6 then DmgM = (DmgS[ModifierStacks("modifier_shadow_demon_shadow_poison",v)]) * Dmg[Skill.level] elseif Mod > 5 then DmgM = ((Dmg[Skill.level]*16) + ((Mod-5)*50)) end
 						if DmgM ~= nil then
-						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me))  Sleep(sleep,v.handle) end end							
+						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(DmgM, list[mename].Type, me)) end							
 					elseif mename == "npc_dota_hero_nyx_assassin" then							
-						if SleepCheck(v.handle) then local DmgM = Dmg[Skill.level] * v.intellectTotal
-						hero[v.handle].txt.text = " "..math.floor(v.health -  v:ManaBurnDamageTaken(DmgM,1,DAMAGE_MAGC,me))	  Sleep(sleep,v.handle) end										
+						local DmgM = Dmg[Skill.level] * v.intellectTotal
+						hero[v.handle].txt.text = " "..math.floor(v.health -  v:ManaBurnDamageTaken(DmgM,1,DAMAGE_MAGC,me))									
 					end
 				else 		
 					hero[v.handle].txt.visible = false
