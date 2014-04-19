@@ -5,8 +5,9 @@ F13 = drawMgr:CreateFont("F13","Arial",13,500)
 F14 = drawMgr:CreateFont("F14","Arial",14,500)
 item = {} hero = {} spell = {} panel = {} mana = {}
 
-print(math.floor(client.screenRatio*100))
+sleeptick = 0
 
+print(math.floor(client.screenRatio*100))
 
 --Config. 
 --If u have some problem with positioning u can add screen ration(64 line) and create config for yourself.
@@ -91,9 +92,11 @@ manaY = client.screenSize.y/testY*tmanaY
 glyph = drawMgr:CreateText(client.screenSize.x/tglyphX,client.screenSize.y/tglyphY,0xFFFFFF60,"",F13)
 glyph.visible = false
 
-function Tick()
+function Tick(tick)
 
-	if not client.connected or client.loading or client.console then return end
+	if not client.connected or client.loading or client.console or tick < sleeptick  then return end
+	
+	sleeptick = tick + 100
 			
 	local me = entityList:GetMyHero()
 	
