@@ -1,7 +1,7 @@
 --lash hit market
 rect = {}
 
-function Frame( tick )
+function Tick( tick )
 
 	if not client.connected or client.loading or client.console then return end
 	
@@ -23,24 +23,23 @@ function Frame( tick )
 	end
 
 	local creeps = entityList:GetEntities({classId=CDOTA_BaseNPC_Creep_Lane})	
-	for i,v in ipairs(creeps) do local OnScreen, pos = client:ScreenPosition(v.position)
+	for i,v in ipairs(creeps) do
 	
-		if not rect[v.handle] then rect[v.handle] = {}  rect[v.handle] = drawMgr:CreateRect(0,0,0,0,0xFF8AB160) rect[v.handle].visible = false end
+		local offset = v.healthbarOffset
+		
+		if offset == -1 then return end
+	
+		if not rect[v.handle] then 
+			rect[v.handle] = {}  rect[v.handle] = drawMgr:CreateRect(-4,-22,8,8,0xFF8AB160) rect[v.handle].visible = false 
+			rect[v.handle].entity = v rect[v.handle].entityPosition = Vector(0,0,offset)
+		end
 				
-		if OnScreen and v.visible and v.alive then
+		if offset ~= -1 and v.visible and v.alive then
 			if v.health > 0 and v.health < (Damage()*(1-v.dmgResist)+1) then				
 				rect[v.handle].visible = true
-				rect[v.handle].h = 8
-				rect[v.handle].w = 8
-				rect[v.handle].x = pos.x-1
-				rect[v.handle].y = pos.y-80
 				rect[v.handle].color = 0xFF8AB160
 			elseif v.health > (Damage()*(1-v.dmgResist)) and v.health < ((Damage()*(1-v.dmgResist))+88) then
 				rect[v.handle].visible = true
-				rect[v.handle].h = 8
-				rect[v.handle].w = 8
-				rect[v.handle].x = pos.x-1
-				rect[v.handle].y = pos.y-80
 				rect[v.handle].color = 0xA5E8FF60
 			else
 				rect[v.handle].visible = false
@@ -58,4 +57,4 @@ function GameClose()
 end
  
 script:RegisterEvent(EVENT_CLOSE, GameClose)
-script:RegisterEvent(EVENT_FRAME,Frame)
+script:RegisterEvent(EVENT_TICK,Tick)
