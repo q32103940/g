@@ -6,7 +6,7 @@ grip = string.byte("3")
 
 function Key(msg,code)
 
-    if client.chat or not client.connected or client.loading or client.console then	return end
+    if client.chat or not client.connected or client.loading or client.console then return end
 	
 	local me = entityList:GetMyHero() if not me then return end
 	
