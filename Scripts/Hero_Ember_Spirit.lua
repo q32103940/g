@@ -1,9 +1,9 @@
 require("libs.Utils")
 
 --Auto Q after W.
---Hold W until the hero begins to use W.
+--Hold W when ember uses fist.
 
---if you have the ability bind to other key: Change "string.byte("Fist Spell")"
+--if you have the ability bind to other key: Change "string.byte("Fist Spell")".
 
 key = string.byte("W")
 
