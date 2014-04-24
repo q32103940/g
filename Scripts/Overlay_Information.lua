@@ -96,7 +96,7 @@ function Tick(tick)
 
 	if not client.connected or client.loading or client.console or tick < sleeptick  then return end
 	
-	sleeptick = tick + 100
+	sleeptick = tick + 200
 			
 	local me = entityList:GetMyHero()
 	
@@ -392,9 +392,10 @@ end
 
 function Roshan( death )
 	local kill = death.name
-    if kill == "dota_roshan_kill" then               
+    if kill == "dota_roshan_kill" then     
 		client:ExecuteCmd("chatwheel_say 53")
-		client:ExecuteCmd("chatwheel_say 57")        
+		client:ExecuteCmd("chatwheel_say 57") 
+		client:ExecuteCmd("exec roshan.cfg")
     end
 end
 
