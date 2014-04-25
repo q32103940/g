@@ -39,7 +39,7 @@ function Tick(tick)
 	
 	if not me then return end
 	
-	local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO,alive=true,illusion=false,visible=true})
+	local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO,illusion=false,visible=true})
 	
 	for i,v in ipairs(enemy) do
 		if v.team ~= me.team then
@@ -58,10 +58,9 @@ function Tick(tick)
 								local p = Vector(v.position.x + range[spell.level]*z * math.cos(v.rotR), v.position.y + range[spell.level]*z * math.sin(v.rotR), v.position.z+50)
 								eff[z] = Effect(p, "fire_torch" )
 								eff[z]:SetVector(1,Vector(0,0,0))
-								eff[z]:SetVector(0, p )							
-							end
-							
-						elseif math.floor(spell.cd*100) < ind[spell.level] and ss[v.handle] then
+								eff[z]:SetVector(0, p )
+							end							
+						elseif (math.floor(spell.cd*100) < ind[spell.level] or v.alive == false) and ss[v.handle]  then
 							ss[v.handle] = nil
 							for z = 1, count do
 								eff[z] = nil							
