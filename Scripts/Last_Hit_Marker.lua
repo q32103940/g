@@ -1,5 +1,8 @@
 --lash hit market
+--optimization rect size for all resolition
 rect = {}
+
+size = math.floor(client.screenSize.x/1600)
 
 function Tick( tick )
 
@@ -30,7 +33,7 @@ function Tick( tick )
 		if offset == -1 then return end
 	
 		if not rect[v.handle] then 
-			rect[v.handle] = {}  rect[v.handle] = drawMgr:CreateRect(-4,-22,8,8,0xFF8AB160) rect[v.handle].visible = false 
+			rect[v.handle] = {}  rect[v.handle] = drawMgr:CreateRect(-4,-22,8*size,8*size,0xFF8AB160) rect[v.handle].visible = false 
 			rect[v.handle].entity = v rect[v.handle].entityPosition = Vector(0,0,offset)
 		end
 				
