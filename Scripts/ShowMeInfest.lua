@@ -37,7 +37,7 @@ function Tick(tick)
 			if offset == -1 then return end
 
 			if not rect[v.handle] then 
-				rect[v.handle] = {}  rect[v.handle] = drawMgr:CreateRect(-10,-80,22,22,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/life_stealer")) rect[v.handle].visible = false 
+				rect[v.handle] = {}  rect[v.handle] = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/life_stealer")) rect[v.handle].visible = false 
 				rect[v.handle].entity = v rect[v.handle].entityPosition = Vector(0,0,offset)
 			end
 
