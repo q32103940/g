@@ -37,13 +37,12 @@ function Tick(tick)
 			if offset == -1 then return end
 
 			if not rect[v.handle] then 
-				rect[v.handle] = {}  rect[v.handle] = drawMgr:CreateRect(-10,-80,22,22,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/spirit_breaker")) rect[v.handle].visible = false 
+				rect[v.handle] = {}  rect[v.handle] = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/spirit_breaker")) rect[v.handle].visible = false 
 				rect[v.handle].entity = v rect[v.handle].entityPosition = Vector(0,0,offset)
 			end
 			
 			if v.visible and v.alive then
 				if v:DoesHaveModifier("modifier_spirit_breaker_charge_of_darkness_vision") then	
-					print("123")
 					rect[v.handle].visible = true
 				else
 					rect[v.handle].visible = false
