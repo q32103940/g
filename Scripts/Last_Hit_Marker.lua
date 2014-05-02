@@ -11,17 +11,14 @@ function Tick( tick )
 	
 	function Damage()
 		dmg =  me.dmgMin + me.dmgBonus
-		for qb = 1,6 do		
-			if me:HasItem(qb) then
-				local item = me:GetItem(qb)
-				if item and item.name == "item_quelling_blade" then
-					return dmg*1.32
-				end
+		for i,item in ipairs(me.items) do
+			if item and item.name == "item_quelling_blade" then
+				return dmg*1.32
 			end
 		end
 		return dmg
 	end
-
+	
 	local creeps = entityList:GetEntities({classId=CDOTA_BaseNPC_Creep_Lane})	
 	for i,v in ipairs(creeps) do
 	
@@ -34,7 +31,7 @@ function Tick( tick )
 			rect[v.handle].entity = v rect[v.handle].entityPosition = Vector(0,0,offset)
 		end
 				
-		if offset ~= -1 and v.visible and v.alive then
+		if v.visible and v.alive then
 			if v.health > 0 and v.health < (Damage()*(1-v.dmgResist)+1) then				
 				rect[v.handle].visible = true
 				rect[v.handle].color = 0xFF8AB160
