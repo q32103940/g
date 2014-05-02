@@ -6,7 +6,7 @@ function Tick(tick)
 		return 
 	end 
 
-	sleeptick = tick + 250 -- 5 times a second should be enough
+	sleeptick = tick + 200 -- 4 times a second should be enough
 
 	local me = entityList:GetMyHero()
 	if not me then
@@ -30,11 +30,9 @@ function Tick(tick)
 				local visible = v.visibleToEnemy
 				if eff[v.handle] == nil and visible then						    
 					eff[v.handle] = Effect(v,effect)
-					eff[v.handle]:SetVector(1,Vector(0,0,0))
 				elseif not visible and eff[v.handle] ~= nil then
 					eff[v.handle] = nil
 					effectDeleted = true
-
 				end					
 			end
 		end
