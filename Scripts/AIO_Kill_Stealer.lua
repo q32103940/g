@@ -334,7 +334,7 @@ end
 
 function Key(msg,code)
 
-	if not start then return end
+	if not start or client.chat then return end
 
 		if IsKeyDown(toggleKey) then
 			activated = not activated
