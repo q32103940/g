@@ -15,7 +15,7 @@ function Tick(tick)
 	
 	if not me then return end
 
-	local hero = entityList:FindEntities({type=LuaEntity.TYPE_HERO,team = (5-me.team),alive=true,illusion=false})
+	local hero = entityList:FindEntities({type=LuaEntity.TYPE_HERO,illusion=false})
 
 	for i,v in ipairs(hero) do
 	
