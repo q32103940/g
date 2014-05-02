@@ -15,10 +15,10 @@ function Tick(tick)
 	
 	if not me then return end
 
-	local hero = entityList:FindEntities({type=LuaEntity.TYPE_HERO,alive=true,illusion=false})
+	local hero = entityList:FindEntities({type=LuaEntity.TYPE_HERO,illusion=false})
 
 	for i,v in ipairs(hero) do
-	
+			
 		if start and #hero == 10 then
 			if v.team ~= me.team then
 				table.insert(ch,v.name)
@@ -26,7 +26,7 @@ function Tick(tick)
 					if ch[1] ~= "npc_dota_hero_spirit_breaker" and ch[2] ~= "npc_dota_hero_spirit_breaker" and ch[3] ~= "npc_dota_hero_spirit_breaker" and ch[4] ~= "npc_dota_hero_spirit_breaker" and ch[5] ~= "npc_dota_hero_spirit_breaker" then
 						script:Disable()
 					else
-						start = false
+						start = false						
 					end
 				end
 			end			
