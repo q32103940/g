@@ -1,5 +1,5 @@
 -------Config--------
-key = string.byte("O")
+key = string.byte("I")
 ----------------------
 activated = true
 item = {} hero = {}
@@ -10,10 +10,13 @@ yy = 300
 clear = true
 move = false
 zxc = {true,true,true,true,true,true,true,true}
+sleeptick = 0
 
-function Tick()
+function Tick(tick)
 
-	if not client.connected or client.loading or client.console then return end
+	if not client.connected or client.loading or client.console or tick < sleeptick then return end
+	
+	sleeptick = tick + 250 
 
 	local me = entityList:GetMyHero()
 
