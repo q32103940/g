@@ -4,7 +4,7 @@ require("libs.Deadly")
 ------------------------[[Config]]-------------------------
 				xx = client.screenSize.x/300 	--x coordinate
 				yy = client.screenSize.y/1.375	--y coordinate
-				toggleKey = string.byte("Z")
+				toggleKey = string.byte("M")
 ------------------------------------------------------------
 
 PreKill = 0 text = {} real = {} hero = {} global = {}
