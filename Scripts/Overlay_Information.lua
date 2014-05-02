@@ -1,3 +1,5 @@
+--add delay for rosh chat notifiers(1 sec)
+
 F10 = drawMgr:CreateFont("F10","Arial",10,500)
 F11 = drawMgr:CreateFont("F11","Arial",11,500)
 F12 = drawMgr:CreateFont("F12","Arial",12,500)
