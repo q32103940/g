@@ -52,7 +52,7 @@ function Tick(tick)
 		start = true real = {}
 
 		if activated then rect.color = 0xFFFFFF90
-			if mename == "npc_dota_hero_windrunner" and Skill.channelTime ~= 0 and client.gameTime > Skill.channelTime + .59 then me:Move(me.position) end
+			if mename == "npc_dota_hero_windrunner" and Skill.channelTime ~= 0 and client.gameTime > Skill.channelTime + 0.6 then me:Move(me.position) end
 			if Skill.level > 0 and me.alive and not me:IsChanneling() and SleepCheck() then
 				local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,visible=true,alive = true,team = (5-me.team),illusion = false})
 				for i, v in ipairs(enemies) do
@@ -84,6 +84,18 @@ function Tick(tick)
 									end
 								end
 							end
+						elseif mename == "npc_dota_hero_lina" then
+								if me:FindItem("item_ultimate_scepter") then
+									if v.health + 1 < v:DamageTaken(Dmg[Skill.level], DAMAGE_UNIV, me) and NotDieFromBM(v,Skill) then
+										me:SafeCastAbility(Skill,v)
+											Sleep(100)
+									end
+								else
+									if v.health + 1 < v:DamageTaken(Dmg[Skill.level], DAMAGE_MAGC, me) and NotDieFromBM(v,Skill) then
+										me:SafeCastAbility(Skill,v)
+										Sleep(100)
+									end
+								end
 						elseif mename == "npc_dota_hero_doom_bringer" then
 								local DmgM = math.floor((v:GetProperty("CDOTA_BaseNPC","m_iCurrentLevel") == 25 or v:GetProperty("CDOTA_BaseNPC","m_iCurrentLevel") % list[mename].Doom[Skill.level].levelMultiplier == 0) and (v.maxHealth * 0.20 + list[mename].Doom[Skill.level].dmg)	or	(list[mename].Doom[Skill.level].dmg))
 								if v.health + 1 < v:DamageTaken(DmgM, list[mename].Type, me) and NotDieFromBM(v,Skill) then
@@ -237,7 +249,7 @@ function Frame(tick)
 					hero[v.handle].txt = drawMgr:CreateText(20,0-45, 0xFFFFFFFF, "",F14) hero[v.handle].txt.visible = false hero[v.handle].txt.entity = v hero[v.handle].txt.entityPosition = Vector(0,0,offset)
 				end
 
-				if offset ~= -1 and v.visible and v.alive and v.health > 0 then
+				if v.visible and v.alive and v.health > 0 then
 					hero[v.handle].txt.visible = true
 					if not list[mename].Cast then														
 						hero[v.handle].txt.text = " "..math.floor(v.health - v:DamageTaken(Dmg[Skill.level], list[mename].Type, me))
@@ -281,6 +293,9 @@ function Frame(tick)
 					elseif mename == "npc_dota_hero_nyx_assassin" then							
 						local DmgM = Dmg[Skill.level] * v.intellectTotal
 						hero[v.handle].txt.text = " "..math.floor(v.health -  v:ManaBurnDamageTaken(DmgM,1,DAMAGE_MAGC,me))									
+					elseif mename == "npc_dota_hero_lina" then							
+						local DmgM = v:DamageTaken(Dmg[Skill.level], DAMAGE_UNIV, me)
+						hero[v.handle].txt.text = " "..math.floor(v.health -  DmgM)	
 					end
 				else 		
 					hero[v.handle].txt.visible = false
