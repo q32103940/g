@@ -1,8 +1,6 @@
 --lash hit market
 rect = {}
 
-size = math.floor(client.screenSize.x/1600)
-
 function Tick( tick )
 
 	if not client.connected or client.loading or client.console then return end
