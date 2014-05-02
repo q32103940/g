@@ -199,14 +199,6 @@ npc_dota_hero_bounty_hunter = {
  Range = 700,
  Target = "target"},
  
-npc_dota_hero_lina = {
- Spell = "lina_laguna_blade",
- Dmg = {450,675,950},
- DmgA = {650,925,1250},
- Range = 650,
- Type = DAMAGE_MAGC,
- Target = "target"},
- 
 npc_dota_hero_abaddon = {
  Spell = "abaddon_death_coil",
  Dmg = {100, 150, 200, 250},
@@ -347,6 +339,15 @@ npc_dota_hero_mirana = {
  Type = DAMAGE_MAGC,
  Cast = 1,
  Target = "nontarget"},
+ 
+npc_dota_hero_lina = {
+ Spell = "lina_laguna_blade",
+ Dmg = {450,675,950},
+ DmgA = {650,925,1250},
+ Range = 650,
+ Type = DAMAGE_MAGC,
+ Cast = 1,
+ Target = "target"},
 
 npc_dota_hero_doom_bringer = {
  Spell = "doom_bringer_lvl_death",
