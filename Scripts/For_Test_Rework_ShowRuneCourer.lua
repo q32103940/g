@@ -62,7 +62,7 @@ ResTable =
 	},
 	{1600,900,{
 		rune       = {x = 293 , y = 9},
-		minimap    = {px = 9, py = 9,  h = 217, w = 227},
+		minimap    = {px = 9, py = 9,  h = 217, w = 232},
 		}
 	},
 	{1920,1080,{
@@ -101,9 +101,9 @@ ResTable =
 function Tick()
 
 	if not client.connected or client.loading or client.console then return end
-
+	
 	local me = entityList:GetMyHero()
-
+	
 	if not me then return end
 
 	local runes = entityList:GetEntities({classId=CDOTA_Item_Rune})
@@ -113,7 +113,7 @@ function Tick()
 			end
 		return
 	end
-
+	
 		local rune = runes[1]
 		local runeType = rune.runeType
 		filename = ""		
@@ -129,7 +129,7 @@ function Tick()
 		elseif runeType == 4 then
 				filename = "regen"
 		end
-
+	
 	if minimapRune.visible == false then
         local runeMinimap = MapToMinimap(rune)
 		minimapRune.visible = true
@@ -143,34 +143,31 @@ end
 function CourierTick()
 
         if not client.connected or client.loading or client.console then return end
-
+	
 		local me = entityList:GetMyHero()
-
+	
 		if not me then return end
-
+		
         local enemyCours = entityList:FindEntities({classId = CDOTA_Unit_Courier,team = (5-me.team)})
         for i,v in ipairs(enemyCours) do
-			if v.visible and v.alive then
+		
+			if not cours[v.handle] then
+				cours[v.handle] = {} cours[v.handle] = drawMgr:CreateRect(0,0,location.minimap.px+3,location.minimap.px+3,0x000000FF) cours[v.handle].visible = false
+			end
+		
+			if v.visible and v.alive then	
+				cours[v.handle].visible = true
 				local courMinimap = MapToMinimap(v)
-				local flying = v:GetProperty("CDOTA_Unit_Courier","m_bFlyingCourier")
+				cours[v.handle].x,cours[v.handle].y = courMinimap.x-10,courMinimap.y-6
+				local flying = v:GetProperty("CDOTA_Unit_Courier","m_bFlyingCourier")				
 				if flying then
-					if not cours[v.handle] then
-						cours[v.handle] = {}
-						cours[v.handle].icon = drawMgr:CreateRect(courMinimap.x-10,courMinimap.y-6,24,12,0x000000FF,drawMgr:GetTextureId("AIOGUI/courier_flying"))											
-					else
-						cours[v.handle].icon.x,cours[v.handle].icon.y = courMinimap.x-10,courMinimap.y-6
-					end
+					cours[v.handle].textureId = drawMgr:GetTextureId("AIOGUI/courier_flying")
+					cours[v.handle].size = Vector2D(location.minimap.px+9,location.minimap.px+1)
 				else
-					if not cours[v.handle] then
-						cours[v.handle] = {}
-						cours[v.handle].icon = drawMgr:CreateRect(courMinimap.x-6,courMinimap.y-6,12,12,0x000000FF,drawMgr:GetTextureId("AIOGUI/courier"))											
-					else
-						cours[v.handle].icon.x,cours[v.handle].icon.y = courMinimap.x-6,courMinimap.y-6
-					end
+					cours[v.handle].textureId = drawMgr:GetTextureId("AIOGUI/courier")		
 				end
-			elseif cours[v.handle] then
-				cours[v.handle].icon.visible = false
-				cours[v.handle] = nil
+			else
+				cours[v.handle].visible = false
 			end
         end  
 end
