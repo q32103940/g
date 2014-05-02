@@ -1,5 +1,4 @@
 --lash hit market
---optimization rect size for all resolition
 rect = {}
 
 size = math.floor(client.screenSize.x/1600)
