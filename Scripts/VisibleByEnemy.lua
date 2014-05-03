@@ -33,6 +33,7 @@ function Tick(tick)
 				elseif not visible and eff[v.handle] ~= nil then
 					eff[v.handle] = nil
 					effectDeleted = true
+
 				end					
 			end
 		end
