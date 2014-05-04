@@ -1,6 +1,8 @@
 require("libs.Utils")
 require("libs.Res")
 
+--add map hack for sb
+
 MapLeft = -8000
 MapTop = 7350
 MapRight = 7500
