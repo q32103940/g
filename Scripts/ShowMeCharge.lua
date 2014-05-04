@@ -1,7 +1,7 @@
+--u can see baratrum minimap position during charge.
+
 require("libs.Utils")
 require("libs.Res")
-
---add map hack for sb
 
 MapLeft = -8000
 MapTop = 7350
