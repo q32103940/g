@@ -13,28 +13,26 @@ function Tick(tick)
 		return
 	end
 
-	local hero = entityList:GetEntities({type=LuaEntity.TYPE_HERO, alive = true})
+	local hero = entityList:GetEntities({type=LuaEntity.TYPE_HERO, alive = true, team = me.team})
 	local effectDeleted = false
 	for _,v in ipairs(hero) do 
-		if v.team == me.team then
-			local OnScreen = client:ScreenPosition(v.position)	
-			if OnScreen then
+		local OnScreen = client:ScreenPosition(v.position)	
+		if OnScreen then
+			local effect = nil
+			if v.handle == me.handle then -- comparing handles
+				effect = "aura_shivas" 
+			else 
+				effect = "ambient_gizmo_model" 
+			end
 
-				local effect = nil
-				if v.handle == me.handle then -- comparing handles
-					effect = "aura_shivas" 
-				else 
-					effect = "ambient_gizmo_model" 
-				end
+			local visible = v.visibleToEnemy
+			if eff[v.handle] == nil and visible then						    
+				eff[v.handle] = Effect(v,effect)
+				eff[v.handle]:SetVector(1,Vector(0,0,0))
+			elseif not visible and eff[v.handle] ~= nil then
+				eff[v.handle] = nil
+				effectDeleted = true
 
-				local visible = v.visibleToEnemy
-				if eff[v.handle] == nil and visible then						    
-					eff[v.handle] = Effect(v,effect)
-				elseif not visible and eff[v.handle] ~= nil then
-					eff[v.handle] = nil
-					effectDeleted = true
-
-				end					
 			end
 		end
 	end
