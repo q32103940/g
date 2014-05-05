@@ -1,5 +1,3 @@
---u can see baratrum minimap position during charge.
-
 require("libs.Utils")
 require("libs.Res")
 
@@ -21,7 +19,7 @@ function Tick(tick)
 
 	if not client.connected or client.loading or client.console or tick < sleeptick then return end
 
-	sleeptick = tick + 250
+	sleeptick = tick + 200
 
 	local me = entityList:GetMyHero()
 	
@@ -32,7 +30,8 @@ function Tick(tick)
 	for i,v in ipairs(hero) do
 	
 		if v.name == "npc_dota_hero_spirit_breaker" then
-			showstate = v.visible
+			eff.visible = not v.visible
+			if aa and v.visible then time = client.gameTime end
 			if v:GetAbility(1) and v:GetAbility(1).level ~= 0 then
 				speeed = speed[v:GetAbility(1).level]
 			else
@@ -68,8 +67,9 @@ function Tick(tick)
 					showme = true
 					pos = v.position
 				else
-					rect[v.handle].visible = false
+					rect[v.handle].visible = false					
 					showme = false
+					if aa then aa = nil end
 				end
 			else
 				showme = false
@@ -81,24 +81,22 @@ function Tick(tick)
 	if showme then
 		local cast = entityList:GetEntities({classId=CDOTA_BaseNPC})
 		for _,v in ipairs(cast) do
-			if v.dayVision == 0 and showstate == false then
+			if v.dayVision == 0 and v.unitState == 59802112 then
 				if not aa then
 					aa = true
-					time = tick
-					start = Vector(v.position.x,v.position.y,v.position.z)
-					distance = GetDistance2D(me,v)
+					time = client.gameTime					
 				end
-				Ddistance = GetDistance2D(me,v) - (tick - time)/1000*speeed
+				local distance = GetDistance2D(me,v)
+				local Ddistance = distance - (client.gameTime - time)*speeed
 				local minimap = MapToMinimap((v.position.x - me.position.x) * Ddistance / GetDistance2D(v,me) + me.position.x,(v.position.y - me.position.y) * Ddistance / GetDistance2D(v,me) + me.position.y)
 				eff.x = minimap.x-20/2
 				eff.y = minimap.y-20/2
-				eff.visible = true
-			else
-				aa = nil
+			else				
 				eff.visible = false
 			end
 		end
 	else
+		aa = nil
 		eff.visible = false
 	end
 	
