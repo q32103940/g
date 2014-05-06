@@ -6,8 +6,8 @@ ch = {}
 speed = {600,650,700,750}
 sleeptick = 0
 start = true
-eff = drawMgr:CreateRect(0,0,20,20,0x000000ff,drawMgr:GetTextureId("NyanUI/miniheroes/spirit_breaker"))
-eff.visible = false
+speeed = 600
+aa = {}
 
 function Tick(tick)
 
@@ -24,12 +24,9 @@ function Tick(tick)
 	for i,v in ipairs(hero) do
 	
 		if v.name == "npc_dota_hero_spirit_breaker" then
-			eff.visible = not v.visible
-			if aa and v.visible then time = client.gameTime end
+			if v.visible then time = client.gameTime end
 			if v:GetAbility(1) and v:GetAbility(1).level ~= 0 then
 				speeed = speed[v:GetAbility(1).level]
-			else
-				speeed = 600
 			end
 		end
 			
@@ -51,49 +48,41 @@ function Tick(tick)
 			if offset == -1 then return end
 
 			if not rect[v.handle] then 
-				rect[v.handle] = {}  rect[v.handle] = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/spirit_breaker")) rect[v.handle].visible = false 
-				rect[v.handle].entity = v rect[v.handle].entityPosition = Vector(0,0,offset)
+				rect[v.handle] = {}  rect[v.handle].main = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/spirit_breaker")) rect[v.handle].main.visible = false 
+				rect[v.handle].main.entity = v rect[v.handle].main.entityPosition = Vector(0,0,offset)
+				rect[v.handle].map = drawMgr:CreateRect(0,0,20,20,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/spirit_breaker")) rect[v.handle].map.visible = false 
 			end
 			
 			if v.visible and v.alive then
 				if v:DoesHaveModifier("modifier_spirit_breaker_charge_of_darkness_vision") then	
-					rect[v.handle].visible = true
-					showme = true
-					pos = v.position
+					rect[v.handle].main.visible = true
+					rect[v.handle].map.visible = true
+					local cast = entityList:GetEntities({classId=CDOTA_BaseNPC})
+					for _,k in ipairs(cast) do
+						if k.dayVision == 0 and k.unitState == 59802112 then
+							if not aa[v.handle] then
+								aa[v.handle] = true
+								time = client.gameTime
+							end							
+							local distance = GetDistance2D(me,k)
+							local Ddistance = distance - (client.gameTime - time)*speeed
+							local minimap = MapToMinimap((k.position.x - me.position.x) * Ddistance / GetDistance2D(k,me) + me.position.x,(k.position.y - me.position.y) * Ddistance / GetDistance2D(k,me) + me.position.y)
+							rect[v.handle].map.x = minimap.x-20/2
+							rect[v.handle].map.y = minimap.y-20/2
+						end
+					end					
 				else
-					rect[v.handle].visible = false					
-					showme = false
-					if aa then aa = nil end
+					aa[v.handle] = nil
+					rect[v.handle].main.visible = false
+					rect[v.handle].map.visible = false
 				end
-			else
-				showme = false
-				rect[v.handle].visible = false
+			else	
+				aa[v.handle] = nil
+				rect[v.handle].main.visible = false
+				rect[v.handle].map.visible = false
 			end
 		end
-	end
-	
-	if showme then
-		local cast = entityList:GetEntities({classId=CDOTA_BaseNPC})
-		for _,v in ipairs(cast) do
-			if v.dayVision == 0 and v.unitState == 59802112 then
-				if not aa then
-					aa = true
-					time = client.gameTime					
-				end
-				local distance = GetDistance2D(me,v)
-				local Ddistance = distance - (client.gameTime - time)*speeed
-				local minimap = MapToMinimap((v.position.x - me.position.x) * Ddistance / GetDistance2D(v,me) + me.position.x,(v.position.y - me.position.y) * Ddistance / GetDistance2D(v,me) + me.position.y)
-				eff.x = minimap.x-20/2
-				eff.y = minimap.y-20/2
-			else				
-				eff.visible = false
-			end
-		end
-	else
-		aa = nil
-		eff.visible = false
-	end
-	
+	end	
 		
 
 end
