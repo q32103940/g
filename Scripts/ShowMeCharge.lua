@@ -92,7 +92,6 @@ function GameClose()
 	ch = {}
 	hero = nil
 	start = true
-	eff.visible = false
 	showme = false
 	aa = nil
 end
