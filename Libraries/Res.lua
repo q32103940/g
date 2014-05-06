@@ -1,3 +1,10 @@
+MapLeft = -8000
+MapTop = 7350
+MapRight = 7500
+MapBottom = -7200
+MapWidth = math.abs(MapLeft - MapRight)
+MapHeight = math.abs(MapBottom - MapTop)
+
 ResTable = {
 	-- Settings for 4:3
 	{800,600,{
@@ -83,3 +90,52 @@ ResTable = {
 		}
 	},
 }
+
+function MapToMinimap(x, y)
+    if y == nil then
+        if x.x then
+            _x = x.x - MapLeft
+            _y = x.y - MapBottom
+        elseif x.position then
+            _x = x.position.x - MapLeft
+            _y = x.position.y - MapBottom
+        else
+            return {x = -640, y = -640}
+        end
+    else
+            _x = x - MapLeft
+            _y = y - MapBottom
+    end
+    
+    local scaledX = math.min(math.max(_x * MinimapMapScaleX, 0), location.minimap.w)
+    local scaledY = math.min(math.max(_y * MinimapMapScaleY, 0), location.minimap.h)
+    
+    local screenX = location.minimap.px + scaledX
+    local screenY = screenSize.y - scaledY - location.minimap.py
+
+    return Vector2D(math.floor(screenX),math.floor(screenY))
+end
+
+do
+    screenSize = client.screenSize
+    if screenSize.x == 0 and screenSize.y == 0 then
+            script:Unload()
+    end
+    for i,v in ipairs(ResTable) do
+            if v[1] == screenSize.x and v[2] == screenSize.y then
+                    location = v[3]
+                    break
+            elseif i == #ResTable then
+                    script:Unload()
+            end
+    end
+
+end
+
+function GetDistance2D(a,b)
+    return math.sqrt(math.pow(a.position.x-b.position.x,2)+math.pow(a.position.y-b.position.y,2))
+end
+
+
+MinimapMapScaleX = location.minimap.w / MapWidth
+MinimapMapScaleY = location.minimap.h / MapHeight
