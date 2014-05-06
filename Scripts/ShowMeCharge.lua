@@ -64,9 +64,9 @@ function Tick(tick)
 								aa[v.handle] = true
 								time = client.gameTime
 							end							
-							local distance = GetDistance2D(me,k)
+							local distance = GetDistance2D(v,k)
 							local Ddistance = distance - (client.gameTime - time)*speeed
-							local minimap = MapToMinimap((k.position.x - me.position.x) * Ddistance / GetDistance2D(k,me) + me.position.x,(k.position.y - me.position.y) * Ddistance / GetDistance2D(k,me) + me.position.y)
+							local minimap = MapToMinimap((k.position.x - v.position.x) * Ddistance / GetDistance2D(k,v) + v.position.x,(k.position.y - v.position.y) * Ddistance / GetDistance2D(k,v) + v.position.y)
 							rect[v.handle].map.x = minimap.x-20/2
 							rect[v.handle].map.y = minimap.y-20/2
 						end
@@ -92,7 +92,9 @@ function GameClose()
 	ch = {}
 	hero = nil
 	start = true
-	aa = {}
+	eff.visible = false
+	showme = false
+	aa = nil
 end
  
 script:RegisterEvent(EVENT_CLOSE,GameClose)
