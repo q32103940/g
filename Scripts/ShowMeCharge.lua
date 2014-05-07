@@ -72,12 +72,16 @@ function Tick(tick)
 						end
 					end					
 				else
-					aa[v.handle] = nil
+					if aa[v.handle] ~= nil then
+						aa[v.handle] = nil
+					end
 					rect[v.handle].main.visible = false
 					rect[v.handle].map.visible = false
 				end
 			else	
-				aa[v.handle] = nil
+				if aa[v.handle] ~= nil then
+					aa[v.handle] = nil
+				end
 				rect[v.handle].main.visible = false
 				rect[v.handle].map.visible = false
 			end
@@ -93,7 +97,7 @@ function GameClose()
 	hero = nil
 	start = true
 	showme = false
-	aa = nil
+	aa = {}
 end
  
 script:RegisterEvent(EVENT_CLOSE,GameClose)
