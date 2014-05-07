@@ -68,12 +68,12 @@ function CourierTick()
 				cours[v.handle].visible = true
 				local courMinimap = MapToMinimap(v)
 				cours[v.handle].x,cours[v.handle].y = courMinimap.x-10,courMinimap.y-6
-				local flying = v:GetProperty("CDOTA_Unit_Courier","m_bFlyingCourier")				
+				local flying = v:GetProperty("CDOTA_Unit_Courier","m_bFlyingCourier")
 				if flying then
-					cours[v.handle].textureId = drawMgr:GetTextureId("AIOGUI/courier_flying")
+					cours[v.handle].textureId = drawMgr:GetTextureId("Stuff/courier_flying")
 					cours[v.handle].size = Vector2D(location.minimap.px+9,location.minimap.px+1)
 				else
-					cours[v.handle].textureId = drawMgr:GetTextureId("AIOGUI/courier")		
+					cours[v.handle].textureId = drawMgr:GetTextureId("Stuff/courier")		
 				end
 			else
 				cours[v.handle].visible = false
