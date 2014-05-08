@@ -19,7 +19,7 @@ icon = drawMgr:CreateRect(xx,yy,24,24,0x000000ff)
 icon.visible = false
 dmgCalc = drawMgr:CreateText(xx, yy-18, 0x00000099,"Dmg",F14)
 dmgCalc.visible = false
-for a = 1, 9 do
+for a = 1, 5 do
 global[a] = drawMgr:CreateRect(0,yy-5,18,18,0x000000FF)
 global[a].visible = false
 end
@@ -61,11 +61,11 @@ function Tick(tick)
 
 		if me.name == "npc_dota_hero_windrunner" and Skill.channelTime ~= 0 and Skill.channelTime > 0.6 then me:Move(me.position) end
 		if Skill.level > 0 and me.alive and not me:IsChanneling() then
-			local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = (5-me.team),illusion = false})
+			local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = (5-me.team),illusion=false})
 			for i, v in ipairs(enemies) do
-			
-				local offset = v.healthbarOffset				
-				if offset == -1 then return end				
+				
+				local offset = v.healthbarOffset
+				if offset == -1 then return end
 				if not hero[v.handle] then
 					hero[v.handle] = drawMgr:CreateText(20,0-45, 0xFFFFFFFF, "",F14) hero[v.handle].visible = false hero[v.handle].entity = v hero[v.handle].entityPosition = Vector(0,0,offset)
 				end
@@ -291,6 +291,7 @@ function Tick(tick)
 					else	
 						if PreKill ~= 0 then
 							me:CastAbility(me:GetAbility(4))
+							PreKill = 0
 						end
 					end
 				elseif me.name == "npc_dota_hero_furion" then
