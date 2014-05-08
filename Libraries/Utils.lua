@@ -24,6 +24,8 @@
 	====================================
 	|             Changelog            |
 	====================================
+		v1.3b:
+		 - Added wisp overcharge in Damage Calculation
 		v1.3a:
 		 - Improved performance of several functions
 		 - Added LuaEntity:GetEnemyTeam()
@@ -353,6 +355,15 @@ utils.externalDmgReducs = {
 		type = 1,
 		reduce = .5,
 
+	},
+	
+	--Wisp: Overcharge
+	{
+		modifierName = "modifier_wisp_overcharge",
+		type = 1,
+		sourceTeam = 1,
+		sourceSpellName = "wisp_overcharge",
+		reduce = {.05,.10,.15,.20},
 	},
 
 	--Templar Assasin: Refraction
