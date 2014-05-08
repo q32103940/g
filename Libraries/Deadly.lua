@@ -168,7 +168,7 @@ npc_dota_hero_shredder = {
  
 npc_dota_hero_sniper = {
  Spell = "sniper_assassinate",
- Dmg = {355, 505, 655},
+ Dmg = {350, 500, 650},
  Type = DAMAGE_MAGC,
  Target = "target"},
  
@@ -240,16 +240,27 @@ npc_dota_hero_furion = {
  Dmg = {140,180,225},
  DmgA = {155,210,275},
  Range = 30000,
+ Cast = 1,
+ Global = 1,
  Type = DAMAGE_MAGC,
  Target = "target"},
  
-npc_dota_hero_zuus = {
+--[[npc_dota_hero_zuus = {
  Spell = "zuus_thundergods_wrath",
  Dmg = {225,350,475},
  DmgA = {440,540,640},
  Range = 50000,
  Type = DAMAGE_MAGC,
- Target = "nontarget"},
+ Target = "nontarget"},]]
+ 
+npc_dota_hero_zuus = {
+ Spell = "zuus_lightning_bolt",
+ Dmg = {100,175,275,350},
+ Type = DAMAGE_MAGC,
+ Range = 20000,
+ Cast = 1,
+ Global = 1,
+ Target = "target"},
  
 npc_dota_hero_shadow_demon = {
  Spell = "shadow_demon_shadow_poison",
@@ -272,13 +283,12 @@ npc_dota_hero_magnataur = {
 npc_dota_hero_windrunner = {
  Spell = "windrunner_powershot",
  Dmg = {108, 180, 252, 334},
- Range = 1825,
+ Range = 2000,
  Time = 1,
  CastTime = 1.2,
  Speed = 3000,
  Type = DAMAGE_MAGC,
- Target = "area",
- Sleep = 600},
+ Target = "area"},
  
 --[[Kunkka = {
  Spell = "kunkka_torrent",
@@ -303,7 +313,7 @@ npc_dota_hero_alchemist = {
  Type = DAMAGE_PHYS,
  Cast = 1,
  Dmg = 0,
- Mod = {32,47,63,78},
+ DmgM = {32,47,63,78},
  Range = 800,
  Target = "target"},
  
@@ -315,12 +325,12 @@ npc_dota_hero_invoker = {
  Range = 50000,
  Type = DAMAGE_PURE,
  Cast = 1,
+ Global = 1,
  Target = "area"}, 
  
 npc_dota_hero_morphling = {
  Spell = "morphling_adaptive_strike",
  Dmg = {20, 40, 60, 80},
- DmgM = {0.5,1,1.5,2},
  Type = DAMAGE_MAGC,
  Cast = 1,
  Target = "nontarget"},
@@ -343,7 +353,7 @@ npc_dota_hero_mirana = {
 npc_dota_hero_lina = {
  Spell = "lina_laguna_blade",
  Dmg = {450,675,950},
- DmgA = {650,925,1250},
+ DmgA = {600,925,1250},
  Range = 650,
  Type = DAMAGE_MAGC,
  Cast = 1,
@@ -351,7 +361,7 @@ npc_dota_hero_lina = {
 
 npc_dota_hero_doom_bringer = {
  Spell = "doom_bringer_lvl_death",
- Doom = {{levelMultiplier = 6, dmg = 125}, {levelMultiplier = 5, dmg = 175}, {levelMultiplier = 4, dmg = 225}, {levelMultiplier = 3, dmg = 275}},
+ DmgM = {{levelMultiplier = 6, dmg = 125}, {levelMultiplier = 5, dmg = 175}, {levelMultiplier = 4, dmg = 225}, {levelMultiplier = 3, dmg = 275}},
  Dmg = 0,
  Type = DAMAGE_MAGC,
  Cast = 1,
@@ -392,6 +402,7 @@ npc_dota_hero_life_stealer = {
  Dmg = {150,275,400},
  Type = DAMAGE_MAGC,
  Range = 700,
+ Cast = 1,
  Target = "target"},
  
 npc_dota_hero_obsidian_destroyer = {
