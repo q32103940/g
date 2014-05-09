@@ -2,9 +2,9 @@ require("libs.Utils")
 require("libs.Deadly")
 
 ------------------------[[Config]]-------------------------
-				xx = client.screenSize.x/300 	--x coordinate
-				yy = client.screenSize.y/1.372	--y coordinate
-				toggleKey = string.byte("M")
+		xx = client.screenSize.x/300 	--x coordinate
+		yy = client.screenSize.y/1.372	--y coordinate
+		toggleKey = string.byte("M")
 ------------------------------------------------------------
 
 PreKill = 0 real = {} hero = {} global = {}
@@ -132,7 +132,7 @@ function Tick(tick)
 						local DmgF = math.floor(v.health - v:DamageTaken((DmgS * DmgM[Skill.level]), list[me.name].Type, me))
 						hero[v.handle].text = " "..DmgF
 						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
-							me:CastAbility(me:GetAbility(2),v)
+							me:SafeCastAbility(me:GetAbility(2),v)
 						end
 					elseif me.name == "npc_dota_hero_mirana" then													
 						if GetDistance2D(v,me) < 200 then DmgM = Dmg[Skill.level]*1.75 else DmgM = Dmg[Skill.level] end
@@ -196,13 +196,13 @@ function Tick(tick)
 							local dis = GetDistance2D(v,me)
 							if dis < 350 then
 								me:Attack(v)
-								me:CastAbility(me:GetAbility(1))
+								me:SafeCastAbility(me:GetAbility(1))
 							elseif dis < 550 and dis > 350 then
 								me:Attack(v)
-								me:CastAbility(me:GetAbility(2))
+								me:SafeCastAbility(me:GetAbility(2))
 							elseif dis < 800 and dis > 550 then
 								me:Attack(v)
-								me:CastAbility(me:GetAbility(3))
+								me:SafeCastAbility(me:GetAbility(3))
 							end
 						end	
 					elseif me.name == "npc_dota_hero_invoker" then
@@ -246,7 +246,7 @@ function Tick(tick)
 									DmgUlti = DmgU[ult.level]
 								end
 							end		
-							if v.health + 1 < math.floor(v:DamageTaken(DmgUlti, Type, me)) and NotDieFromBM(v,ult,me) then
+							if v.health + 1 < math.floor(v:DamageTaken(DmgUlti, Type, me)) and NotDieFromBM(v,ult,me) and CanDie(v,me) then
 								table.insert(real,v)
 							end
 						end
@@ -287,20 +287,20 @@ function Tick(tick)
 				end
 				if me.name == "npc_dota_hero_zuus" then
 					if #real > 1 then
-						me:CastAbility(me:GetAbility(4))
+						me:SafeCastAbility(me:GetAbility(4))
 					else	
 						if PreKill ~= 0 then
-							me:CastAbility(me:GetAbility(4))
+							me:SafeCastAbility(me:GetAbility(4))
 							PreKill = 0
 						end
 					end
 				elseif me.name == "npc_dota_hero_furion" then
 					if #real > 1 then
-						me:CastAbility(Skill,real[1])
+						me:SafeCastAbility(Skill,real[1])
 					else
 						for k,l in ipairs(real) do	
 							if k == PreKill then
-								me:CastAbility(Skill,l)
+								me:SafeCastAbility(Skill,l)
 								PreKill = 0
 							end
 						end
@@ -309,10 +309,10 @@ function Tick(tick)
 					for k,l in ipairs(real) do
 						if k == PreKill then										
 							if real[k].activity == 422 and real[k]:CanMove() then
-								me:CastAbility(Skill,Vector(l.position.x + l.movespeed * 1.75 * math.cos(l.rotR), l.position.y + l.movespeed* 1.75 * math.sin(l.rotR), l.position.z))
+								me:SafeCastAbility(Skill,Vector(l.position.x + l.movespeed * 1.75 * math.cos(l.rotR), l.position.y + l.movespeed* 1.75 * math.sin(l.rotR), l.position.z))
 								PreKill = 0
 							else
-								me:CastAbility(Skill,Vector(l.position.x + l.movespeed * 0.05 * math.cos(l.rotR), l.position.y + l.movespeed* 0.05 * math.sin(l.rotR), l.position.z))										
+								me:SafeCastAbility(Skill,Vector(l.position.x + l.movespeed * 0.05 * math.cos(l.rotR), l.position.y + l.movespeed* 0.05 * math.sin(l.rotR), l.position.z))										
 								PreKill = 0
 							end
 						end
