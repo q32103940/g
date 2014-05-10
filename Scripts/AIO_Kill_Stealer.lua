@@ -2,9 +2,9 @@ require("libs.Utils")
 require("libs.Deadly")
 
 ------------------------[[Config]]-------------------------
-		xx = client.screenSize.x/300 	--x coordinate
-		yy = client.screenSize.y/1.372	--y coordinate
-		toggleKey = string.byte("M")
+				xx = client.screenSize.x/300 	--x coordinate
+				yy = client.screenSize.y/1.372	--y coordinate
+				toggleKey = string.byte("Z")
 ------------------------------------------------------------
 
 PreKill = 0 real = {} hero = {} global = {}
@@ -173,6 +173,37 @@ function Tick(tick)
 						hero[v.handle].text = " "..DmgF		
 						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
 							me:SafeCastAbility(Skill)
+						end
+					elseif me.name == "npc_dota_hero_ogre_magi" then
+						local musticast = me:FindSpell("ogre_magi_multicast").level
+						local DmgM = math.floor(v:DamageTaken(Dmg[Skill.level],Type, me))
+						if musticast == 1 then							
+							local DmgF = math.floor(v.health - DmgM)
+							hero[v.handle].x = -10
+							hero[v.handle].text = " "..DmgF.."("..(DmgF-DmgM)..")"
+							if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+								me:SafeCastAbility(Skill,v)
+							end
+						elseif musticast == 2 then
+							local DmgF = math.floor(v.health - v:DamageTaken(Dmg[Skill.level],Type, me))
+							hero[v.handle].x = -30
+							hero[v.handle].text = " "..DmgF.."("..(DmgF-(DmgM*2))..";"..(DmgF-(DmgM*3))..")"
+							if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+								me:SafeCastAbility(Skill,v)
+							end
+						elseif musticast == 3 then
+							local DmgF = math.floor(v.health - v:DamageTaken(Dmg[Skill.level],Type, me))
+							hero[v.handle].x = -50
+							hero[v.handle].text = " "..DmgF.."("..(DmgF-(DmgM*2))..";"..(DmgF-(DmgM*3))..";"..(DmgF-(DmgM*4))..")"
+							if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+								me:SafeCastAbility(Skill,v)
+							end
+						else
+							local DmgF = math.floor(v.health - v:DamageTaken(Dmg[Skill.level],Type, me))
+							hero[v.handle].text = " "..DmgF..""
+							if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+								me:SafeCastAbility(Skill,v)
+							end
 						end
 					elseif me.name == "npc_dota_hero_lina" then							
 						if me:FindItem("item_ultimate_scepter") then
