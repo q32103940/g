@@ -48,16 +48,17 @@ function Tick(tick)
 	for i,v in ipairs(cast) do
 		local vision = v.dayVision
 		if vision == 650 then
+			if v.visibleToEnemy and start then
+				if not vec then vec = v.position end
+			end
 			if not start then 
 				start = v.position
 				return
-			end
-			if v.visibleToEnemy then
-				if not vec then vec = v.position end
-			end
+			end			
 			if start ~= nil and vec ~= nil then
 				local distance = GetDistancePosD(vec,start)
-				for z = 1,30 do
+				local range = math.floor((3000-distance)/1000)
+				for z = range,30 do
 					if not eff[z] then
 						local p = Vector((vec.x - start.x) * 100*z / distance + start.x,(vec.y - start.y) * 100*z / distance + start.y,v.position.z)
 						eff[z] = Effect(p, "fire_torch" )
