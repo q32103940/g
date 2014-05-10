@@ -60,8 +60,8 @@ function Tick(tick)
 				for z = 1,30 do
 					if not eff[z] then
 						local p = Vector((vec.x - start.x) * 100*z / distance + start.x,(vec.y - start.y) * 100*z / distance + start.y,v.position.z)
-						eff[z] = Effect(p, "blueTorch_flame" )
-						eff[z]:SetVector(0,p)							
+						eff[z] = Effect(p, "fire_torch" )
+						eff[z]:SetVector(0,z)							
 					end						
 				end				
 			end
