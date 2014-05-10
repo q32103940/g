@@ -33,7 +33,7 @@ function Tick(tick)
 		end	
 
 		if v.name == "npc_dota_hero_mirana" then
-			if not sleeptick or (sleeptick and sleeptick >= tick) then
+			if (sleeptick and sleeptick >= tick) then
 				icon.visible = not v.visible					
 			else
 				runeMinimap = nil
