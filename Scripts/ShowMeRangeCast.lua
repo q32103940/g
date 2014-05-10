@@ -2,14 +2,6 @@ require("libs.Utils")
 
 list = 
 {
-npc_dota_hero_mirana = 
-{
-Spell = 2,
-Start = {1690,1690,1690,1690},
-End = {1350,1350,1350,1350},
-Count = 20,
-Range = {150,150,150,150},
-},
 npc_dota_hero_pudge = 
 {
 Spell = 1,
