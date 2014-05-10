@@ -61,12 +61,11 @@ function Tick(tick)
 					if not eff[z] then
 						local p = Vector((vec.x - start.x) * 100*z / distance + start.x,(vec.y - start.y) * 100*z / distance + start.y,v.position.z)
 						eff[z] = Effect(p, "fire_torch" )
-						eff[z]:SetVector(0,z)							
+						eff[z]:SetVector(0,p)							
 					end						
 				end				
 			end
 			if runeMinimap == nil then
-				Sick = tick + 3500
 				runeMinimap = MapToMinimap(v.position.x,v.position.y)
 				icon.x = runeMinimap.x-20/2
 				icon.y = runeMinimap.y-20/2
@@ -78,7 +77,7 @@ function Tick(tick)
 	if start ~= nil and vec ~= nil and sleeptick and tick > sleeptick then			
 		eff = {}
 		collectgarbage("collect")
-		start,vec = nil,nil
+		start,vec,sleeptick = nil,nil,nil
 	end
 
 end
@@ -91,7 +90,7 @@ function GameClose()
 	ch = {}
 	check = true
 	eff = {}
-	start,vec,runeMinimap = nil,nil,nil
+	start,vec,runeMinimap,sleeptick = nil,nil,nil,nil
 	collectgarbage("collect")
 end
 
