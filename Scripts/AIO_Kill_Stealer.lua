@@ -172,7 +172,7 @@ function Tick(tick)
 						local DmgF = math.floor(v.health -  v:ManaBurnDamageTaken(DmgM,1,DAMAGE_MAGC,me))
 						hero[v.handle].text = " "..DmgF		
 						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
-							me:SafeCastAbility(Skill)
+							me:SafeCastAbility(Skill,v)
 						end
 					elseif me.name == "npc_dota_hero_ogre_magi" then
 						local musticast = me:FindSpell("ogre_magi_multicast").level
