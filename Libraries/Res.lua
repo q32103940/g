@@ -132,10 +132,5 @@ do
 
 end
 
-function GetDistance2D(a,b)
-    return math.sqrt(math.pow(a.position.x-b.position.x,2)+math.pow(a.position.y-b.position.y,2))
-end
-
-
 MinimapMapScaleX = location.minimap.w / MapWidth
 MinimapMapScaleY = location.minimap.h / MapHeight
