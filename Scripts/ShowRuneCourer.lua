@@ -81,10 +81,6 @@ function CourierTick()
         end  
 end
 
-function GetDistance2D(a,b)
-    return math.sqrt(math.pow(a.position.x-b.position.x,2)+math.pow(a.position.y-b.position.y,2))
-end
-
 function GameClose()
 	cours = {}
 	minimapRune.visible = false
