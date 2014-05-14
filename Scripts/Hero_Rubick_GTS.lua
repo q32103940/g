@@ -1,10 +1,9 @@
 require("libs.Utils")
 
-herotab = {} hero = {} ls = {} ult = {} icon = {}
-BM = {124,102, 80}
-zxc = {true,true,true,true,true,true,true,true}
+local hero = {} local ls = {} local ult = {} local icon = {}
+local BM = {124,102, 80} local range = nil
 
-xx = client.screenSize.x/1.33 yy = client.screenSize.y/100
+local xx = client.screenSize.x/1.33 local yy = client.screenSize.y/100
 
 function Tick( tick )
 
@@ -18,76 +17,69 @@ function Tick( tick )
 
 		if me.name ~= "npc_dota_hero_rubick" then
 			script:Disable()
-		else	
-
-			herotab = {}
-			start = true
-
+		else			
 			if me:FindItem("item_ultimate_scepter") then
 				range = 1600
 			else 
 				range = 1000
 			end
 
-			local enemies = entityList:FindEntities({type=LuaEntity.TYPE_HERO,illusion = false})		
-			for i = 1, #enemies do
-				local h = enemies[i]
-				if h.team ~= me.team then				
-					table.insert(herotab, h)
-				end
-			end
-		   
+			local enemies = entityList:FindEntities({type=LuaEntity.TYPE_HERO,illusion = false,team = (5-me.team)})
+			table.sort( enemies, function (a,b) return a.playerId < b.playerId end )
+
 			local steal = me:GetAbility(7)
 			local stealing = me:GetAbility(5)
 
-			for i,v in ipairs(herotab) do			
+			for i =1,#enemies do
+				local v = enemies[i]
 				for d = 4,8 do
-					if v.name ~= hero[v.handle] then					
+					if not hero[i] then					
 						local spell = v:GetAbility(d)
 						if spell ~= nil and spell.abilityType == 1 then						
-							ult[v.handle] = spell.name
+							ult[i] = spell.name
 						end
 					else 
-						ult[v.handle] = nil
+						ult[i] = nil
 					end
 				end
 
 				if v.alive and v.health > 0 then
 
 					if v.visible then
-						for g,h in ipairs(v.abilities) do
+						local ability = v.abilities
+						for g,h in ipairs(ability) do
 							local spell = v:GetAbility(g)
 							if spell ~= nil and spell.cd > 0 then
 								 if v.name ~= "npc_dota_hero_brewmaster" then
 									if math.ceil(spell.cd) ==  math.ceil(spell:GetCooldown(spell.level)) then										
-										ls[v.handle] = v:GetAbility(g).name
+										ls[i] = v:GetAbility(g).name
 									end
 								elseif v.name == "npc_dota_hero_brewmaster" then								
 									if math.ceil(spell.cd) == BM[spell.level] then
-										ls[v.handle] = spell.name
+										ls[i] = spell.name
 									end									
 								end
 							end								
 						end
 					else 
-						ls[v.handle] = nil
+						ls[i] = nil
 					end
 
 					if SleepCheck() and steal.state == -1 and me:CanCast() and not me:IsChanneling() then
 						if v.visible then
-							if v.name ~= hero[v.handle] then
+							if not hero[i] then
 								if GetDistance2D(v,me) < range then
 									for d = 4,8 do									
 										local spell = v:GetAbility(d)
 										if spell ~= nil and spell.abilityType == 1 then
-											if ls[v.handle] == spell.name and spell.name ~= stealing.name then												
+											if ls[i] == spell.name and spell.name ~= stealing.name then												
 												if not v:IsLinkensProtected() then
-													if stealing.name ~= ult[v.handle] and stealing.cd ~= 0 then													
+													if stealing.name ~= ult[i] and stealing.cd ~= 0 then													
 														me:CastAbility(steal,v)
-														Sleep(100)
+														Sleep(200)
 													elseif stealing.abilityType ~= 1 then
 														me:CastAbility(steal,v)
-														Sleep(100)
+														Sleep(200)
 													end
 												end
 											end
@@ -99,29 +91,15 @@ function Tick( tick )
 					end	
 				end
 
-				if #herotab < 5 then
-					for z = 1,4 do
-						if #herotab == z then						
-							if zxc[z] == true then icon[v.handle] = {} Clear() zxc[z] = false end
-							if not icon[v.handle] then icon[v.handle] = {}
-							icon[v.handle].board = drawMgr:CreateRect(xx-6+i*27,yy-3,27,23,0x000000FF) 
-							icon[v.handle].mini = drawMgr:CreateRect(xx-2+i*27,yy,16,16,0x000000FF)						
-
-							end
-						end
-					end
-				else
-					if zxc[#herotab] == true then icon[v.handle] = {} Clear() zxc[#herotab] = false end
-					if not icon[v.handle] then icon[v.handle] = {}
-						icon[v.handle].board = drawMgr:CreateRect(xx-6+i*27,yy-3,27,23,0x000000FF) 
-						icon[v.handle].mini = drawMgr:CreateRect(xx-2+i*27,yy,16,16,0x000000FF)					
-					end							
+				if not icon[i] then icon[i] = {}
+					icon[i].board = drawMgr:CreateRect(xx-6+i*27,yy-3,27,23,0x000000FF) 
+					icon[i].mini = drawMgr:CreateRect(xx-2+i*27,yy,16,16,0x000000FF)					
 				end
-
-				if hero[v.handle] ~= v.name then
-					icon[v.handle].mini.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..v.name:gsub("npc_dota_hero_",""))				
+			
+				if not hero[i] then
+					icon[i].mini.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..v.name:gsub("npc_dota_hero_",""))				
 				else
-					icon[v.handle].mini.textureId = drawMgr:GetTextureId("NyanUI/spellicons/doom_bringer_empty1")
+					icon[i].mini.textureId = drawMgr:GetTextureId("NyanUI/spellicons/doom_bringer_empty1")
 				end	
 
 			end		
@@ -130,16 +108,14 @@ end
 
 function Key(msg,code)
 
-	if client.chat or start == nil then 
-		return
-	end
+	if client.chat then return end
 
-	for i,v in ipairs(herotab) do
+	for i = 1,5 do
 		if IsMouseOnButton(xx-2+i*27,yy,16,16) then
-			if msg == LBUTTON_DOWN and hero[v.handle] == nil then
-				hero[v.handle] = v.name
-			elseif msg == LBUTTON_DOWN and hero[v.handle] ~= nil then
-				hero[v.handle] = nil
+			if msg == LBUTTON_DOWN and hero[i] == nil then
+				hero[i] = i
+			elseif msg == LBUTTON_DOWN and hero[i] ~= nil then
+				hero[i] = nil
 			end
 		end
 	end	
@@ -163,19 +139,11 @@ function GetSpecial(spell,name,lvl)
 	end
 end
 
-function Clear()
-	icon = {}
-	collectgarbage("collect")
-end
-
 function GameClose()
-	Clear()
-	start = nil
-	herotab = {} hero = {} ls = {} ult = {}
+	hero = {} ls = {} ult = {} icon = {}
 	collectgarbage("collect")
-	script:Reload()
 end
 
+script:RegisterEvent(EVENT_KEY,Key)
 script:RegisterEvent(EVENT_CLOSE, GameClose)
 script:RegisterEvent(EVENT_TICK,Tick)
-script:RegisterEvent(EVENT_KEY,Key)
