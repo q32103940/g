@@ -2,22 +2,22 @@ require("libs.Utils")
 require("libs.Deadly")
 
 ------------------------[[Config]]-------------------------
-				xx = client.screenSize.x/300 	--x coordinate
-				yy = client.screenSize.y/1.372	--y coordinate
-				toggleKey = string.byte("M")
+				local xx = client.screenSize.x/300 	--x coordinate
+				local yy = client.screenSize.y/1.372	--y coordinate
+				local toggleKey = string.byte("Z")
 ------------------------------------------------------------
 
-PreKill = 0 real = {} hero = {} global = {}
-activated = true Draw = true local sleeptick = 0
+local PreKill = 0 local hero = {} local global = {} local clear = nil
+local activated = true local Draw = true local sleeptick = 0
 
 
 --Draw function
-F14 = drawMgr:CreateFont("F14","Calibri",14,500)
-rect = drawMgr:CreateRect(xx-1,yy-1,26,26,0x00000090,true)
+local F14 = drawMgr:CreateFont("F14","Calibri",14,500)
+local rect = drawMgr:CreateRect(xx-1,yy-1,26,26,0x00000090,true)
 rect.visible = false
-icon = drawMgr:CreateRect(xx,yy,24,24,0x000000ff)
+local icon = drawMgr:CreateRect(xx,yy,24,24,0x000000ff)
 icon.visible = false
-dmgCalc = drawMgr:CreateText(xx, yy-18, 0x00000099,"Dmg",F14)
+local dmgCalc = drawMgr:CreateText(xx, yy-18, 0x00000099,"Dmg",F14)
 dmgCalc.visible = false
 for a = 1, 5 do
 global[a] = drawMgr:CreateRect(0,yy-5,18,18,0x000000FF)
@@ -62,20 +62,20 @@ function Tick(tick)
 		if me.name == "npc_dota_hero_windrunner" and Skill.channelTime ~= 0 and Skill.channelTime > 0.6 then me:Move(me.position) end
 		if Skill.level > 0 and me.alive and not me:IsChanneling() then
 			local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = (5-me.team),illusion=false})
-			for i, v in ipairs(enemies) do
-				
+			for i = 1, #enemies do
+				local v = enemies[i]
 				local offset = v.healthbarOffset
 				if offset == -1 then return end
 				if not hero[v.handle] then
 					hero[v.handle] = drawMgr:CreateText(20,0-45, 0xFFFFFFFF, "",F14) hero[v.handle].visible = false hero[v.handle].entity = v hero[v.handle].entityPosition = Vector(0,0,offset)
 				end
 				if v.visible and v.alive and v.health > 0 then
-					hero[v.handle].visible = Draw					
+					hero[v.handle].visible = Draw
 					if not Cast then
 						local DmgF = math.floor(v.health - v:DamageTaken(Dmg[Skill.level], Type, me))
 						hero[v.handle].text = " "..DmgF
 						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
-							if not Time then								
+							if not Time then		
 								if Target == "target" then
 									me:SafeCastAbility(Skill,v)
 								elseif Target == "area" then
@@ -113,15 +113,15 @@ function Tick(tick)
 						end						
 					elseif me.name == "npc_dota_hero_morphling" then 
 						local agi = math.floor(me.agilityTotal)
-						local as = agi/me.strengthTotal
-						if as > 1.5 then DmgM = 0.5*Skill.level elseif as < 0.5 then DmgM = 0.25 elseif (as >= 0.5 and as <= 1.5) then DmgM = 0.25+((as-0.5)*(0.5*Skill.level-0.25)) end
+						local DmgS = agi/me.strengthTotal
+						if DmgS > 1.5 then DmgM = 0.5*Skill.level elseif DmgS < 0.5 then DmgM = 0.25 elseif (DmgS >= 0.5 and DmgS <= 1.5) then DmgM = 0.25+((DmgS-0.5)*(0.5*Skill.level-0.25)) end
 						local DmgF = math.floor(v.health - v:DamageTaken((DmgM)*agi + Dmg[Skill.level], Type, me))
 						hero[v.handle].text = " "..DmgF
 						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
 							me:SafeCastAbility(Skill,v)
 						end
 					elseif me.name == "npc_dota_hero_visage" then														
-						DmgM = math.floor(20 + (ModifierStacks("modifier_visage_soul_assumption",me) * 65))				
+						local DmgM = math.floor(20 + (ModifierStacks("modifier_visage_soul_assumption",me) * 65))				
 						local DmgF = math.floor(v.health - v:DamageTaken(DmgM, Type, me))
 						hero[v.handle].text = " "..DmgF
 						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
@@ -142,8 +142,8 @@ function Tick(tick)
 							me:SafeCastAbility(Skill)
 						end
 					elseif me.name == "npc_dota_hero_obsidian_destroyer" then
-						local int = math.floor(me.intellectTotal)
-						if int > v.intellectTotal then DmgM = math.floor((int - v.intellectTotal)*Dmg[Skill.level]) else DmgM = 1 end
+						local DmgS = math.floor(me.intellectTotal)
+						if DmgS > v.intellectTotal then DmgM = math.floor((DmgS - v.intellectTotal)*Dmg[Skill.level]) else DmgM = 1 end
 						local DmgF = math.floor(v.health - v:DamageTaken(DmgM, Type, me))
 						hero[v.handle].text = " "..DmgF
 						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
@@ -167,8 +167,8 @@ function Tick(tick)
 								me:SafeCastAbility(Skill)
 							end
 						end
-					elseif me.name == "npc_dota_hero_nyx_assassin" then							
-						local DmgM = Dmg[Skill.level] * math.floor(v.intellectTotal)
+					elseif me.name == "npc_dota_hero_nyx_assassin" then					
+						local DmgM = math.floor(Dmg[Skill.level] * math.floor(v.intellectTotal))
 						local DmgF = math.floor(v.health -  v:ManaBurnDamageTaken(DmgM,1,DAMAGE_MAGC,me))
 						hero[v.handle].text = " "..DmgF		
 						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
@@ -207,13 +207,14 @@ function Tick(tick)
 						end
 					elseif me.name == "npc_dota_hero_lina" then							
 						if me:FindItem("item_ultimate_scepter") then
-							Range = 900
+							local Range = 900
 							local DmgF = math.floor(v.health - v:DamageTaken(Dmg[Skill.level],DAMAGE_UNIV, me))
 							hero[v.handle].text = " "..DmgF
 							if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
 								me:SafeCastAbility(Skill,v)
 							end
 						else
+							local Range = 600
 							local DmgF = math.floor(v.health - v:DamageTaken(Dmg[Skill.level],DAMAGE_MAGC, me))
 							hero[v.handle].text = " "..DmgF
 							if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
@@ -264,6 +265,7 @@ function Tick(tick)
 							end
 						end							
 						if ult.level > 0 then 
+							local DmgUlti = nil
 							if me:FindItem("item_ultimate_scepter") then
 								if GetDistance2D(me,v) < 1000 then
 									DmgUlti = DmgUA[ult.level] + DmgM
@@ -299,10 +301,10 @@ function Tick(tick)
 					local Speed = list[me.name].Speed
 					if first.activity == 422 and first:CanMove() then
 						if RangePred(Skill,first,Speed,CastTime,me) then
-							me:SafeCastAbility(Skill,Vector(first.position.x + first.movespeed * (GetDistance2D(first,me)/(Speed * math.sqrt(1 - math.pow(first.movespeed/Speed,2))) + CastTime) * math.cos(first.rotR), first.position.y + first.movespeed * (GetDistance2D(first,me)/(Speed * math.sqrt(1 - math.pow(first.movespeed/Speed,2))) + CastTime) * math.sin(first.rotR), first.position.z))
+							me:CastAbility(Skill,Vector(first.position.x + first.movespeed * (GetDistance2D(first,me)/(Speed * math.sqrt(1 - math.pow(first.movespeed/Speed,2))) + CastTime) * math.cos(first.rotR), first.position.y + first.movespeed * (GetDistance2D(first,me)/(Speed * math.sqrt(1 - math.pow(first.movespeed/Speed,2))) + CastTime) * math.sin(first.rotR), first.position.z))
 						end
 					else
-						me:SafeCastAbility(Skill,Vector(first.position.x + first.movespeed * 0.05 * math.cos(first.rotR), first.position.y + first.movespeed* 0.05 * math.sin(first.rotR), first.position.z))
+						me:CastAbility(Skill,Vector(first.position.x + first.movespeed * 0.05 * math.cos(first.rotR), first.position.y + first.movespeed* 0.05 * math.sin(first.rotR), first.position.z))
 					end
 				end
 			elseif Global then	
