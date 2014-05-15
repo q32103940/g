@@ -1,5 +1,5 @@
-eff = {}
-sleeptick = 0
+local eff = {}
+local sleeptick = 0
 
 function Tick(tick)
 	if not client.connected or client.loading or client.console or tick < sleeptick then 
