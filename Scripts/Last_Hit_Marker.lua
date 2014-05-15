@@ -1,5 +1,5 @@
 --lash hit market
-rect = {}
+local rect = {}
 
 function Tick( tick )
 
@@ -10,8 +10,9 @@ function Tick( tick )
 	if not me then return end
 	
 	function Damage()
-		dmg =  me.dmgMin + me.dmgBonus
-		for i,item in ipairs(me.items) do
+		local dmg =  me.dmgMin + me.dmgBonus
+		local items = me.items
+		for i,item in ipairs(items) do
 			if item and item.name == "item_quelling_blade" then
 				return dmg*1.32
 			end
