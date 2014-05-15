@@ -1,5 +1,6 @@
-sleeptick = nil
-effects = {} -- saved effect list
+local sleeptick = nil
+local effects = {} -- saved effect list
+
 spells = {
 	-- modifier name, effect name, second effect, aoe-range, spell name
 	{"modifier_invoker_sun_strike", "invoker_sun_strike_team","invoker_sun_strike_ring_b","area_of_effect","invoker_sun_strike" },
@@ -8,21 +9,19 @@ spells = {
 	{"modifier_leshrac_split_earth_thinker", "leshrac_split_earth_b","leshrac_split_earth_c","radius","leshrac_split_earth"}	
 }
 
-function Tick( tick )
+function Tick(tick)
 	if not client.connected or client.loading or client.console or (sleeptick and tick < sleeptick) then return end		
 
-	local me = entityList:GetMyHero()
+	local me = entityList:GetMyHero() if not me then return end
 	
-	if not me then return end
-
-	cast = entityList:GetEntities({classId=CDOTA_BaseNPC})
+	local cast = entityList:GetEntities({classId=CDOTA_BaseNPC})
 	for i,v in ipairs(cast) do
 		if v.team ~= me.team and #v.modifiers > 0 then
-			local modifiers = v.modifiers			
+			local modifiers = v.modifiers
 			for i,k in ipairs(spells) do
 				if modifiers[1].name == k[1] and (not k.handle or k.handle ~= v.handle) then
 					k.handle = v.handle
-					local Spell = FindSpell(v.owner,k[5])						
+					local Spell = FindSpell(v.owner,k[5])
 					local Range = GetSpecial(Spell,k[4],Spell.level+0)
 					local entry = { Effect(v, k[2]),Effect(v, k[3]),  Effect( v, "range_display") }
 					entry[3]:SetVector(1, Vector( Range, 0, 0) )
