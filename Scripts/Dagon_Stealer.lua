@@ -1,59 +1,49 @@
---Don't use dagon under Vindetta
-
-
 require("libs.Utils")
 
 --config
-key =  string.byte("0")
-xx = client.screenSize.x/300 
-yy = client.screenSize.y/1.45
+local key =  string.byte("0")
+local xx = client.screenSize.x/300 
+local yy = client.screenSize.y/1.45
 
-activated = true 
-
-icon = drawMgr:CreateRect(xx,yy,24,16,0x000000ff) icon.visible = false
-rect = drawMgr:CreateRect(xx-1,yy-1,18,17,0xFF0D0D90,true) rect.visible = false
-
-dmg = {400,500,600,700,800}
+local activated = true 
+local sleep = 250
+local icon = drawMgr:CreateRect(xx,yy,24,16,0x000000ff,drawMgr:GetTextureId("NyanUI/items/dagon")) icon.visible = false
+local rect = drawMgr:CreateRect(xx-1,yy-1,18,17,0xFFFFFF90,true) rect.visible = false
+local dmg = {400,500,600,700,800}
  
 --Главная функция
 function Tick(tick)
  
-	if not client.connected or client.loading or client.console then return end
+	if not client.connected or client.loading or client.console or tick < sleep then return end
+	
+	sleep = tick + 150
 
 	local me = entityList:GetMyHero() 
 	
 	if not me then return end
        
 	local dagon = me:FindDagon()
- 
-	if not dagon then
-		rect.visible = false icon.visible = false
-		return 
-	end
-
-	rect.visible = true icon.visible = true
-
-	local lvl = string.match (dagon.name, "%d+")
-	if not lvl then lvl = 1 end dmgD = dmg[lvl*1]
-
-	if activated then
-		rect.color = 0xFFFFFF90		
-		icon.textureId = drawMgr:GetTextureId("NyanUI/items/dagon")
-		local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO,illusion = false,alive=true,visible=true})
-		if SleepCheck() and not me:IsChanneling() and NynNyxNyx(me) then
-			for i, v in ipairs(enemy) do
-				if v.team ~= me.team and v.health > 0 and GetDistance2D(v,me) < dagon.castRange and v:CanDie() then
+	local visible = Draw(activated,dagon) 
+	
+	rect.visible = visible
+	icon.visible = visible
+	
+	if visible then
+		local lvl = string.match (dagon.name, "%d+")
+		if not lvl then lvl = 1 end local dmgD = dmg[lvl*1]
+		local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO,illusion = false,alive=true,visible=true,team = (5-me.team)})
+		if not me:IsChanneling() and NynNyxNyx(me) then
+			for i = 1,#enemy do
+				local v = enemy[i]
+				if v.health > 0 and GetDistance2D(v,me) < dagon.castRange and v:CanDie() then
 					if not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") then
 						if v.health < v:DamageTaken(dmgD, DAMAGE_MAGC, me) then
 							me:SafeCastAbility(dagon,v)
-							Sleep(250)
 						end
 					end
 				end      
 			end
-		end  
-	else
-		rect.color = 0xFF0D0D90		
+		end	
 	end
 
 
@@ -67,9 +57,17 @@ function NynNyxNyx(target)
 	end
 end
 
+function Draw(one,two)
+	if one and two ~= nil then
+		return true
+	else
+		return false
+	end
+end
+
 function Key()
 
-	if IsKeyDown(key) then
+	if not client.chat and IsKeyDown(key) then
 		activated = not activated
 	end
 
