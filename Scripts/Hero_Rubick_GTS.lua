@@ -19,7 +19,7 @@ function Tick( tick )
 			script:Disable()
 		else			
 			if me:FindItem("item_ultimate_scepter") then
-				range = 1600
+				range = 1400
 			else 
 				range = 1000
 			end
