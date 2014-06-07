@@ -72,6 +72,19 @@ tglyphX = 1.021
 tglyphY = 1.03448
 txxB = 2.747
 txxG = 4.54
+elseif math.floor(client.screenRatio*100) == 125 then
+testX = 1280
+testY = 1024
+tpanelHeroSize = 58
+tpanelHeroDown = 25.714
+tpanelHeroSS = 23
+tmanaSize = 97
+tmanaX = 48
+tmanaY = 21
+tglyphX = 1.021
+tglyphY = 1.03448
+txxB = 2.747
+txxG = 4.54
 else
 testX = 1600
 testY = 900
