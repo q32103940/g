@@ -245,6 +245,13 @@ npc_dota_hero_furion = {
  Type = DAMAGE_MAGC,
  Target = "target"},
  
+npc_dota_hero_ogre_magi = {
+ Spell = "ogre_magi_fireblast",
+ Dmg = {80, 145, 210, 275},
+ Cast = 1,
+ Type = DAMAGE_MAGC,
+ Target = "target"},
+  
 --[[npc_dota_hero_zuus = {
  Spell = "zuus_thundergods_wrath",
  Dmg = {225,350,475},
