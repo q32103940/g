@@ -2,7 +2,7 @@ require("libs.Utils")
 require("libs.Deadly")
 
 ------------------------[[Config]]-------------------------
-				local toggleKey = string.byte("Z")
+		local toggleKey = string.byte("Z")
 ------------------------------------------------------------
 if math.floor(client.screenRatio*100) == 177 then
 	xx = client.screenSize.x/300
