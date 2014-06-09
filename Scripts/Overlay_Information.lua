@@ -52,8 +52,8 @@ testY = 768
 tpanelHeroSize = 48.5
 tpanelHeroDown = 25.714
 tpanelHeroSS = 22
-tmanaSize = 72
-tmanaX = 37
+tmanaSize = 74
+tmanaX = 38
 tmanaY = 15
 tglyphX = 1.0180
 tglyphY = 1.03448
@@ -116,7 +116,7 @@ glyph.visible = false
 
 function Tick(tick)
 
-	if not client.connected or client.loading or client.console or tick < sleeptick  then return end
+	if not client.connected or client.loading or client.console or tick < sleeptick then return end
 
 	sleeptick = tick + 200
 
