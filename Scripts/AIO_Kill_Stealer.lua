@@ -2,7 +2,7 @@ require("libs.Utils")
 require("libs.Deadly")
 
 ------------------------[[Config]]-------------------------
-	local toggleKey = string.byte("Z")
+				local toggleKey = string.byte("Z")
 ------------------------------------------------------------
 if math.floor(client.screenRatio*100) == 177 then
 	xx = client.screenSize.x/300
@@ -10,9 +10,12 @@ if math.floor(client.screenRatio*100) == 177 then
 elseif math.floor(client.screenRatio*100) == 125 then
 	xx = client.screenSize.x/512
 	yy = client.screenSize.y/1.341
+elseif math.floor(client.screenRatio*100) == 160 then
+	xx = client.screenSize.x/512
+	yy = client.screenSize.y/1.378
 else
-	xx = client.screenSize.x/300
-	yy = client.screenSize.y/1.372
+	xx = client.screenSize.x/512
+	yy = client.screenSize.y/1.378
 end
 
 local PreKill = 0 local hero = {} local global = {} local clear = nil
