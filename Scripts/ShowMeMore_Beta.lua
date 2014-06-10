@@ -4,7 +4,7 @@ require("libs.Res")
 require("libs.SideMessage")
 --size
 local XX = client.screenSize.x/1280
-local YY = client.screenSize.y/1024*125/math.floor(client.screenRatio*100)
+local YY = client.screenSize.y/1280
 --sunstrike, torrent, and other
 local effects = {}
 --arrow
