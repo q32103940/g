@@ -1,4 +1,4 @@
---show sun strike, light strike, torrent, split earth, arrow, charge, infest, assassinate, hook, powershoot
+--show sun strike, light strike, torrent, split earth, arrow, charge, infest, assassinate, hook, powershoot and more (later).
 require("libs.Utils")	
 require("libs.Res")
 require("libs.SideMessage")
