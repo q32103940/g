@@ -63,7 +63,7 @@ heroes = {
 {"npc_dota_hero_pudge",pudge},
 {"npc_dota_hero_rubick",rubick},
 {"npc_dota_hero_kunkka",kunkka},
-{"npc_dota_hero_ancient_apparition",kunkka},
+{"npc_dota_hero_ancient_apparition",aa},
 }
 
 function Main(tick)
