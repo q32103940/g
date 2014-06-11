@@ -172,7 +172,7 @@ function RangeCast(me,hero)
 				local number = RangeCastList[v.name].Spell
 				if number then
 					local spell = v:GetAbility(tonumber(number))								
-					if spell.cd ~= 0 then				
+					if spell and spell.cd ~= 0 then				
 						local ind = RangeCastList[v.name].End
 						local count = RangeCastList[v.name].Count
 						local range = RangeCastList[v.name].Range
