@@ -282,6 +282,7 @@ function Charge(cast,me,hero,heroName)
 	elseif TCharge[1].visible then
 		aa = nil
 		TCharge[1].visible = false
+		TCharge[2].visible = false
 	end
 
 end
@@ -375,7 +376,7 @@ function Ancient(cast,me,hero,heroName)
 	end	
 	if cold then
 		if not TCold then
-			local vpos = Vector(v.position.x,v.position.y,v.position.z)
+			local vpos = Vector(cold.position.x,cold.position.y,cold.position.z)
 			TCold = Effect(vpos,"range_display")
 			TCold:SetVector(0,vpos)
 			TCold:SetVector(1,Vector(740,0,0))
