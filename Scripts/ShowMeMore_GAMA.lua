@@ -5,25 +5,24 @@ require("libs.SideMessage")
 --sunstrike, torrent, and other
 local effects = {}
 --arrow
-local TArrow = {} local MSGArrow = nil
-local icon = drawMgr:CreateRect(0,0,16,16,0x000000ff) icon.visible = false
+local TArrow = {}
 --boat
 local TBoat = {}
 --charge
 local TCharge = {} local speeed = 600
 local speed = {600,650,700,750}
-local aa = {} local MSGCharge = {}
+local aa = nil
 --infest
-local TInfest = {} local MSGInfest = {}
+local TInfest = nil
 --sniper
-local TAssis = {} local MSGAssis = {}
+local TAssis = nil
 --pudge and wr
 local RC = {} local ss = {}
 --ancient
-local MSGIce = nil local TCold = {}
+local blastmsg = nil local TCold = nil
 --all
 local check = true local enemy = {}
-local sleep = {0,0,0,0,0,0,0}
+local sleep = {0,0,0,0}
 
 spells = {
 -- modifier name, effect name, second effect, aoe-range, spell name
@@ -63,7 +62,7 @@ heroes = {
 {"npc_dota_hero_pudge",pudge},
 {"npc_dota_hero_rubick",rubick},
 {"npc_dota_hero_kunkka",kunkka},
-{"npc_dota_hero_ancient_apparition",ancient},
+{"npc_dota_hero_ancient_apparition",aa},
 }
 
 function Main(tick)
@@ -103,19 +102,18 @@ function Main(tick)
 		sleep[1] = tick + 125
 	end
 
-	if heroes[1][2] ~= 1 then Arrow(cast,me,hero,tick,heroes[1][1]) end
+	if heroes[1][2] ~= 1 then Arrow(cast,me,hero,heroes[1][1]) end
 	if heroes[2][2] ~= 1 then Charge(cast,me,hero,heroes[2][1]) end
 	if heroes[3][2] ~= 1 then Infest(me,hero,tick,heroes[3][1]) end
 	if heroes[4][2] ~= 1 then Snipe(me,hero,tick,heroes[4][1]) end
 	if heroes[5][2] ~= 1 or heroes[6][2] ~= 1 then RangeCast(me,hero) end
 	if heroes[7][2] ~= 1 then WhatARubick(hero,me,cast,tick) end
-	if heroes[8][2] ~= 1 then Boat(cast,me,tick) end	
-	if heroes[9][2] ~= 1 then if sleep[7] < tick then Ancient(cast,me,hero,tick,heroes[9][1]) sleep[7] = tick + 200 end end
+	if heroes[8][2] ~= 1 then Boat(cast,me) end	
+	if heroes[9][2] ~= 1 then if sleep[4] < tick then Ancient(cast,me,hero,heroes[9][1]) sleep[4] = tick + 200 end end
 	
 end
 
 function GenerateSideMessage(heroName,spellName)
-	local myFont = drawMgr:CreateFont("sideMsg","Arial",14,10) 
 	local test = sideMessage:CreateMessage(200,60)
 	test:AddElement(drawMgr:CreateRect(10,10,72,40,0xFFFFFFFF,drawMgr:GetTextureId("NyanUI/heroes_horizontal/"..heroName:gsub("npc_dota_hero_",""))))
 	test:AddElement(drawMgr:CreateRect(85,0,62,62,0xFFFFFFFF,drawMgr:GetTextureId("Stuff/statpop_exclaim")))
@@ -197,11 +195,42 @@ function RangeCast(me,hero)
 	end
 end
 
-function Arrow(cast,me,hero,tick,heroName)
+function Arrow(cast,me,hero,heroName)
+	if not icon then
+		icon = drawMgr:CreateRect(0,0,16,16,0x000000ff) icon.visible = false		
+	end
+	local arrow = FindArrow(cast,me)	
+	if arrow then
+		if not start then
+			GenerateSideMessage(heroName,"mirana_arrow")
+			start = arrow.position
+			runeMinimap = MapToMinimap(start.x,start.y)
+			icon.x = runeMinimap.x-20/2
+			icon.y = runeMinimap.y-20/2
+			icon.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/mirana")
+		end
+		if arrow.visibleToEnemy and not vec then		
+			vec = arrow.position 
+			if GetDistance2D(vec,start) < 75 then
+				vec = nil
+			end
+		end
+		if start and vec and #TArrow == 0 then
+			for z = 1,29 do	
+				local p = FindAB(start,vec,100*z+100)
+				TArrow[z] = Effect(p, "candle_flame_medium" )
+				TArrow[z]:SetVector(0,p)											
+			end				
+		end
+	elseif vec then
+		TArrow = {}
+		collectgarbage("collect")
+		start,vec = nil,nil
+	end
 	for i,v in ipairs(hero) do
 		if v.team ~= me.team then
 			if v.name == heroName then
-				if sleep[2] >= tick then
+				if arrow then
 					icon.visible = not v.visible
 				else
 					runeMinimap = nil
@@ -210,206 +239,120 @@ function Arrow(cast,me,hero,tick,heroName)
 			end
 		end
 	end	
-	local arrow = entityList:GetEntities(function (ar) return ar.team ~= me.team and ar.classId == 282 and ar.dayVision == 650 end)[1]
-	if arrow ~= nil then
-		clear = true
-		if not MSGArrow then
-			GenerateSideMessage(heroName,"mirana_arrow")
-			MSGArrow = true
-		end
-		if not start then 
-			start = arrow.position
-			return
-		end
-		if arrow.visibleToEnemy then
-			if not vec then 
-				vec = arrow.position 
-				if GetDistance2D(vec,start) < 75 then
-					vec = nil
-				end
-			end
-		end
-		if start ~= nil and vec ~= nil and #TArrow == 0 then
-			for z = 1,29 do	
-				local p = FindAB(start,vec,100*z+100)
-				TArrow[z] = Effect(p, "candle_flame_medium" )
-				TArrow[z]:SetVector(0,p)											
-			end				
-		end
-		if runeMinimap == nil then
-			runeMinimap = MapToMinimap(start.x,start.y)
-			icon.x = runeMinimap.x-20/2
-			icon.y = runeMinimap.y-20/2
-			icon.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/mirana")
-			sleep[2] = tick + 3500
-		end
-	elseif clear then
-		clear = false
-		TArrow = {}
-		collectgarbage("collect")
-		start,vec,MSGArrow = nil,nil,nil
-	end
-
-	if start ~= nil and vec ~= nil and tick > sleep[2] then
-		TArrow = {}
-		collectgarbage("collect")
-		start,vec,MSGArrow = nil,nil,nil
-	end
-
 end
 
 function Charge(cast,me,hero,heroName)
+	if not TCharge[1] then
+		TCharge[1] = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName:gsub("npc_dota_hero_",""))) TCharge[1].visible = false	
+		TCharge[2] = drawMgr:CreateRect(0,0,20,20,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName:gsub("npc_dota_hero_",""))) TCharge[2].visible = false
+	end
 	for i,v in ipairs(hero) do
 		if v.team ~= me.team then
 			if v.name == heroName then
-				ISeeBara =  not v.visible
+				ISeeBara = not v.visible
 				if not ISeeBara then time = client.gameTime end
 				if v:GetAbility(1) and v:GetAbility(1).level ~= 0 then
 					speeed = speed[v:GetAbility(1).level]
 				end
 			end
-		else
-			local offset = v.healthbarOffset
-			if offset == -1 then return end
-			if not TCharge[v.handle] then
-				TCharge[v.handle] = {}  TCharge[v.handle].main = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName:gsub("npc_dota_hero_",""))) TCharge[v.handle].main.visible = false
-				TCharge[v.handle].main.entity = v TCharge[v.handle].main.entityPosition = Vector(0,0,offset)
-				TCharge[v.handle].map = drawMgr:CreateRect(0,0,20,20,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName:gsub("npc_dota_hero_",""))) TCharge[v.handle].map.visible = false
-			end
-			if v.visible and v.alive then
-				if v:DoesHaveModifier("modifier_spirit_breaker_charge_of_darkness_vision") then
-					if not MSGCharge[v.handle] then
-						GenerateSideMessage(v.name,"spirit_breaker_charge_of_darkness")
-						MSGCharge[v.handle] = true
-					end
-					TCharge[v.handle].main.visible = true
-					TCharge[v.handle].map.visible = ISeeBara
-					for _,k in ipairs(cast) do
-						if k.dayVision == 0 and k.unitState == 59802112 then
-							if not aa[v.handle] then
-								aa[v.handle] = true
-								time = client.gameTime
-							end
-							local distance = GetDistance2D(v,k)
-							local Ddistance = distance - (client.gameTime - time)*speeed
-							local minimap = MapToMinimap((k.position.x - v.position.x) * Ddistance / GetDistance2D(k,v) + v.position.x,(k.position.y - v.position.y) * Ddistance / GetDistance2D(k,v) + v.position.y)
-							TCharge[v.handle].map.x = minimap.x-20/2
-							TCharge[v.handle].map.y = minimap.y-20/2
-						end
-					end
-				else
-					if aa[v.handle] ~= nil then
-						aa[v.handle] = nil
-					end
-					MSGCharge[v.handle] = nil
-					TCharge[v.handle].main.visible = false
-					TCharge[v.handle].map.visible = false
-				end
-			else
-				if aa[v.handle] ~= nil then
-					aa[v.handle] = nil
-				end
-				MSGCharge[v.handle] = nil
-				TCharge[v.handle].main.visible = false
-				TCharge[v.handle].map.visible = false
-			end
 		end
 	end
+	local target = FindByModifierS(hero,"modifier_spirit_breaker_charge_of_darkness_vision",me)		
+	if target then
+		local offset = target.healthbarOffset
+		if offset == -1 then return end		
+		if not TCharge[1].visible then
+			GenerateSideMessage(target.name,"spirit_breaker_charge_of_darkness")
+			TCharge[1].entity = target 
+			TCharge[1].entityPosition = Vector(0,0,offset)
+			TCharge[1].visible = true	
+		end
+		local Charged = FindCharge(cast)
+		if Charged then
+			if not aa then aa = true
+				time = client.gameTime
+			end
+			local distance = GetDistance2D(Charged,target)
+			local Ddistance = distance - (client.gameTime - time)*speeed
+			local minimap = MapToMinimap((Charged.position.x - target.position.x) * Ddistance / GetDistance2D(Charged,target) + target.position.x,(Charged.position.y - target.position.y) * Ddistance / GetDistance2D(Charged,target) + target.position.y)
+			TCharge[2].x = minimap.x-20/2
+			TCharge[2].y = minimap.y-20/2
+			TCharge[2].visible = ISeeBara
+		end		
+	elseif TCharge[1].visible then
+		aa = nil
+		TCharge[1].visible = false
+	end
+
 end
 
 function Infest(me,hero,tick,heroName)
-	if tick > sleep[3] then
-		for i,v in ipairs(hero) do
-			if v.team ~= me.team then
-				local offset = v.healthbarOffset
-				if offset == -1 then return end
-
-				if not TInfest[v.handle] then
-					TInfest[v.handle] = {}  TInfest[v.handle] = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName:gsub("npc_dota_hero_",""))) TInfest[v.handle].visible = false
-					TInfest[v.handle].entity = v TInfest[v.handle].entityPosition = Vector(0,0,offset)
-				end
-
-				if v.visible and v.alive then
-					if v:DoesHaveModifier("modifier_life_stealer_infest_effect") then
-						if not MSGInfest[v.handle] then
-							GenerateSideMessage(v.name,"life_stealer_infest")
-							MSGInfest[v.handle] = true
-						end
-						TInfest[v.handle].visible = true
-					else
-						TInfest[v.handle].visible = false
-						MSGInfest[v.handle] = nil
-					end
-				else
-					TInfest[v.handle].visible = false
-				end
+	if not TInfest then
+		TInfest = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName:gsub("npc_dota_hero_",""))) TInfest.visible = false			
+	end
+	if tick > sleep[2] then	
+		local target = FindByModifierI(hero,"modifier_life_stealer_infest_effect",me)		
+		if target then
+			local offset = target.healthbarOffset
+			if offset == -1 then return end		
+			if not TInfest.visible then
+				GenerateSideMessage(target.name,"life_stealer_infest")
+				TInfest.entity = target 
+				TInfest.entityPosition = Vector(0,0,offset)
+				TInfest.visible = true
 			end
+		elseif TInfest.visible then
+			TInfest.visible = false
+		end
+		sleep[2] = tick + 250
+	end	
+end
+
+function Snipe(me,hero,tick,heroName)
+	if not TAssis then
+		TAssis = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName:gsub("npc_dota_hero_",""))) TAssis.visible = false			
+	end
+	if tick > sleep[3] then	
+		local target = FindByModifierS(hero,"modifier_sniper_assassinate",me)		
+		if target then
+			local offset = target.healthbarOffset
+			if offset == -1 then return end		
+			if not TAssis.visible then
+				GenerateSideMessage(target.name,"sniper_assassinate")
+				TAssis.entity = target 
+				TAssis.entityPosition = Vector(0,0,offset)
+				TAssis.visible = true
+			end
+		elseif TAssis.visible then
+			TAssis.visible = false
 		end
 		sleep[3] = tick + 250
 	end
 end
 
-function Snipe(me,hero,tick,heroName)
-	if tick > sleep[4] then
-		for i,v in ipairs(hero) do
-			if v.team == me.team then
-				local offset = v.healthbarOffset
-				if offset == -1 then return end
+function Boat(cast,me)
 
-				if not TAssis[v.handle] then
-					TAssis[v.handle] = {}  TAssis[v.handle] = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName:gsub("npc_dota_hero_",""))) TAssis[v.handle].visible = false
-					TAssis[v.handle].entity = v TAssis[v.handle].entityPosition = Vector(0,0,offset)
-				end
-
-				if v.visible and v.alive then
-					if v:DoesHaveModifier("modifier_sniper_assassinate") then
-						if not MSGAssis[v.handle] then
-							GenerateSideMessage(v.name,"sniper_assassinate")
-							MSGAssis[v.handle] = true
-						end
-						TAssis[v.handle].visible = true
-					else
-						MSGAssis[v.handle] = nil
-						TAssis[v.handle].visible = false
-					end
-				else
-					MSGAssis[v.handle] = nil
-					TAssis[v.handle].visible = false
-				end
+	local ship = FindBoat(cast,me)
+	if ship then		
+		if not start1 then
+			start1 = ship.position
+			return
+		end
+		if ship.visibleToEnemy and not vec1 then
+			vec1 = ship.position
+			if GetDistance2D(vec1,start1) < 75 then
+				vec1 = nil
 			end
 		end
-		sleep[4] = tick + 250
-	end
-end
-
-function Boat(cast,me,tick)
-	for i,v in ipairs(cast) do
-		if v.team ~= me.team and v.dayVision == 400 and v.unitState == 59802112 then
-			if not start1 then
-				start1 = v.position
-				return
-			end
-			if v.visibleToEnemy then
-				if not vec1 then
-					vec1 = v.position
-					if GetDistance2D(vec1,start1) < 75 then
-						vec1 = nil
-					end
-				end
-			end
-			if start1 ~= nil and vec1 ~= nil and not TBoat[1] and not TBoat[2] then
-				local p = FindAB(start1,vec1,1950)
-				TBoat[1] = Effect(p,"range_display")
-				TBoat[1]:SetVector(0,p)
-				TBoat[1]:SetVector(1,Vector(425,0,0))
-				TBoat[2] = Effect(p,"kunkka_ghostship_marker")				
-				TBoat[2]:SetVector(0,p)
-				sleep[5] = tick + 3500
-			end
+		if start1 ~= nil and vec1 ~= nil and not TBoat[1] then
+			local p = FindAB(start1,vec1,1950)
+			TBoat[1] = Effect(p,"range_display")
+			TBoat[1]:SetVector(0,p)
+			TBoat[1]:SetVector(1,Vector(425,0,0))
+			TBoat[2] = Effect(p,"kunkka_ghostship_marker")				
+			TBoat[2]:SetVector(0,p)
 		end
-	end
-
-	if start1 ~= nil and vec1 ~= nil and sleep[5] < tick then
+	elseif vec1 then
 		TBoat = {}
 		collectgarbage("collect")
 		start1,vec1 = nil,nil
@@ -417,32 +360,30 @@ function Boat(cast,me,tick)
 
 end
 
-function Ancient(cast,me,hero,tick,heroName)
-	for i,v in ipairs(cast) do
-		if v.team ~= me.team and v.dayVision == 550 and v.unitState == 58753536 then
-			if not MSGIce then
-				GenerateSideMessage(heroName,"ancient_apparition_ice_blast")
-				MSGIce = true
-				sleep[6] = tick + 20000
-			end
-		end
-	end
+function Ancient(cast,me,hero,heroName)
+
+	local blast = FindBlast(cast,me)
 	local coldclear = false
-	for i,v in ipairs(hero) do
-		if v.team == me.team then
-			if v:FindModifier("modifier_cold_feet") then
-				if not TCold[v.handle] then
-					local vpos = Vector(v.position.x,v.position.y,v.position.z)
-					TCold[v.handle] = Effect(vpos,"range_display")
-					TCold[v.handle]:SetVector(0,vpos)
-					TCold[v.handle]:SetVector(1,Vector(740,0,0))
-				end
-			elseif TCold[v.handle] ~= nil then
-				TCold[v.handle] = nil
-				coldclear = true
-			end
+	local cold = FindByModifierS(hero,"modifier_cold_feet",me)
+	if blast then
+		if not blastmsg then
+		blastmsg = true			
+		GenerateSideMessage(heroName,"ancient_apparition_ice_blast")
 		end
-	end
+	elseif blastmsg then
+		blastmsg = false
+	end	
+	if cold then
+		if not TCold then
+			local vpos = Vector(v.position.x,v.position.y,v.position.z)
+			TCold = Effect(vpos,"range_display")
+			TCold:SetVector(0,vpos)
+			TCold:SetVector(1,Vector(740,0,0))
+		end
+	elseif TCold ~= nil then
+		TCold = nil
+		coldclear = true
+	end	
 	if coldclear then
 		collectgarbage("collect")
 	end
@@ -484,6 +425,66 @@ function FindAB(first, second, distance)
 	client:GetGroundPosition(retVector)
 	retVector.z = retVector.z+100
 	return retVector
+end
+
+function FindByModifierS(target,mod,me)
+	local FindHero = target
+	for i,v in ipairs(FindHero) do
+		if v.team == me.team and v.visible and v.alive and v:DoesHaveModifier(mod) then
+			return v
+		end
+	end
+	return nil
+end
+
+function FindByModifierI(target,mod,me)
+	local FindHero = target
+	for i,v in ipairs(FindHero) do
+		if v.team ~= me.team and v.visible and v.alive and v:DoesHaveModifier(mod) then
+			return v
+		end
+	end
+	return nil
+end
+
+function FindBlast(cast,me)
+	local blast1 = cast
+	for i, v in ipairs(blast1) do
+		if v.team ~= me.team and v.dayVision == 550 and v.unitState == 58753536 then
+			return v
+		end
+	end
+	return nil
+end
+
+function FindCharge(cast)
+	local charge1 = cast
+	for i, v in ipairs(charge1) do
+		if v.dayVision == 0 and v.unitState == 59802112 then
+			return v
+		end
+	end
+	return nil
+end
+
+function FindBoat(cast,me)
+	local boat1 = cast
+	for i,v in ipairs(boat1) do
+		if v.team ~= me.team and v.dayVision == 400 and v.unitState == 59802112 then
+			return v
+		end
+	end
+	return nil
+end
+
+function FindArrow(cast,me)
+	local arrow1 = cast
+	for i, v in ipairs(arrow1) do
+		if v.team ~= me.team and v.dayVision == 650 then
+			return v
+		end
+	end
+	return nil
 end
 
 function GameClose()
