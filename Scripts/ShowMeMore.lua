@@ -109,7 +109,7 @@ function Main(tick)
 	if heroes[5][2] ~= 1 or heroes[6][2] ~= 1 then RangeCast(me,hero) end
 	if heroes[7][2] ~= 1 then WhatARubick(hero,me,cast,tick) end
 	if heroes[8][2] ~= 1 then Boat(cast,me) end	
-	if heroes[9][2] ~= 1 then if sleep[4] < tick then Ancient(cast,me,hero,heroes[9][1]) sleep[4] = tick + 200 end end
+	if heroes[9][2] ~= 1 then Ancient(cast,me,hero,heroes[9][1]) end
 	
 end
 
@@ -363,17 +363,17 @@ end
 
 function Ancient(cast,me,hero,heroName)
 
-	local blast = FindBlast(cast,me)
-	local coldclear = false
-	local cold = FindByModifierS(hero,"modifier_cold_feet",me)
+	local blast = FindBlast(cast,me)	
 	if blast then
 		if not blastmsg then
-		blastmsg = true			
-		GenerateSideMessage(heroName,"ancient_apparition_ice_blast")
+			blastmsg = true			
+			GenerateSideMessage(heroName,"ancient_apparition_ice_blast")
 		end
 	elseif blastmsg then
 		blastmsg = false
 	end	
+	local coldclear = false
+	local cold = FindByModifierS(hero,"modifier_cold_feet",me)
 	if cold then
 		if not TCold then
 			local vpos = Vector(cold.position.x,cold.position.y,cold.position.z)
@@ -451,7 +451,7 @@ end
 function FindBlast(cast,me)
 	local blast1 = cast
 	for i, v in ipairs(blast1) do
-		if v.team ~= me.team and v.dayVision == 550 and v.unitState == 58753536 then
+		if v.team ~= me.team and v.dayVision == 550 and v.unitState == 58753536 or v.unitState == 58753792 then
 			return v
 		end
 	end
