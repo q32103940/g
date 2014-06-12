@@ -2,7 +2,7 @@ require("libs.Utils")
 require("libs.Deadly")
 
 ------------------------[[Config]]-------------------------
-		local toggleKey = string.byte("Z")
+			local toggleKey = string.byte("Z")
 ------------------------------------------------------------
 if math.floor(client.screenRatio*100) == 177 then
 	xx = client.screenSize.x/300
@@ -85,7 +85,7 @@ function Tick(tick)
 					if not Cast then
 						local DmgF = math.floor(v.health - v:DamageTaken(Dmg[Skill.level], Type, me))
 						hero[v.handle].text = " "..DmgF
-						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+						if EnemyCheck(me,v,Skill,DmgF,Range) then
 							if not Time then		
 								if Target == "target" then
 									me:SafeCastAbility(Skill,v)
@@ -105,21 +105,21 @@ function Tick(tick)
 						local DmgS = v:GetProperty("CDOTA_BaseNPC","m_iCurrentLevel")
 						local DmgF = math.floor(v.health - v:DamageTaken(math.floor((DmgS == 25 or DmgS % DmgM[Skill.level].levelMultiplier == 0) and (v.maxHealth * 0.20 + DmgM[Skill.level].dmg)	or	(DmgM[Skill.level].dmg)), Type, me))					
 						hero[v.handle].text = " "..DmgF
-						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+						if EnemyCheck(me,v,Skill,DmgF,Range) then
 							me:SafeCastAbility(Skill,v)
 						end
 					elseif me.name == "npc_dota_hero_necrolyte" then
 						local DmgS = v.maxHealth - v.health
 						local DmgF = math.floor(v.health - v:DamageTaken((DmgS) * Dmg[Skill.level], Type, me))
 						hero[v.handle].text = " "..DmgF
-						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+						if EnemyCheck(me,v,Skill,DmgF,Range) then
 							me:SafeCastAbility(Skill,v)
 						end
 					elseif me.name == "npc_dota_hero_antimage" then
 						local DmgS = v.maxMana - v.mana
 						local DmgF = math.floor(v.health - v:DamageTaken(DmgS * Dmg[Skill.level],Type, me))
 						hero[v.handle].text = " "..DmgF
-						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+						if EnemyCheck(me,v,Skill,DmgF,Range) then
 							me:SafeCastAbility(Skill,v)
 						end						
 					elseif me.name == "npc_dota_hero_morphling" then 
@@ -128,28 +128,28 @@ function Tick(tick)
 						if DmgS > 1.5 then DmgM = 0.5*Skill.level elseif DmgS < 0.5 then DmgM = 0.25 elseif (DmgS >= 0.5 and DmgS <= 1.5) then DmgM = 0.25+((DmgS-0.5)*(0.5*Skill.level-0.25)) end
 						local DmgF = math.floor(v.health - v:DamageTaken((DmgM)*agi + Dmg[Skill.level], Type, me))
 						hero[v.handle].text = " "..DmgF
-						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+						if EnemyCheck(me,v,Skill,DmgF,Range) then
 							me:SafeCastAbility(Skill,v)
 						end
 					elseif me.name == "npc_dota_hero_visage" then														
 						local DmgM = math.floor(20 + (ModifierStacks("modifier_visage_soul_assumption",me) * 65))				
 						local DmgF = math.floor(v.health - v:DamageTaken(DmgM, Type, me))
 						hero[v.handle].text = " "..DmgF
-						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+						if EnemyCheck(me,v,Skill,DmgF,Range) then
 							me:SafeCastAbility(Skill,v)
 						end						
 					elseif me.name == "npc_dota_hero_alchemist" then						
 						if Elapsed("modifier_alchemist_unstable_concoction",me) < 4.6 then DmgS = Elapsed("modifier_alchemist_unstable_concoction",me) else DmgS = 4.6 end
 						local DmgF = math.floor(v.health - v:DamageTaken((DmgS * DmgM[Skill.level]), list[me.name].Type, me))
 						hero[v.handle].text = " "..DmgF
-						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+						if EnemyCheck(me,v,Skill,DmgF,Range) then
 							me:SafeCastAbility(me:GetAbility(2),v)
 						end
 					elseif me.name == "npc_dota_hero_mirana" then													
 						if GetDistance2D(v,me) < 200 then DmgM = Dmg[Skill.level]*1.75 else DmgM = Dmg[Skill.level] end
 						local DmgF = math.floor(v.health - v:DamageTaken(DmgM, Type, me))
 						hero[v.handle].text = " "..DmgF	
-						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+						if EnemyCheck(me,v,Skill,DmgF,Range) then
 							me:SafeCastAbility(Skill)
 						end
 					elseif me.name == "npc_dota_hero_obsidian_destroyer" then
@@ -157,7 +157,7 @@ function Tick(tick)
 						if DmgS > v.intellectTotal then DmgM = math.floor((DmgS - v.intellectTotal)*Dmg[Skill.level]) else DmgM = 1 end
 						local DmgF = math.floor(v.health - v:DamageTaken(DmgM, Type, me))
 						hero[v.handle].text = " "..DmgF
-						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+						if EnemyCheck(me,v,Skill,DmgF,Range) then
 							me:SafeCastAbility(Skill,v.position)
 						end
 					elseif me.name == "npc_dota_hero_elder_titan" then
@@ -165,7 +165,7 @@ function Tick(tick)
 						if passive ~= 0 and not v:FindModifier("modifier_elder_titan_natural_order") then DmgS = DmgM[me:GetAbility(3).level]*Dmg[Skill.level] else DmgS = Dmg[Skill.level] end
 						local DmgF = math.floor(v.health - v:DamageTaken(DmgS, list[me.name].Type, me))
 						hero[v.handle].text = " "..DmgF
-						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+						if EnemyCheck(me,v,Skill,DmgF,Range) then
 							me:SafeCastAbility(Skill,v.position)
 						end
 					elseif me.name == "npc_dota_hero_shadow_demon" then
@@ -174,7 +174,7 @@ function Tick(tick)
 						if DmgS then
 							local DmgF = math.floor(v.health - v:DamageTaken(DmgS, list[me.name].Type, me))
 							hero[v.handle].text = " "..DmgF
-							if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+							if EnemyCheck(me,v,Skill,DmgF,Range) then
 								me:SafeCastAbility(Skill)
 							end
 						end
@@ -182,7 +182,7 @@ function Tick(tick)
 						local DmgM = math.floor(Dmg[Skill.level] * math.floor(v.intellectTotal))
 						local DmgF = math.floor(v.health -  v:ManaBurnDamageTaken(DmgM,1,DAMAGE_MAGC,me))
 						hero[v.handle].text = " "..DmgF		
-						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+						if EnemyCheck(me,v,Skill,DmgF,Range) then
 							me:SafeCastAbility(Skill,v)
 						end
 					elseif me.name == "npc_dota_hero_ogre_magi" then
@@ -192,27 +192,27 @@ function Tick(tick)
 							local DmgF = math.floor(v.health - DmgM)
 							hero[v.handle].x = -10
 							hero[v.handle].text = " "..DmgF.."("..(DmgF-DmgM)..")"
-							if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+							if EnemyCheck(me,v,Skill,DmgF,Range) then
 								me:SafeCastAbility(Skill,v)
 							end
 						elseif musticast == 2 then
 							local DmgF = math.floor(v.health - v:DamageTaken(Dmg[Skill.level],Type, me))
 							hero[v.handle].x = -30
 							hero[v.handle].text = " "..DmgF.."("..(DmgF-(DmgM*2))..";"..(DmgF-(DmgM*3))..")"
-							if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+							if EnemyCheck(me,v,Skill,DmgF,Range) then
 								me:SafeCastAbility(Skill,v)
 							end
 						elseif musticast == 3 then
 							local DmgF = math.floor(v.health - v:DamageTaken(Dmg[Skill.level],Type, me))
 							hero[v.handle].x = -50
 							hero[v.handle].text = " "..DmgF.."("..(DmgF-(DmgM*2))..";"..(DmgF-(DmgM*3))..";"..(DmgF-(DmgM*4))..")"
-							if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+							if EnemyCheck(me,v,Skill,DmgF,Range) then
 								me:SafeCastAbility(Skill,v)
 							end
 						else
 							local DmgF = math.floor(v.health - v:DamageTaken(Dmg[Skill.level],Type, me))
 							hero[v.handle].text = " "..DmgF..""
-							if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+							if EnemyCheck(me,v,Skill,DmgF,Range) then
 								me:SafeCastAbility(Skill,v)
 							end
 						end
@@ -221,21 +221,21 @@ function Tick(tick)
 							local Range = 900
 							local DmgF = math.floor(v.health - v:DamageTaken(Dmg[Skill.level],DAMAGE_UNIV, me))
 							hero[v.handle].text = " "..DmgF
-							if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+							if EnemyCheck(me,v,Skill,DmgF,Range) then
 								me:SafeCastAbility(Skill,v)
 							end
 						else
 							local Range = 600
 							local DmgF = math.floor(v.health - v:DamageTaken(Dmg[Skill.level],DAMAGE_MAGC, me))
 							hero[v.handle].text = " "..DmgF
-							if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+							if EnemyCheck(me,v,Skill,DmgF,Range) then
 								me:SafeCastAbility(Skill,v)
 							end
 						end								
 					elseif me.name == "npc_dota_hero_nevermore" then
 						local DmgF = math.floor(v.health - v:DamageTaken(Dmg[Skill.level],DAMAGE_MAGC, me))
 						hero[v.handle].text = " "..DmgF
-						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+						if EnemyCheck(me,v,Skill,DmgF,Range) then
 							local dis = GetDistance2D(v,me)
 							if dis < 350 then
 								me:Attack(v)
@@ -252,13 +252,13 @@ function Tick(tick)
 						local DmgM = Dmg[me:GetAbility(3).level]
 						local DmgF = math.floor(v.health - v:DamageTaken(DmgM, Type, me))
 						hero[v.handle].text = " "..DmgF
-						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+						if EnemyCheck(me,v,Skill,DmgF,Range) then
 							table.insert(real,v)
 						end
 					elseif me.name == "npc_dota_hero_furion" then
 						local DmgF = math.floor(v.health - v:DamageTaken(Dmg[Skill.level],DAMAGE_MAGC, me))
 						hero[v.handle].text = " "..DmgF
-						if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+						if EnemyCheck(me,v,Skill,DmgF,Range) then
 							table.insert(real,v)
 						end
 					elseif me.name == "npc_dota_hero_zuus" then
@@ -271,7 +271,7 @@ function Tick(tick)
 						local DmgF = math.floor(v.health - v:DamageTaken(Dmg[Skill.level] + DmgM,Type, me))
 						hero[v.handle].text = " "..DmgF
 						if GetDistance2D(me,v) < 600 then							
-							if EnemyCheck(me,v,Skill,DmgF,Dmg,Range) then
+							if EnemyCheck(me,v,Skill,DmgF,Range) then
 								me:SafeCastAbility(Skill,v)
 							end
 						end							
@@ -415,9 +415,9 @@ function IsMouseOnButton(x,y,h,w)
 	return mx > x and mx <= x + w and my > y and my <= y + h
 end
 
-function EnemyCheck(me,v,Skill,DmgF,Dmg,Range)
+function EnemyCheck(me,v,Skill,DmgF,Range)
 	if activated then
-		if GetDistance2D(me,v) < Range and CanDie(v,me) and NotDieFromSpell(Skill,v,me) and not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") and DmgF < -1 and NotDieFromBM(v,Skill,me,Dmg) then
+		if GetDistance2D(me,v) < Range and CanDie(v,me) and NotDieFromSpell(Skill,v,me) and not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") and DmgF < -1 and NotDieFromBM(v,me,DmgF) then
 			return true
 		else
 			return false
@@ -476,8 +476,8 @@ function NotDieFromSpell(spell,target,me)
 	return true
 end
 
-function NotDieFromBM(target,spell,me,dmg)
-	if not me:IsMagicDmgImmune() and target:DoesHaveModifier("modifier_item_blade_mail_reflect") and me.health < target:DamageTaken(dmg[spell.level], DAMAGE_PURE, me) then
+function NotDieFromBM(target,me,dmg)
+	if not me:IsMagicDmgImmune() and target:DoesHaveModifier("modifier_item_blade_mail_reflect") and target:DamageTaken(dmg, DAMAGE_PURE, me) + me.health < 0 then
 		return false
 	end
 	return true
