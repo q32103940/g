@@ -417,7 +417,7 @@ end
 
 function EnemyCheck(me,v,Skill,DmgF,Range)
 	if activated then
-		if GetDistance2D(me,v) < Range and CanDie(v,me) and NotDieFromSpell(Skill,v,me) and not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") and DmgF < -1 and NotDieFromBM(v,me,DmgF) then
+		if GetDistance2D(me,v) < Range and CanDie(v,me) and NotDieFromSpell(Skill,v,me) and not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") and DmgF < -1 then
 			return true
 		else
 			return false
