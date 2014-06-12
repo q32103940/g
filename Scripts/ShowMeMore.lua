@@ -22,7 +22,7 @@ local RC = {} local ss = {}
 local blastmsg = nil local TCold = nil
 --all
 local check = true local enemy = {}
-local sleep = {0,0,0,0}  tptab = {}
+local sleep = {0,0,0}
 
 spells = {
 -- modifier name, effect name, second effect, aoe-range, spell name
@@ -113,21 +113,6 @@ function Main(tick)
 
 end
 
-function TeleportScroll(me)
-	local tp = 	entityList:GetEntities({classId=CDOTA_Item_TeleportScroll,team = (5-me.team)})
-	for i,v in ipairs(tp) do
-		print(#tp)
-		if v.state == 61 then
-			if not tptab[v.handle] then
-				tptab[v.handle] = true
-				GenerateSideMessage(v.owner.name,"mirana_arrow")
-			end
-		else
-			tptab[v.handle] = nil
-		end
-	end
-end
-
 function GenerateSideMessage(heroName,spellName)
 	local test = sideMessage:CreateMessage(200,60)
 	test:AddElement(drawMgr:CreateRect(10,10,72,40,0xFFFFFFFF,drawMgr:GetTextureId("NyanUI/heroes_horizontal/"..heroName:gsub("npc_dota_hero_",""))))
@@ -142,7 +127,7 @@ function WhatARubick(hero,me,cast,tick)
 				local stolen = v:GetAbility(5)
 				if stolen then
 					if stolen.name == "mirana_arrow" then
-						Arrow(cast,me,hero,tick,v.name)
+						Arrow(cast,me,hero,v.name)
 					elseif stolen.name == "spirit_breaker_charge_of_darkness" then
 						Charge(cast,me,hero,v.name)
 					elseif stolen.name == "life_stealer_infest" then
@@ -150,9 +135,9 @@ function WhatARubick(hero,me,cast,tick)
 					elseif stolen.name == "sniper_assassinate" then
 						Snipe(me,hero,tick,v.name)
 					elseif stolen.name == "kunkka_ghostship" then
-						Boat(cast,me,tick)
+						Boat(cast,me)
 					elseif stolen.name == "ancient_apparition_ice_blast" then
-						Ancient(cast,me,hero,tick,v.name)
+						Ancient(cast,me,hero,v.name)
 					end
 				end
 			end
