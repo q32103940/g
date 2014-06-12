@@ -27,7 +27,7 @@ function Tick( tick )
 			if v.health > 0 and v.health < (dmg*(1-v.dmgResist)+1) then				
 				rect[v.handle].visible = true
 				rect[v.handle].color = 0xFF8AB160
-			elseif v.health > (dmg*(1-v.dmgResist)) and v.health < (dmg*(1-v.dmgResist))+88) then
+			elseif v.health > (dmg*(1-v.dmgResist)) and v.health < (dmg*(1-v.dmgResist))+88 then
 				rect[v.handle].visible = true
 				rect[v.handle].color = 0xA5E8FF60
 			else
