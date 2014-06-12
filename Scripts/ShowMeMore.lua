@@ -1,5 +1,5 @@
 --show sun strike, light strike, torrent, split earth, arrow, charge, infest, assassinate, hook, powershoot, Kunkka's ghost ship, ice blast, cold feed and supports stolen spell usage by rubick.
-require("libs.Utils")	
+require("libs.Utils")
 require("libs.Res")
 require("libs.SideMessage")
 --sunstrike, torrent, and other
@@ -34,7 +34,7 @@ spells = {
 
 RangeCastList = {
 --hero with table
-npc_dota_hero_pudge = 
+npc_dota_hero_pudge =
 {
 Spell = 1,
 Start = {1390,1290,1190,1090},
@@ -42,7 +42,7 @@ End = {1280,1170,1060,950},
 Count = 10,
 Range = {70,90,110,130},
 },
-npc_dota_hero_windrunner = 
+npc_dota_hero_windrunner =
 {
 Spell = 2,
 Start = {890,890,890,890},
@@ -71,10 +71,10 @@ function Main(tick)
 	local me = entityList:GetMyHero() if not me then return end
 
 	local cast = entityList:GetEntities({classId=282})
-	local hero = entityList:GetEntities({type=LuaEntity.TYPE_HERO, illusion = false})	
-	
+	local hero = entityList:GetEntities({type=LuaEntity.TYPE_HERO, illusion = false})
+
 	if check then
-		if #hero == 10 then	
+		if #hero == 10 then
 			if #enemy == 0 then
 				for i,v in ipairs(hero) do
 					if v.team ~= me.team then
@@ -86,7 +86,7 @@ function Main(tick)
 		if #enemy == 5 then
 			for l,k in ipairs(heroes) do
 				if enemy[1] ~= k[1] and enemy[2] ~= k[1] and enemy[3] ~= k[1] and enemy[4] ~= k[1] and enemy[5] ~= k[1] then
-					k[2] = 1							
+					k[2] = 1
 				else
 					k[2] = 0
 				end
@@ -96,21 +96,21 @@ function Main(tick)
 			end
 		end
 	end
-		
+
 	if tick > sleep[1] then
 		DirectBase(cast,me)
 		sleep[1] = tick + 125
 	end
-	
+
 	if heroes[1][2] ~= 1 then Arrow(cast,me,hero,heroes[1][1]) end
 	if heroes[2][2] ~= 1 then Charge(cast,me,hero,heroes[2][1]) end
 	if heroes[3][2] ~= 1 then Infest(me,hero,tick,heroes[3][1]) end
 	if heroes[4][2] ~= 1 then Snipe(me,hero,tick,heroes[4][1]) end
 	if heroes[5][2] ~= 1 or heroes[6][2] ~= 1 then RangeCast(me,hero) end
 	if heroes[7][2] ~= 1 then WhatARubick(hero,me,cast,tick) end
-	if heroes[8][2] ~= 1 then Boat(cast,me) end	
+	if heroes[8][2] ~= 1 then Boat(cast,me) end
 	if heroes[9][2] ~= 1 then Ancient(cast,me,hero,heroes[9][1]) end
-	
+
 end
 
 function TeleportScroll(me)
@@ -141,12 +141,12 @@ function WhatARubick(hero,me,cast,tick)
 			if v.name == "npc_dota_hero_rubick" then
 				local stolen = v:GetAbility(5)
 				if stolen then
-					if stolen.name == "mirana_arrow" then				
+					if stolen.name == "mirana_arrow" then
 						Arrow(cast,me,hero,tick,v.name)
 					elseif stolen.name == "spirit_breaker_charge_of_darkness" then
 						Charge(cast,me,hero,v.name)
 					elseif stolen.name == "life_stealer_infest" then
-						Infest(me,hero,tick,v.name)					
+						Infest(me,hero,tick,v.name)
 					elseif stolen.name == "sniper_assassinate" then
 						Snipe(me,hero,tick,v.name)
 					elseif stolen.name == "kunkka_ghostship" then
@@ -184,15 +184,15 @@ function RangeCast(me,hero)
 			if RangeCastList[v.name] then
 				local number = RangeCastList[v.name].Spell
 				if number then
-					local spell = v:GetAbility(tonumber(number))								
-					if spell and spell.cd ~= 0 then				
+					local spell = v:GetAbility(tonumber(number))
+					if spell and spell.cd ~= 0 then
 						local ind = RangeCastList[v.name].End
 						local count = RangeCastList[v.name].Count
 						local range = RangeCastList[v.name].Range
 						local srart = RangeCastList[v.name].Start
 						if math.floor(spell.cd*100) > srart[spell.level] and not ss[v.handle] then
 							ss[v.handle] = true
-							for z = 1, count do											
+							for z = 1, count do
 								local p = Vector(v.position.x + range[spell.level]*z * math.cos(v.rotR), v.position.y + range[spell.level]*z * math.sin(v.rotR), v.position.z+50)
 								RC[z] = Effect(p, "fire_torch" )
 								RC[z]:SetVector(1,Vector(0,0,0))
@@ -212,9 +212,9 @@ end
 
 function Arrow(cast,me,hero,heroName)
 	if not icon then
-		icon = drawMgr:CreateRect(0,0,16,16,0x000000ff) icon.visible = false		
+		icon = drawMgr:CreateRect(0,0,16,16,0x000000ff) icon.visible = false
 	end
-	local arrow = FindArrow(cast,me)	
+	local arrow = FindArrow(cast,me)
 	if arrow then
 		if not start then
 			GenerateSideMessage(heroName,"mirana_arrow")
@@ -224,18 +224,18 @@ function Arrow(cast,me,hero,heroName)
 			icon.y = runeMinimap.y-20/2
 			icon.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/mirana")
 		end
-		if arrow.visibleToEnemy and not vec then		
-			vec = arrow.position 
+		if arrow.visibleToEnemy and not vec then
+			vec = arrow.position
 			if GetDistance2D(vec,start) < 75 then
 				vec = nil
 			end
 		end
 		if start and vec and #TArrow == 0 then
-			for z = 1,29 do	
+			for z = 1,29 do
 				local p = FindAB(start,vec,100*z+100)
 				TArrow[z] = Effect(p, "candle_flame_medium" )
-				TArrow[z]:SetVector(0,p)											
-			end				
+				TArrow[z]:SetVector(0,p)
+			end
 		end
 	elseif vec then
 		TArrow = {}
@@ -253,12 +253,12 @@ function Arrow(cast,me,hero,heroName)
 				end
 			end
 		end
-	end	
+	end
 end
 
 function Charge(cast,me,hero,heroName)
 	if not TCharge[1] then
-		TCharge[1] = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName:gsub("npc_dota_hero_",""))) TCharge[1].visible = false	
+		TCharge[1] = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName:gsub("npc_dota_hero_",""))) TCharge[1].visible = false
 		TCharge[2] = drawMgr:CreateRect(0,0,20,20,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName:gsub("npc_dota_hero_",""))) TCharge[2].visible = false
 	end
 	for i,v in ipairs(hero) do
@@ -272,15 +272,15 @@ function Charge(cast,me,hero,heroName)
 			end
 		end
 	end
-	local target = FindByModifierS(hero,"modifier_spirit_breaker_charge_of_darkness_vision",me)		
+	local target = FindByModifierS(hero,"modifier_spirit_breaker_charge_of_darkness_vision",me)
 	if target then
 		local offset = target.healthbarOffset
-		if offset == -1 then return end		
+		if offset == -1 then return end
 		if not TCharge[1].visible then
 			GenerateSideMessage(target.name,"spirit_breaker_charge_of_darkness")
-			TCharge[1].entity = target 
+			TCharge[1].entity = target
 			TCharge[1].entityPosition = Vector(0,0,offset)
-			TCharge[1].visible = true	
+			TCharge[1].visible = true
 		end
 		local Charged = FindCharge(cast)
 		if Charged then
@@ -293,7 +293,7 @@ function Charge(cast,me,hero,heroName)
 			TCharge[2].x = minimap.x-20/2
 			TCharge[2].y = minimap.y-20/2
 			TCharge[2].visible = ISeeBara
-		end		
+		end
 	elseif TCharge[1].visible then
 		aa = nil
 		TCharge[1].visible = false
@@ -304,16 +304,16 @@ end
 
 function Infest(me,hero,tick,heroName)
 	if not TInfest then
-		TInfest = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName:gsub("npc_dota_hero_",""))) TInfest.visible = false			
+		TInfest = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName:gsub("npc_dota_hero_",""))) TInfest.visible = false
 	end
-	if tick > sleep[2] then	
-		local target = FindByModifierI(hero,"modifier_life_stealer_infest_effect",me)		
+	if tick > sleep[2] then
+		local target = FindByModifierI(hero,"modifier_life_stealer_infest_effect",me)
 		if target then
 			local offset = target.healthbarOffset
-			if offset == -1 then return end		
+			if offset == -1 then return end
 			if not TInfest.visible then
 				GenerateSideMessage(target.name,"life_stealer_infest")
-				TInfest.entity = target 
+				TInfest.entity = target
 				TInfest.entityPosition = Vector(0,0,offset)
 				TInfest.visible = true
 			end
@@ -321,21 +321,21 @@ function Infest(me,hero,tick,heroName)
 			TInfest.visible = false
 		end
 		sleep[2] = tick + 250
-	end	
+	end
 end
 
 function Snipe(me,hero,tick,heroName)
 	if not TAssis then
-		TAssis = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName:gsub("npc_dota_hero_",""))) TAssis.visible = false			
+		TAssis = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName:gsub("npc_dota_hero_",""))) TAssis.visible = false
 	end
-	if tick > sleep[3] then	
-		local target = FindByModifierS(hero,"modifier_sniper_assassinate",me)		
+	if tick > sleep[3] then
+		local target = FindByModifierS(hero,"modifier_sniper_assassinate",me)
 		if target then
 			local offset = target.healthbarOffset
-			if offset == -1 then return end		
+			if offset == -1 then return end
 			if not TAssis.visible then
 				GenerateSideMessage(target.name,"sniper_assassinate")
-				TAssis.entity = target 
+				TAssis.entity = target
 				TAssis.entityPosition = Vector(0,0,offset)
 				TAssis.visible = true
 			end
@@ -349,7 +349,7 @@ end
 function Boat(cast,me)
 
 	local ship = FindBoat(cast,me)
-	if ship then		
+	if ship then
 		if not start1 then
 			start1 = ship.position
 			return
@@ -365,7 +365,7 @@ function Boat(cast,me)
 			TBoat[1] = Effect(p,"range_display")
 			TBoat[1]:SetVector(0,p)
 			TBoat[1]:SetVector(1,Vector(425,0,0))
-			TBoat[2] = Effect(p,"kunkka_ghostship_marker")				
+			TBoat[2] = Effect(p,"kunkka_ghostship_marker")
 			TBoat[2]:SetVector(0,p)
 		end
 	elseif vec1 then
@@ -378,15 +378,15 @@ end
 
 function Ancient(cast,me,hero,heroName)
 
-	local blast = FindBlast(cast,me)	
+	local blast = FindBlast(cast,me)
 	if blast then
 		if not blastmsg then
-			blastmsg = true			
+			blastmsg = true
 			GenerateSideMessage(heroName,"ancient_apparition_ice_blast")
 		end
 	elseif blastmsg then
 		blastmsg = false
-	end	
+	end
 	local coldclear = false
 	local cold = FindByModifierS(hero,"modifier_cold_feet",me)
 	if cold then
@@ -399,11 +399,11 @@ function Ancient(cast,me,hero,heroName)
 	elseif TCold ~= nil then
 		TCold = nil
 		coldclear = true
-	end	
+	end
 	if coldclear then
 		collectgarbage("collect")
 	end
-	
+
 end
 
 function GetSpecial(spell,Name,lvl)
