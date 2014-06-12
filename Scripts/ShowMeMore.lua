@@ -22,7 +22,7 @@ local RC = {} local ss = {}
 local blastmsg = nil local TCold = nil
 --all
 local check = true local enemy = {}
-local sleep = {0,0,0,0}
+local sleep = {0,0,0,0}  tptab = {}
 
 spells = {
 -- modifier name, effect name, second effect, aoe-range, spell name
@@ -70,8 +70,8 @@ function Main(tick)
 	if not client.connected or client.loading or client.console then return end
 	local me = entityList:GetMyHero() if not me then return end
 
-	local cast = entityList:GetEntities({classId=CDOTA_BaseNPC})
-	local hero = entityList:GetEntities({type=LuaEntity.TYPE_HERO, illusion = false})
+	local cast = entityList:GetEntities({classId=282})
+	local hero = entityList:GetEntities({type=LuaEntity.TYPE_HERO, illusion = false})	
 	
 	if check then
 		if #hero == 10 then	
@@ -101,7 +101,7 @@ function Main(tick)
 		DirectBase(cast,me)
 		sleep[1] = tick + 125
 	end
-
+	
 	if heroes[1][2] ~= 1 then Arrow(cast,me,hero,heroes[1][1]) end
 	if heroes[2][2] ~= 1 then Charge(cast,me,hero,heroes[2][1]) end
 	if heroes[3][2] ~= 1 then Infest(me,hero,tick,heroes[3][1]) end
@@ -111,6 +111,21 @@ function Main(tick)
 	if heroes[8][2] ~= 1 then Boat(cast,me) end	
 	if heroes[9][2] ~= 1 then Ancient(cast,me,hero,heroes[9][1]) end
 	
+end
+
+function TeleportScroll(me)
+	local tp = 	entityList:GetEntities({classId=CDOTA_Item_TeleportScroll,team = (5-me.team)})
+	for i,v in ipairs(tp) do
+		print(#tp)
+		if v.state == 61 then
+			if not tptab[v.handle] then
+				tptab[v.handle] = true
+				GenerateSideMessage(v.owner.name,"mirana_arrow")
+			end
+		else
+			tptab[v.handle] = nil
+		end
+	end
 end
 
 function GenerateSideMessage(heroName,spellName)
