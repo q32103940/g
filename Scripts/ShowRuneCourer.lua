@@ -1,10 +1,8 @@
 require("libs.Res")
 
-filename = ""
+local cours = {}
 
-cours = {}
-
-minimapRune = drawMgr:CreateRect(0,0,20,20,0x000000ff) 
+local minimapRune = drawMgr:CreateRect(0,0,20,20,0x000000ff) 
 minimapRune.visible = false
 
 function Tick()
@@ -23,21 +21,21 @@ function Tick()
 		return
 	end
 	
-		local rune = runes[1]
-		local runeType = rune.runeType
-		filename = ""		
+	local rune = runes[1]
+	local runeType = rune.runeType
+	local filename = ""		
 
-		if runeType == 0 then
-				filename = "doubledamage"
-		elseif runeType == 1 then
-				filename = "haste"
-		elseif runeType == 2 then
-				filename = "illusion"
-		elseif runeType == 3 then
-				filename = "invis"
-		elseif runeType == 4 then
-				filename = "regen"
-		end
+	if runeType == 0 then
+			filename = "doubledamage"
+	elseif runeType == 1 then
+			filename = "haste"
+	elseif runeType == 2 then
+			filename = "illusion"
+	elseif runeType == 3 then
+			filename = "invis"
+	elseif runeType == 4 then
+			filename = "regen"
+	end
 	
 	if minimapRune.visible == false then
         local runeMinimap = MapToMinimap(rune)
