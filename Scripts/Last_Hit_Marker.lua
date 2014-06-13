@@ -1,6 +1,8 @@
 --lash hit market
 local rect = {}
 
+local ex = client.screenSize.x/1600
+
 function Tick( tick )
 
 	if not client.connected or client.loading or client.console then return end
@@ -20,7 +22,7 @@ function Tick( tick )
 			if offset == -1 then return end			
 			
 			if not rect[v.handle] then 
-				rect[v.handle] = {}  rect[v.handle] = drawMgr:CreateRect(-4,-22,8,8,0xFF8AB160) rect[v.handle].visible = false 
+				rect[v.handle] = {}  rect[v.handle] = drawMgr:CreateRect(-4*ex,-22*ex,10*ex,10*ex,0xFF8AB160) rect[v.handle].visible = false 
 				rect[v.handle].entity = v rect[v.handle].entityPosition = Vector(0,0,offset)
 			end
 
