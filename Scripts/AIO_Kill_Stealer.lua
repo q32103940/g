@@ -290,7 +290,7 @@ function Tick(tick)
 									DmgUlti = DmgU[ult.level]
 								end
 							end		
-							if v.health + 1 < math.floor(v:DamageTaken(DmgUlti, Type, me)) and NotDieFromBM(v,ult,me) and CanDie(v,me) then
+							if v.health + 1 < math.floor(v:DamageTaken(DmgUlti, Type, me)) and CanDie(v,me) then
 								table.insert(real,v)
 							end
 						end
