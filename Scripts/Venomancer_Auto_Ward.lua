@@ -3,9 +3,7 @@ require("libs.Utils")
 function Tick(tick)
 
 	if not client.connected or client.loading or client.console or not SleepCheck() then return end
-	
-	print(tick)
-	
+
 	local me = entityList:GetMyHero()   
 	if not me then return end Sleep(125)
 		
