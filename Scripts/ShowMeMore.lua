@@ -10,7 +10,7 @@ local TArrow = {}
 local TBoat = {}
 --charge
 local TCharge = {} local speeed = 600
-local speed = {600,650,700,750}
+local speed = {600,650,700,750} local a = nil
 --infest
 local TInfest = nil
 --sniper
@@ -112,7 +112,7 @@ end
 function GenerateSideMessage(heroName,spellName)
 	local test = sideMessage:CreateMessage(200,60)
 	test:AddElement(drawMgr:CreateRect(10,10,72,40,0xFFFFFFFF,drawMgr:GetTextureId("NyanUI/heroes_horizontal/"..heroName:gsub("npc_dota_hero_",""))))
-	test:AddElement(drawMgr:CreateRect(85,0,62,62,0xFFFFFFFF,drawMgr:GetTextureId("Stuff/statpop_exclaim")))
+	test:AddElement(drawMgr:CreateRect(85,16,62,31,0xFFFFFFFF,drawMgr:GetTextureId("NyanUI/other/arrow_usual")))
 	test:AddElement(drawMgr:CreateRect(150,10,40,40,0xFFFFFFFF,drawMgr:GetTextureId("NyanUI/spellicons/"..spellName)))
 end
 
