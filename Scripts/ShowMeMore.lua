@@ -438,7 +438,7 @@ end
 
 function FindBlast(cast,me)
 	for i, v in ipairs(cast) do
-		if v.team ~= me.team and v.dayVision == 550 and v.unitState == 58753536 or v.unitState == 58753792 then
+		if v.team ~= me.team and v.dayVision == 550 and (v.unitState == 58753536 or v.unitState == 58753792) then
 			return v
 		end
 	end
