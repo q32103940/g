@@ -1,18 +1,17 @@
 --lash hit market
 local rect = {}
-
-local ex = client.screenSize.x/1600
+local sleep = 0
+local ex = client.screenSize.x/1600*0.8
 
 function Tick( tick )
 
-	if not client.connected or client.loading or client.console then return end
+	if not client.connected or client.loading or client.console or sleep > tick then return end	
+	sleep = tick + 100
 
-	local me = entityList:GetMyHero()
-
+	local me = entityList:GetMyHero()	
 	if not me then return end
 
 	local dmg = Damage(me)
-
 	local creeps = entityList:GetEntities({classId=CDOTA_BaseNPC_Creep_Lane})	
 	
 	for i,v in ipairs(creeps) do
