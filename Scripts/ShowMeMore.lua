@@ -22,7 +22,7 @@ local blastmsg = nil local TCold = nil
 --all
 local check = true 
 local enemy = {}
-
+local stage = 1
 spells = {
 -- modifier name, effect name, second effect, aoe-range, spell name
 {"modifier_invoker_sun_strike", "invoker_sun_strike_team","invoker_sun_strike_ring_b","area_of_effect","invoker_sun_strike" },
@@ -36,7 +36,7 @@ RangeCastList = {
 npc_dota_hero_pudge =
 {
 Spell = 1,
-Start = {1390,1290,1190,1090},
+Start = {1374,1274,1174,1074},
 End = {1280,1170,1060,950},
 Count = 10,
 Range = {70,90,110,130},
@@ -44,7 +44,7 @@ Range = {70,90,110,130},
 npc_dota_hero_windrunner =
 {
 Spell = 2,
-Start = {890,890,890,890},
+Start = {874,874,874,874},
 End = {710,710,710,710},
 Count = 15,
 Range = {122,122,122,122},
@@ -67,6 +67,7 @@ heroes = {
 function Main(tick)
 
 	if not client.connected or client.loading or client.console or not SleepCheck() then return end
+
 	local me = entityList:GetMyHero() if not me then return end
 
 	local cast = entityList:GetEntities({classId=CDOTA_BaseNPC})
@@ -113,7 +114,16 @@ function GenerateSideMessage(heroName,spellName)
 	local test = sideMessage:CreateMessage(200,60)
 	test:AddElement(drawMgr:CreateRect(10,10,72,40,0xFFFFFFFF,drawMgr:GetTextureId("NyanUI/heroes_horizontal/"..heroName:gsub("npc_dota_hero_",""))))
 	test:AddElement(drawMgr:CreateRect(85,16,62,31,0xFFFFFFFF,drawMgr:GetTextureId("NyanUI/other/arrow_usual")))
-	test:AddElement(drawMgr:CreateRect(150,10,40,40,0xFFFFFFFF,drawMgr:GetTextureId("NyanUI/spellicons/"..spellName)))
+	test:AddElement(drawMgr:CreateRect(150,11,40,40,0xFFFFFFFF,drawMgr:GetTextureId("NyanUI/spellicons/"..spellName)))
+end
+
+function RoshanSideMessage(title,sms)
+	local F25 = drawMgr:CreateFont("defaultFont","Arial",25,500)
+	local F20 = drawMgr:CreateFont("defaultFont","Arial",22,500)
+	local test = sideMessage:CreateMessage(200,60)	
+	test:AddElement(drawMgr:CreateRect(5,5,80,50,0xFFFFFFFF,drawMgr:GetTextureId("NyanUI/heroes_horizontal/roshan")))
+	test:AddElement(drawMgr:CreateText(90,3,-1,title,F20) )
+	test:AddElement(drawMgr:CreateText(100,25,-1,""..sms.."",F25) )
 end
 
 function WhatARubick(hero,me,cast,tick)
@@ -171,13 +181,13 @@ function RangeCast(me,hero)
 						local count = RangeCastList[v.name].Count
 						local range = RangeCastList[v.name].Range
 						local srart = RangeCastList[v.name].Start
-						if math.floor(spell.cd*100) > srart[spell.level] and not ss[v.handle] then
+						if math.floor(spell.cd*100) >= srart[spell.level] and not ss[v.handle] then
 							ss[v.handle] = true
-							for z = 1, count do
-								local p = Vector(v.position.x + range[spell.level]*z * math.cos(v.rotR), v.position.y + range[spell.level]*z * math.sin(v.rotR), v.position.z+50)
-								RC[z] = Effect(p, "fire_torch" )
-								RC[z]:SetVector(1,Vector(0,0,0))
-								RC[z]:SetVector(0, p )
+							for a = 1, count do
+								local pss = RCVector(v, range[spell.level]* a)
+								RC[a] = Effect(pss, "fire_torch" )
+								RC[a]:SetVector(1,Vector(0,0,0))
+								RC[a]:SetVector(0, pss)
 							end
 						elseif (math.floor(spell.cd*100) < ind[spell.level] or v.alive == false) and ss[v.handle] then
 							ss = {}
@@ -322,7 +332,6 @@ function Snipe(me,hero,tick,heroName)
 end
 
 function Boat(cast,me)
-
 	local ship = FindBoat(cast,me)
 	if ship then
 		if not start1 then
@@ -348,11 +357,9 @@ function Boat(cast,me)
 		collectgarbage("collect")
 		start1,vec1 = nil,nil
 	end
-
 end
 
 function Ancient(cast,me,hero,heroName)
-
 	local blast = FindBlast(cast,me)
 	if blast then
 		if not blastmsg then
@@ -378,7 +385,28 @@ function Ancient(cast,me,hero,heroName)
 	if coldclear then
 		collectgarbage("collect")
 	end
+end
 
+function Roha()	
+	local rosh = entityList:FindEntities({classId=CDOTA_Unit_Roshan})[1]
+	if stage == 1 then
+		RoshanSideMessage("Respawn in","8:00-11:00")
+		stage = 2
+		sleep = math.floor(client.gameTime)		
+	elseif sleep + 300 <= math.floor(client.gameTime) and stage == 2 then
+		RoshanSideMessage("Respawn in:","3:00-6:00")
+		stage = 3
+	elseif sleep + 360 <= math.floor(client.gameTime) and stage == 3 then
+		RoshanSideMessage("Respawn in:","2:00-5:00")
+		stage = 4
+	elseif sleep + 420 <= math.floor(client.gameTime) and stage == 4 then	
+		RoshanSideMessage("Respawn in:","1:00-4:00")
+		stage = 5
+	elseif rosh and rosh.alive and stage == 5 then
+		stage = 1
+		RoshanSideMessage("Respawn","00:00")	
+		script:UnregisterEvent(Roha)
+	end
 end
 
 function GetSpecial(spell,Name,lvl)
@@ -418,6 +446,14 @@ function FindAB(first, second, distance)
 	return retVector
 end
 
+function RCVector(ent, dis)
+	local reVector = Vector()
+	reVector = Vector(ent.position.x + dis * math.cos(ent.rotR), ent.position.y + dis * math.sin(ent.rotR), 0)
+	client:GetGroundPosition(reVector)
+	reVector.z = reVector.z+100
+	return reVector
+end	
+	
 function FindByModifierS(target,mod,me)
 	for i,v in ipairs(target) do
 		if v.team == me.team and v.visible and v.alive and v:DoesHaveModifier(mod) then
@@ -472,9 +508,16 @@ function FindArrow(cast,me)
 	return nil
 end
 
+function Roshan( kill )
+    if kill.name == "dota_roshan_kill" then		
+		script:RegisterEvent(EVENT_TICK,Roha)		
+    end
+end
+
 function GameClose()
 	script:Reload()
 end
 
 script:RegisterEvent(EVENT_TICK, Main)
 script:RegisterEvent(EVENT_CLOSE, GameClose)
+script:RegisterEvent(EVENT_DOTA,Roshan)
