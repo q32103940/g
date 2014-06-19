@@ -1,14 +1,23 @@
 require("libs.Res")
+require("libs.ScriptConfig")
 
--------config-------
-local manaBar = true
-local overlaySpell = true
-local overlayItem = true
-local topPanel = true
-local glypPanel = true
-local ShowRune = true
-local ShowCourier = true
--------------------
+config = ScriptConfig.new()
+config:SetParameter("manaBar", true)
+config:SetParameter("overlaySpell", true)
+config:SetParameter("overlayItem", true)
+config:SetParameter("topPanel", true)
+config:SetParameter("glypPanel", true)
+config:SetParameter("ShowRune", true)
+config:SetParameter("ShowCourier", true)
+config:Load()
+
+local manaBar = config.manaBar
+local overlaySpell = config.overlaySpell
+local overlayItem = config.overlayItem
+local topPanel = config.topPanel
+local glypPanel = config.glypPanel
+local ShowRune = config.ShowRune
+local ShowCourier = config.ShowCourier
 
 local F10 = drawMgr:CreateFont("F10","Arial",10,500)
 local F11 = drawMgr:CreateFont("F11","Arial",11,500)
@@ -340,8 +349,9 @@ function Tick(tick)
 			
 			if not panel[v.playerId] then panel[v.playerId] = {}
 				panel[v.playerId].hpT = drawMgr:CreateText(0,y_,0xFF3333ff,"",F12) panel[v.playerId].hpT.visible = false
+				panel[v.playerId].hpINB = drawMgr:CreateRect(0,y_,x_-1,8,0x000000D0) panel[v.playerId].hpINB.visible = false
 				panel[v.playerId].hpIN = drawMgr:CreateRect(0,y_,0,8,color) panel[v.playerId].hpIN.visible = false
-				panel[v.playerId].hpINB = drawMgr:CreateRect(0,y_,x_-1,8,0x00000070) panel[v.playerId].hpINB.visible = false
+				
 				panel[v.playerId].hpB = drawMgr:CreateRect(0,y_,x_-1,8,0x000000ff,true) panel[v.playerId].hpB.visible = false
 				panel[v.playerId].ulti = drawMgr:CreateRect(0,y_-9,14,14,0x0EC14A80) panel[v.playerId].ulti.visible = false			
 				panel[v.playerId].ultiCDT = drawMgr:CreateText(0,y_-9,0xFFFFFF99,"",F12) panel[v.playerId].ultiCDT.visible = false
@@ -461,9 +471,9 @@ end
 function Color(ent,me)
 	local team = ent.team
 	if team ~= me.team then
-		return 0xFF5151ff
+		return 0x960018FF
 	else
-		return 0x00CC66ff
+		return 0x008000FF
 	end
 end
 	
