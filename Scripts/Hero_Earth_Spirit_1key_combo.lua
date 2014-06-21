@@ -71,9 +71,11 @@ function Combo(tick)
 				end
 			elseif stage == 2 and stunned and grip:CanBeCasted() and GetDistance2D(stunned,me) < grip.castRange then
 				local last = Last()
-				me:CastAbility(grip,last.position)
-				stage = 3
-				sleep = GetTick() + 500
+					if last then
+					me:CastAbility(grip,last.position)
+					stage = 3
+					sleep = GetTick() + 500
+				end
 			elseif stage == 3 and roll:CanBeCasted() and stunned and stunned:DoesHaveModifier("modifier_earth_spirit_boulder_smash_silence") then			
 				me:CastAbility(roll,stunned.position)
 				stage = 0
