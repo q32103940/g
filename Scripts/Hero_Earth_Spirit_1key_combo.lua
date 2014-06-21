@@ -64,10 +64,10 @@ function Combo(tick)
 					local t_ = client.mousePosition
 					me:CastAbility(remnant,(t_ - me.position) * 150 / GetDistance2D(t_,me) + me.position,false)
 					me:CastAbility(smash,(t_ - me.position) * 150 / GetDistance2D(t_,me) + me.position,true)	
-					sleep = GetTick() + 1000
+					sleep = GetTick() + 1200
 					stage = 2
 				end
-			elseif stage == 2 and stunned and grip:CanBeCasted() and GetDistance2D(stunned,me) < grip.castRange+25 then
+			elseif stage == 2 and stunned and grip:CanBeCasted() and GetDistance2D(stunned,me) < grip.castRange+100 then
 				local last = Last()
 				if last then
 					me:CastAbility(grip,last.position)
@@ -125,8 +125,10 @@ end
 
 function Last()
 	local remn = entityList:GetEntities({classId = CDOTA_Unit_Earth_Spirit_Stone})
-	if #remn > 0 then
+	if #remn > 1 then
 		table.sort(remn, function(a,b) return remnants[a.handle]>remnants[b.handle] end)
+		return remn[1]
+	else
 		return remn[1]
 	end
 end
