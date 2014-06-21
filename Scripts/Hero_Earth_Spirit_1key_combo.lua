@@ -1,9 +1,12 @@
 require("libs.Utils")
+require("libs.ScriptConfig")
 
----------comfig------------
-local key = string.byte("1")
+config = ScriptConfig.new()
+config:SetParameter("Hotkey", "1", config.TYPE_HOTKEY)
+config:Load()
+
+local key = string.byte(config.Hotkey)
 local ulti = true
----------------------------
 
 local stage = 0
 local sleep = nil
@@ -17,7 +20,7 @@ function Key(msg,code)
     if msg ~= KEY_UP or code ~= key or client.chat or not client.connected or client.loading or client.console then	return end
 
 	local me = entityList:GetMyHero() 
-
+	
 	if not me then return end
 
 	if me.classId ~= CDOTA_Unit_Hero_EarthSpirit then
@@ -35,20 +38,20 @@ end
 function Combo(tick)
 
 	local me = entityList:GetMyHero() 
-
+	
 	if not me then return end
-
+	
 	if SleepCheck("track") then
 		Track()	Sleep(250,"track")
 	end
-
+		
 	if start then
-
+		
 		local remnant = me:GetAbility(4)
 		local grip = me:GetAbility(3)
 		local roll = me:GetAbility(2)
 		local smash = me:GetAbility(1)
-
+		
 		local stunned = entityList:GetEntities(function (ent) return ent.type == LuaEntity.TYPE_HERO and ent:DoesHaveModifier("modifier_stunned") == true end)[1]
 
 		if me:CanCast() then
@@ -77,26 +80,26 @@ function Combo(tick)
 				start = nil
 			end			
 		end
-
+		
 		if sleep and GetTick() > sleep then
 			sleep,start = nil
 			stage = 0
 		end
 	end
-
+	
 	if SleepCheck("ulti") and ulti and me:GetAbility(5).cd ~= 0 then
 		local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO, illusion=false})
 		for i,v in ipairs(enemy) do
 
 			local offset = v.healthbarOffset
 			if offset == -1 then return end
-
+		
 			if not ultistate[v.handle] then	ultistate[v.handle] = {}
 				ultistate[v.handle].fon = drawMgr:CreateRect(xx,yy,60,6,0x000000D0) ultistate[v.handle].fon.visible = false ultistate[v.handle].fon.entity = v ultistate[v.handle].fon.entityPosition = Vector(0,0,offset)
 				ultistate[v.handle].im = drawMgr:CreateRect(xx,yy,60,6,0x008000FF) ultistate[v.handle].im.visible = false ultistate[v.handle].im.entity = v ultistate[v.handle].im.entityPosition = Vector(0,0,offset)
 				ultistate[v.handle].bo = drawMgr:CreateRect(xx-1,yy-1,62,8,0x000000FF,true) ultistate[v.handle].bo.visible = false ultistate[v.handle].bo.entity = v ultistate[v.handle].bo.entityPosition = Vector(0,0,offset)				
 			end
-
+			
 			if v.alive and v.visible then
 				local mag = v:FindModifier("modifier_earth_spirit_magnetize")
 				if mag then
@@ -117,7 +120,7 @@ function Combo(tick)
 
 		end	Sleep(200,"ulti")
 	end
-
+	
 end
 
 function Last()
