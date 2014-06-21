@@ -75,7 +75,7 @@ function Combo(tick)
 					sleep = GetTick() + 500
 				end
 			elseif stage == 3 and roll:CanBeCasted() and stunned and stunned:DoesHaveModifier("modifier_earth_spirit_boulder_smash_silence") then			
-				me:CastAbility(roll,stunned.position)
+				me:CastAbility(roll,(stunned.position - me.position) * 150 / GetDistance2D(stunned,me) + me.position)
 				stage = 0
 				start = nil
 			end			
