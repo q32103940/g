@@ -67,7 +67,7 @@ function Combo(tick)
 					sleep = GetTick() + 1000
 					stage = 2
 				end
-			elseif stage == 2 and stunned and grip:CanBeCasted() and GetDistance2D(stunned,me) < grip.castRange then
+			elseif stage == 2 and stunned and grip:CanBeCasted() and GetDistance2D(stunned,me) < grip.castRange+25 then
 				local last = Last()
 				if last then
 					me:CastAbility(grip,last.position)
