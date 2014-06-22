@@ -9,7 +9,7 @@ local key = string.byte(config.Hotkey)
 local ulti = true
 
 local stage = 0
-local sleep = nil
+local sleep,reg = nil,nil
 local remnants = {}
 local ultistate = {}
 local xx,yy = -30,-40
@@ -17,15 +17,9 @@ local xx,yy = -30,-40
 
 function Key(msg,code)
 
-    if msg ~= KEY_UP or code ~= key or client.chat or not client.connected or client.loading or client.console then	return end
+    if msg ~= KEY_UP or code ~= key or client.chat then	return end
 
-	local me = entityList:GetMyHero() 
-	
-	if not me then return end
-
-	if me.classId ~= CDOTA_Unit_Hero_EarthSpirit then
-		script:Disable()		
-	elseif not start then
+	if not start then
 		sleep = nil
 		start = true
 	else
@@ -37,10 +31,21 @@ end
 
 function Combo(tick)
 
+	if not client.connected or client.loading or client.console then return end
+
 	local me = entityList:GetMyHero() 
 	
 	if not me then return end
 	
+	if me.classId ~= CDOTA_Unit_Hero_EarthSpirit then
+		script:Disable()		
+	end
+	
+	if not reg then
+		script:RegisterEvent(EVENT_KEY,Key)
+		reg = true
+	end
+		
 	Track()
 		
 	if start then
@@ -147,6 +152,10 @@ function Track()
 end
 
 function GameClose()
+	if reg then
+		script:UnregisterEvent(EVENT_KEY,Key)
+		reg = nil
+	end
 	stage = 0
 	sleep,start = nil,nil
 	remnants = {}
@@ -154,4 +163,3 @@ end
 
 script:RegisterEvent(EVENT_TICK,Combo)
 script:RegisterEvent(EVENT_CLOSE,GameClose)
-script:RegisterEvent(EVENT_KEY,Key)
