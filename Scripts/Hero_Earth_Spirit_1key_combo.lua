@@ -53,11 +53,6 @@ function Combo(tick)
 		local stunned = entityList:GetEntities(function (ent) return ent.type == LuaEntity.TYPE_HERO and ent:DoesHaveModifier("modifier_stunned") == true end)[1]
 		local last = Last()
 		
-		if stunned then
-			print(stunned.name,GetDistance2D(stunned,me),last.position)
-		end
-		
-		
 		if me:CanCast() then
 			if stage == 0 then			
 				if me.activity == LuaEntityNPC.ACTIVITY_MOVE then
