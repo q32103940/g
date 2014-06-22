@@ -51,7 +51,13 @@ function Combo(tick)
 		local smash = me:GetAbility(1)
 		
 		local stunned = entityList:GetEntities(function (ent) return ent.type == LuaEntity.TYPE_HERO and ent:DoesHaveModifier("modifier_stunned") == true end)[1]
-
+		local last = Last()
+		
+		if stunned then
+			print(stunned.name,GetDistance2D(stunned,me),last.position)
+		end
+		
+		
 		if me:CanCast() then
 			if stage == 0 then			
 				if me.activity == LuaEntityNPC.ACTIVITY_MOVE then
@@ -64,24 +70,27 @@ function Combo(tick)
 					local t_ = client.mousePosition
 					me:CastAbility(remnant,(t_ - me.position) * 150 / GetDistance2D(t_,me) + me.position,false)
 					me:CastAbility(smash,(t_ - me.position) * 150 / GetDistance2D(t_,me) + me.position,true)	
-					sleep = GetTick() + 1200
+					sleep = tick + 1200
 					stage = 2
-				end
-			elseif stage == 2 and stunned and grip:CanBeCasted() and GetDistance2D(stunned,me) < grip.castRange+100 then
-				local last = Last()
+				end			
+			elseif stage == 2 and stunned and grip:CanBeCasted() and GetDistance2D(stunned,me) < grip.castRange then				
 				if last then
 					me:CastAbility(grip,last.position)
 					stage = 3
-					sleep = GetTick() + 500
+					sleep = tick + 500
+				else
+					me:CastAbility(grip,stunned.position)
+					stage = 3
+					sleep = tick + 500
 				end
 			elseif stage == 3 and roll:CanBeCasted() and stunned and stunned:DoesHaveModifier("modifier_earth_spirit_boulder_smash_silence") then			
-				me:CastAbility(roll,(stunned.position - me.position) * 150 / GetDistance2D(stunned,me) + me.position)
+				me:CastAbility(roll,(stunned.position - me.position) * 600 / GetDistance2D(stunned,me) + me.position)
 				stage = 0
 				start = nil
 			end			
 		end
 		
-		if sleep and GetTick() > sleep then
+		if sleep and tick > sleep then
 			sleep,start = nil
 			stage = 0
 		end
