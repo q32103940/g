@@ -7,6 +7,7 @@ local xx,yy = 10,client.screenSize.y/25.714
 
 local F14 = drawMgr:CreateFont("f14","Arial",14,400)
 local statusText = drawMgr:CreateText(xx,yy,-1,"Press "..string.char(key).." to enable, press again to disable",F14)
+statusText.visible = false
 
 local stage = 0
 local sleep,reg = nil,nil
