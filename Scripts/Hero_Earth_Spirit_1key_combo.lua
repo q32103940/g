@@ -1,6 +1,6 @@
 require("libs.Utils")
 
-local key = string.byte("T")
+local key = string.byte("1")
 local ulti = true
 
 local xx,yy = 10,client.screenSize.y/25.714
