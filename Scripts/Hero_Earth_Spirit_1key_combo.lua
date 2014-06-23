@@ -1,12 +1,12 @@
 require("libs.Utils")
-require("libs.ScriptConfig")
 
-config = ScriptConfig.new()
-config:SetParameter("Hotkey", "T", config.TYPE_HOTKEY)
-config:Load()
-
-local key = config.Hotkey
+local key = string.byte("T")
 local ulti = true
+
+local xx,yy = 10,client.screenSize.y/25.714
+
+local F14 = drawMgr:CreateFont("f14","Arial",14,400)
+local statusText = drawMgr:CreateText(xx,yy,-1,"Press "..string.char(key).." to enable, press again to disable",F14)
 
 local stage = 0
 local sleep,reg = nil,nil
@@ -22,11 +22,13 @@ function Key(msg,code)
 	if not start then
 		sleep = nil
 		start = true
-		--return true
+		statusText.text = "Status: On"
+		return true
 	else
 		sleep,start = nil
 		stage = 0
-		--return true
+		statusText.text = "Status: Off"
+		return true
 	end
 
 end
@@ -63,8 +65,7 @@ function Combo(tick)
 		if me:CanCast() then
 			if stage == 0 then			
 				if me.activity == LuaEntityNPC.ACTIVITY_MOVE then
-					me:Stop()
-					sleep = GetTick() + client.latency + 25
+					me:Stop()					
 				end	
 				stage = 1
 			elseif stage == 1 then
@@ -89,10 +90,12 @@ function Combo(tick)
 				me:CastAbility(roll,(stunned.position - me.position) * 600 / GetDistance2D(stunned,me) + me.position)
 				stage = 0
 				start = nil
+				statusText.text = "Status: Off"
 			end			
 		end
 		
 		if sleep and tick > sleep then
+			statusText.text = "Status: Off"
 			sleep,start = nil
 			stage = 0
 		end
