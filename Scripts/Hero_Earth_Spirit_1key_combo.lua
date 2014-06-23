@@ -2,10 +2,10 @@ require("libs.Utils")
 require("libs.ScriptConfig")
 
 config = ScriptConfig.new()
-config:SetParameter("Hotkey", "1", config.TYPE_HOTKEY)
+config:SetParameter("Hotkey", "T", config.TYPE_HOTKEY)
 config:Load()
 
-local key = string.byte(config.Hotkey)
+local key = config.Hotkey
 local ulti = true
 
 local stage = 0
@@ -22,9 +22,11 @@ function Key(msg,code)
 	if not start then
 		sleep = nil
 		start = true
+		--return true
 	else
 		sleep,start = nil
 		stage = 0
+		--return true
 	end
 
 end
