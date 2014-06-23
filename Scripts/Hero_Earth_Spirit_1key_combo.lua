@@ -1,6 +1,6 @@
 require("libs.Utils")
 
-local key = string.byte("1")
+local key = string.byte("T")
 local ulti = true
 
 local xx,yy = 10,client.screenSize.y/25.714
@@ -48,6 +48,7 @@ function Combo(tick)
 	if not reg then
 		script:RegisterEvent(EVENT_KEY,Key)
 		reg = true
+		statusText.visible = true
 	end
 		
 	Track()
@@ -161,6 +162,7 @@ function GameClose()
 		script:UnregisterEvent(EVENT_KEY,Key)
 		reg = nil
 	end
+	statusText.visible = false
 	stage = 0
 	sleep,start = nil,nil
 	remnants = {}
