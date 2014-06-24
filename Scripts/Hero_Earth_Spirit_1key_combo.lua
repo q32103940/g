@@ -1,6 +1,6 @@
 require("libs.Utils")
 
-local key = string.byte("1")
+local key = string.byte("T")
 local ulti = true
 
 local xx,yy = 10,client.screenSize.y/25.714
@@ -9,7 +9,7 @@ local F14 = drawMgr:CreateFont("f14","Arial",14,400)
 local statusText = drawMgr:CreateText(xx,yy,-1,"Press "..string.char(key).." to enable, press again to disable",F14) statusText.visible = false
 
 local stage = 0
-local sleep,reg = nil,nil
+local sleep,reg,start = nil,nil,nil
 local remnants = {}
 local ultistate = {}
 local xx,yy = -30,-40
@@ -18,7 +18,7 @@ local xx,yy = -30,-40
 function Key(msg,code)
 
     if msg ~= KEY_UP or code ~= key or client.chat then	return end
-
+	
 	if not start then
 		sleep = nil
 		start = true
@@ -33,26 +33,22 @@ function Key(msg,code)
 
 end
 
-function Combo(tick)
+function Combo(tick)	
 
 	if not client.connected or client.loading or client.console then return end
-
+	
 	local me = entityList:GetMyHero() 
-	
+
 	if not me then return end
-	
+
 	if me.classId ~= CDOTA_Unit_Hero_EarthSpirit then
 		script:Disable()		
 	end
-	
-	if not reg then
-		script:RegisterEvent(EVENT_KEY,Key)
-		reg = true
-		statusText.visible = true
-	end
-		
+
+	statusText.visible = true
+
 	Track()
-		
+
 	if start then
 		
 		local remnant = me:GetAbility(4)
@@ -158,16 +154,13 @@ function Track()
 end
 
 function GameClose()
-	if reg then
-		script:UnregisterEvent(EVENT_KEY,Key)
-		reg = nil
-	end
+	sleep,start = nil,nil
 	statusText.visible = false
 	statusText.text = "Press "..string.char(key).." to enable, press again to disable"
-	stage = 0
-	sleep,start = nil,nil
-	remnants = {}
+	stage = 0	
+	remnants,ultistate = {},{}
 end
 
 script:RegisterEvent(EVENT_TICK,Combo)
 script:RegisterEvent(EVENT_CLOSE,GameClose)
+script:RegisterEvent(EVENT_KEY,Key)
