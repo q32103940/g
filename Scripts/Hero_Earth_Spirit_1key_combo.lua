@@ -163,6 +163,7 @@ function GameClose()
 		reg = nil
 	end
 	statusText.visible = false
+	statusText.text = "Press "..string.char(key).." to enable, press again to disable"
 	stage = 0
 	sleep,start = nil,nil
 	remnants = {}
