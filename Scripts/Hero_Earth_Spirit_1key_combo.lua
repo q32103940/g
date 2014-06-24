@@ -9,7 +9,7 @@ local F14 = drawMgr:CreateFont("f14","Arial",14,400)
 local statusText = drawMgr:CreateText(xx,yy,-1,"Press "..string.char(key).." to enable, press again to disable",F14) statusText.visible = false
 
 local stage = 0
-local sleep,reg,start = nil,nil,nil
+local sleep,start = nil,nil
 local remnants = {}
 local ultistate = {}
 local xx,yy = -30,-40
@@ -20,13 +20,11 @@ function Key(msg,code)
     if msg ~= KEY_UP or code ~= key or client.chat then	return end
 	
 	if not start then
-		sleep = nil
-		start = true
+		sleep,start = nil,true
 		statusText.text = "Status: On"
 		return true
 	else
-		sleep,start = nil
-		stage = 0
+		sleep,start,stage = nil,nil,0
 		statusText.text = "Status: Off"
 		return true
 	end
@@ -154,10 +152,9 @@ function Track()
 end
 
 function GameClose()
-	sleep,start = nil,nil
+	sleep,start,stage = nil,nil,0
 	statusText.visible = false
 	statusText.text = "Press "..string.char(key).." to enable, press again to disable"
-	stage = 0	
 	remnants,ultistate = {},{}
 end
 
