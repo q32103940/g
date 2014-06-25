@@ -1,10 +1,16 @@
--------config--------
-range = 500
-key = string.byte("B")
-----------------------
+require("libs.ScriptConfig")
+
+config = ScriptConfig.new()
+config:SetParameter("Hotkey", "O", config.TYPE_HOTKEY)
+config:SetParameter("Range", 1200)
+config:Load()
+
+range = config:GetParameter("Range")
+key = config.Hotkey
 
 activated = false
-effect = nil 
+effect = nil
+
 function Key(msg,code)
 	-- check if ingame and not chatting
     if msg ~= KEY_UP or code ~= key or client.chat or not client.connected or client.loading or client.console then
