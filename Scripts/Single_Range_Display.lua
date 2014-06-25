@@ -1,7 +1,7 @@
 require("libs.ScriptConfig")
 
 config = ScriptConfig.new()
-config:SetParameter("Hotkey", "O", config.TYPE_HOTKEY)
+config:SetParameter("Hotkey", "B", config.TYPE_HOTKEY)
 config:SetParameter("Range", 1200)
 config:Load()
 
