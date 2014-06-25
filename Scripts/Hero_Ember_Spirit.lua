@@ -1,19 +1,22 @@
-require("libs.Utils")
-
 --Auto Q after W.
 --Hold W when ember uses fist.
 
---if you have the ability bind to other key: Change "string.byte("W")".
+require("libs.Utils")
+require("libs.ScriptConfig")
 
-key = string.byte("W")
+config = ScriptConfig.new()
+config:SetParameter("Hotkey", "W", config.TYPE_HOTKEY)
+config:Load()
+
+local key = config.Hotkey
 
 function Key(msg,code)
 
 	if code ~= key or client.chat or not client.connected or client.loading or client.console then	return end
-	
+
 	local me = entityList:GetMyHero() if not me then return end
-	
-	if me.name ~= "npc_dota_hero_ember_spirit" then
+
+	if me.classId ~= CDOTA_Unit_Hero_EmberSpirit then
 		script:Disable()
 	else
 		local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO,alive = true,team = (5-me.team),illusion = false})
