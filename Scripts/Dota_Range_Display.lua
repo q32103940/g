@@ -31,10 +31,7 @@ function Tick(tick)
 		local me = entityList:GetMyHero()
 
 		if not me then return end
-
-        if xx == 180 and yy == 80 then LoadGUIConfig(xx,yy) end
-        if xx == nil and yy == nil then xx=180 yy = 80 end
-
+		
 		local ability = me.abilities
 		local num = rangelist[me.name]
         for a,spells in ipairs(ability) do
@@ -77,6 +74,8 @@ function Frame()
 	local count = #spell
 	if count == 0 then return end
 	if activated then vis = true
+		if xx == 180 and yy == 80 then LoadGUIConfig() end
+        if xx == nil and yy == nil then xx=180 yy = 80 end
 		if move == true then
 			xx = client.mouseScreenPosition.x - 39*#spell/2 - 20 yy = client.mouseScreenPosition.y + 15
 		end
@@ -161,7 +160,7 @@ function SaveGUIConfig(xx,yy)
         end
 end
 
-function LoadGUIConfig(xx,yy)
+function LoadGUIConfig()
 		local file = io.open(SCRIPT_PATH.."/libs/DRDConfig.txt", "r")
         if file then
                 xx, yy = file:read("*number", "*number")
