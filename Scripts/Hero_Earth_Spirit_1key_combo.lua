@@ -1,6 +1,12 @@
 require("libs.Utils")
+require("libs.ScriptConfig")
 
-local key = string.byte("1")
+config = ScriptConfig.new()
+config:SetParameter("Hotkey", "T", config.TYPE_HOTKEY)
+config:Load()
+
+local key = config.Hotkey
+
 local ulti = true
 
 local xx,yy = 10,client.screenSize.y/25.714
@@ -55,7 +61,7 @@ function Combo(tick)
 			
 			local stunned = entityList:GetEntities(function (ent) return ent.type == LuaEntity.TYPE_HERO and ent:DoesHaveModifier("modifier_stunned") == true end)[1]
 			local last = Last()
-			
+
 			if me:CanCast() then
 				if stage == 0 then			
 					if me.activity == LuaEntityNPC.ACTIVITY_MOVE then
@@ -74,14 +80,14 @@ function Combo(tick)
 					if last then
 						me:CastAbility(grip,last.position)
 						stage = 3
-						sleep = tick + 500
+						sleep = tick + 800
 					else
 						me:CastAbility(grip,stunned.position)
 						stage = 3
-						sleep = tick + 500
+						sleep = tick + 800
 					end
 				elseif stage == 3 and roll:CanBeCasted() and stunned and stunned:DoesHaveModifier("modifier_earth_spirit_boulder_smash_silence") then			
-					me:CastAbility(roll,(stunned.position - me.position) * 600 / GetDistance2D(stunned,me) + me.position)
+					me:CastAbility(roll,(stunned.position - me.position) * 600 / GetDistance2D(stunned,me) + me.position,false)
 					stage = 0
 					start = nil
 					statusText.text = "Status: Off"
@@ -108,7 +114,7 @@ function Combo(tick)
 					ultistate[v.handle].bo = drawMgr:CreateRect(xx-1,yy-1,62,8,0x000000FF,true) ultistate[v.handle].bo.visible = false ultistate[v.handle].bo.entity = v ultistate[v.handle].bo.entityPosition = Vector(0,0,offset)				
 				end
 				
-				if v.alive and v.visible then
+				if v.alive and v.visible and v.health > 0 then
 					local mag = v:FindModifier("modifier_earth_spirit_magnetize")
 					if mag then
 						ultistate[v.handle].im.w = 60 - (mag.elapsedTime*10)					
