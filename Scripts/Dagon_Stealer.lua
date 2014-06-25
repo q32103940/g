@@ -1,14 +1,18 @@
 require("libs.Utils")
+require("libs.ScriptConfig")
 
---config
-local key =  string.byte("0")
+config = ScriptConfig.new()
+config:SetParameter("Hotkey", "48", config.TYPE_HOTKEY)
+config:Load()
+
+local key =  config.Hotkey
 local xx = client.screenSize.x/300 
-local yy = client.screenSize.y/1.45
+local yy = client.screenSize.y/1.55
 
 local activated = true 
 local sleep = 250
-local icon = drawMgr:CreateRect(xx,yy,24,16,0x000000ff,drawMgr:GetTextureId("NyanUI/items/dagon")) icon.visible = false
-local rect = drawMgr:CreateRect(xx-1,yy-1,18,17,0xFFFFFF90,true) rect.visible = false
+local icon = drawMgr:CreateRect(xx,yy,36,24,0x000000ff,drawMgr:GetTextureId("NyanUI/items/dagon")) icon.visible = false
+local rect = drawMgr:CreateRect(xx-1,yy-1,26,25,0xFFFFFF90,true) rect.visible = false
 local dmg = {400,500,600,700,800}
  
 --Главная функция
@@ -58,7 +62,7 @@ function NynNyxNyx(target)
 end
 
 function Draw(one,two)
-	if one and two ~= nil then
+	if one and two then
 		return true
 	else
 		return false
