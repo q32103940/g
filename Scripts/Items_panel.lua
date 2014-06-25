@@ -1,6 +1,11 @@
--------Config--------
-local key = string.byte("I")
-----------------------
+require("libs.ScriptConfig")
+
+config = ScriptConfig.new()
+config:SetParameter("Hotkey", "I", config.TYPE_HOTKEY)
+config:Load()
+
+local key = config.Hotkey
+
 local activated = true
 local item = {} local hero = {}
 local xx = 50
@@ -124,7 +129,7 @@ function IsMouseOnButton(x,y,h,w)
 end
  
 function SaveGUIConfig()
-		file = io.open(SCRIPT_PATH.."/libs/ItemPanelConfig.txt", "w+")
+		local file = io.open(SCRIPT_PATH.."/libs/ItemPanelConfig.txt", "w+")
         if file then
                 file:write(xx.."\n"..yy)
                 file:close()
@@ -132,7 +137,7 @@ function SaveGUIConfig()
 end
  
 function LoadGUIConfig()
-        file = io.open(SCRIPT_PATH.."/libs/ItemPanelConfig.txt", "r")
+        local file = io.open(SCRIPT_PATH.."/libs/ItemPanelConfig.txt", "r")
         if file then
                 xx, yy = file:read("*number", "*number")
                 file:close()   
