@@ -12,12 +12,13 @@ dmgL = {80,160,240,320}
 dmgR = {100,175,250,325}
 dmg = {400,500,600,700,800}
 
+
 --Главная функция
 function Tick( tick )
 
 -- Проверка играем ли мы
-	if not client.connected or client.loading or client.console then return end
-	
+	if not client.connected or client.loading or client.console or not SleepCheck() then return end
+	Sleep(200)
 -- Мой герой
 
 	local me = entityList:GetMyHero() 
@@ -25,7 +26,7 @@ function Tick( tick )
 	if not me then return end
 	
 -- Проверка на героя
-	if me.name ~= "npc_dota_hero_tinker" then
+	if me.classId ~= CDOTA_Unit_Hero_Tinker then
 		script:Disable()
 		return
 	end
@@ -41,6 +42,7 @@ function Tick( tick )
 
 -- Определение дагона
 	local dagon = me:FindDagon()
+	local eb = me:FindItem("item_ethereal_blade")
 	
 -- Модификатор урона с дагона
 	if dagon then
@@ -53,7 +55,7 @@ function Tick( tick )
 	
 	--Калькулятор урона
 		for i,v in ipairs(enemies) do
-		
+					
 		local offset = v.healthbarOffset
 		
 		if offset == -1 then return end
@@ -63,12 +65,13 @@ function Tick( tick )
 					hero[v.handle].txt = drawMgr:CreateText(-20, - 45, 0xFFFFFFFF, "",F16) hero[v.handle].txt.visible = false hero[v.handle].txt.entity = v hero[v.handle].txt.entityPosition = Vector(0,0,offset)
 				end	
 			
-				if offset ~= -1 and v.visible and v.alive then
+				if v.visible and v.alive then
+					local resist = v.magicDmgResist
 					if laser.level == 0 then
-						if v.health >  ((dmgR[rocket.level]) * (1 - v.magicDmgResist)) then
-							local hits = math.floor(v.health -  ((dmgR[rocket.level]) * (1 - v.magicDmgResist)))
+						if v.health >  ((dmgR[rocket.level]) * (1 - resist)) then
+							local hits = math.floor(v.health -  ((dmgR[rocket.level]) * (1 - resist)))
 							hero[v.handle].txt.visible = true    hero[v.handle].txt.text = "No kill :" ..hits
-						elseif v.health < ((dmgR[rocket.level]) * (1 - v.magicDmgResist)) then
+						elseif v.health < ((dmgR[rocket.level]) * (1 - resist)) then
 							hero[v.handle].txt.visible = true    hero[v.handle].txt.text = "Ezy kill"							
 						end
 					elseif rocket.level == 0 then
@@ -79,26 +82,26 @@ function Tick( tick )
 							hero[v.handle].txt.visible = true    hero[v.handle].txt.text = "Ezy kill"
 						end
 					elseif dagon then
-						if me:FindItem("item_ethereal_blade") then
-							if v.health > (dmgL[laser.level] + 1.4*((dmgD + (me.intellectTotal*2+75) + dmgR[rocket.level]) * (1 - v.magicDmgResist))) then		
-								local hits = math.floor(v.health - (dmgL[laser.level] + 1.4*((dmgD + (me.intellectTotal*2+75) + dmgR[rocket.level]) * (1 - v.magicDmgResist))))
+						if eb then
+							if v.health > (dmgL[laser.level] + 1.4*((dmgD + (me.intellectTotal*2+75) + dmgR[rocket.level]) * (1 - resist))) then		
+								local hits = math.floor(v.health - (dmgL[laser.level] + 1.4*((dmgD + (me.intellectTotal*2+75) + dmgR[rocket.level]) * (1 - resist))))
 								hero[v.handle].txt.visible = true    hero[v.handle].txt.text = "No kill :" ..hits
-								elseif v.health < (dmgL[laser.level] + 1.4*((dmgD + (me.intellectTotal*2+75) + dmgR[rocket.level]) * (1 - v.magicDmgResist))) then
+								elseif v.health < (dmgL[laser.level] + 1.4*((dmgD + (me.intellectTotal*2+75) + dmgR[rocket.level]) * (1 - resist))) then
 								hero[v.handle].txt.visible = true    hero[v.handle].txt.text = "Ezy kill"
 							end
 						else
-							if v.health > (dmgL[laser.level] + ((dmgD + dmgR[rocket.level]) * (1 - v.magicDmgResist))) then		
-								local hits = math.floor(v.health - (dmgL[laser.level] + ((dmgD+dmgR[rocket.level]) * (1 - v.magicDmgResist))))
+							if v.health > (dmgL[laser.level] + ((dmgD + dmgR[rocket.level]) * (1 - resist))) then		
+								local hits = math.floor(v.health - (dmgL[laser.level] + ((dmgD+dmgR[rocket.level]) * (1 - resist))))
 								hero[v.handle].txt.visible = true    hero[v.handle].txt.text = "No kill :" ..hits
-							elseif v.health < (dmgL[laser.level] + ((dmgD + dmgR[rocket.level]) * (1 - v.magicDmgResist))) then
+							elseif v.health < (dmgL[laser.level] + ((dmgD + dmgR[rocket.level]) * (1 - resist))) then
 								hero[v.handle].txt.visible = true    hero[v.handle].txt.text = "Ezy kill"
 							end
 						end
 					elseif laser.level ~= 0 and rocket.level ~= 0 then
-						if v.health > (dmgL[laser.level] + (dmgR[rocket.level] * (1 - v.magicDmgResist))) then		
-							local hits = math.floor(v.health - (dmgL[laser.level] + (dmgR[rocket.level] * (1 - v.magicDmgResist))))
+						if v.health > (dmgL[laser.level] + (dmgR[rocket.level] * (1 - resist))) then		
+							local hits = math.floor(v.health - (dmgL[laser.level] + (dmgR[rocket.level] * (1 - resist))))
 							hero[v.handle].txt.visible = true    hero[v.handle].txt.text = "No kill :" ..hits
-						elseif v.health < (dmgL[laser.level] + (dmgR[rocket.level] * (1 - v.magicDmgResist))) then
+						elseif v.health < (dmgL[laser.level] + (dmgR[rocket.level] * (1 - resist))) then
 							hero[v.handle].txt.visible = true    hero[v.handle].txt.text = "Ezy kill"
 						end
 					else
