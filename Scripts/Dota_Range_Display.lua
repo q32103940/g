@@ -1,7 +1,12 @@
 require("libs.drd")
+require("libs.ScriptConfig")
+
+config = ScriptConfig.new()
+config:SetParameter("Hotkey", "56", config.TYPE_HOTKEY)
+config:Load()
 
 local sleep = 0
-local toggleKey = string.byte("8")
+local toggleKey = config.Hotkey
 local activated = false local move = false
 local xx = 180 local yy = 80
 local effect = {}
@@ -14,6 +19,7 @@ local rect = {}
 local myFont = drawMgr:CreateFont("manabarsFont","Arial",14,500)
 local text = drawMgr:CreateText(0,0,0xFFFFFFff,"Range Display",myFont)
 text.visible = false
+
 for a = 1, 7 do
         img[a] = drawMgr:CreateRect(0,0,32,32,0x000000FF)
         img[a].visible = false
@@ -26,7 +32,7 @@ function Tick(tick)
 
         if not client.connected or client.loading or client.console or tick < sleep then return end
 		
-		sleep = tick + 200
+		sleep = tick + 300
 
 		local me = entityList:GetMyHero()
 
