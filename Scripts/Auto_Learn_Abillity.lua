@@ -1,6 +1,12 @@
+require("libs.ScriptConfig")
+
+config = ScriptConfig.new()
+config:SetParameter("Hotkey", "57", config.TYPE_HOTKEY)
+config:Load()
+
 toggleKey = string.byte("9")
 
-start = false activated = false aa = 0
+start = false activated = false aa = 0 draw = true
 icon = {} rect = {} table1 = {} table2 = {} table3 = {} spellS = {} spellL = {} text = {} textR = {}
 
 F16 = drawMgr:CreateFont("F14","Arial",16,500)
@@ -60,6 +66,7 @@ function Tick(tick)
 	
 
 	for i,v in ipairs(table1) do
+		local sum
 		if table1[5] ~= nil then
 			sum = table1[1].level+table1[2].level+table1[3].level+table1[4].level+table1[5].level 
 		else	
@@ -67,14 +74,15 @@ function Tick(tick)
 		end
 		for a = 1,25 do
 			if spellL[a] ~= 0 then
-				if sum ~= me:GetProperty("CDOTA_BaseNPC","m_iCurrentLevel") then
-					if sum + 1 == me:GetProperty("CDOTA_BaseNPC","m_iCurrentLevel") then
-						if me:GetProperty("CDOTA_BaseNPC","m_iCurrentLevel") == spellS[a] and i == spellL[a] then							
+				local level = me:GetProperty("CDOTA_BaseNPC","m_iCurrentLevel")
+				if sum ~= level then
+					if sum + 1 == level then
+						if level == spellS[a] and i == spellL[a] then							
 							entityList:GetMyPlayer():LearnAbility(v)
 							sleepTick = tick + 200
 						end
-					elseif sum + 2 == me:GetProperty("CDOTA_BaseNPC","m_iCurrentLevel") then
-						if (me:GetProperty("CDOTA_BaseNPC","m_iCurrentLevel") - 1) == spellS[a] and i == spellL[a] then
+					elseif sum + 2 == level then
+						if (level - 1) == spellS[a] and i == spellL[a] then
 							entityList:GetMyPlayer():LearnAbility(v)
 							sleepTick = tick + 200
 						end
@@ -90,7 +98,7 @@ function Frame()
 
 	if start == false then return end
 	
-	if activated == true then
+	if activated == true then draw = true
 	
 		for a = 1, 3 do
 			icon[a].visible = true		
@@ -168,17 +176,19 @@ function Frame()
 		end
 		
 	else	
-		for a = 1, 44 do
-			rect[a].visible = false
-		end				
-		for a = 1,10 do
-			icon[a].visible = false
-		end
-		for a = 1,25 do
-			text[a].visible = false
-			textR[a].visible = false
-		end
-		
+		if draw then
+			for a = 1, 44 do
+				rect[a].visible = false
+			end				
+			for a = 1,10 do
+				icon[a].visible = false
+			end
+			for a = 1,25 do
+				text[a].visible = false
+				textR[a].visible = false
+			end
+			draw = false
+		end		
 	end
 
 end
@@ -284,5 +294,5 @@ end
 
 script:RegisterEvent(EVENT_CLOSE, GameClose)
 script:RegisterEvent(EVENT_TICK,Tick)
-script:RegisterEvent(EVENT_FRAME,Frame)
+script:RegisterEvent(EVENT_TICK,Frame)
 script:RegisterEvent(EVENT_KEY,Key)
