@@ -15,11 +15,11 @@ function Tick( tick )
 			return 
 		end
 
-		if me.name ~= "npc_dota_hero_rubick" then
+		if me.classId ~= CDOTA_Unit_Hero_Rubick then
 			script:Disable()
 		else			
 			if me:FindItem("item_ultimate_scepter") then
-				range = 1400
+				range = 1600
 			else 
 				range = 1000
 			end
