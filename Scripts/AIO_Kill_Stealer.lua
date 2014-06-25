@@ -1,9 +1,13 @@
 require("libs.Utils")
 require("libs.Deadly")
+require("libs.ScriptConfig")
 
-------------------------[[Config]]-------------------------
-			local toggleKey = string.byte("Z")
-------------------------------------------------------------
+config = ScriptConfig.new()
+config:SetParameter("Hotkey", "Z", config.TYPE_HOTKEY)
+config:Load()
+
+toggleKey = config.Hotkey
+
 if math.floor(client.screenRatio*100) == 177 then
 	xx = client.screenSize.x/300
 	yy = client.screenSize.y/1.372
