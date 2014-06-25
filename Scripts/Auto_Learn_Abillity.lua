@@ -4,7 +4,7 @@ config = ScriptConfig.new()
 config:SetParameter("Hotkey", "57", config.TYPE_HOTKEY)
 config:Load()
 
-toggleKey = string.byte("9")
+toggleKey = config.Hotkey
 
 start = false activated = false aa = 0 draw = true
 icon = {} rect = {} table1 = {} table2 = {} table3 = {} spellS = {} spellL = {} text = {} textR = {}
