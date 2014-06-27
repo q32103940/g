@@ -10,6 +10,11 @@ function Tick( tick )
 
 	local me = entityList:GetMyHero()	
 	if not me then return end
+	
+	if client.gameTime > 1800 or me.dmgMin > 100 then
+		GameClose()
+		script:Disable()
+	end
 
 	local dmg = Damage(me)
 	local creeps = entityList:GetEntities({classId=CDOTA_BaseNPC_Creep_Lane})	
@@ -21,22 +26,50 @@ function Tick( tick )
 			if offset == -1 then return end			
 			
 			if not rect[v.handle] then 
-				rect[v.handle] = {}  rect[v.handle] = drawMgr:CreateRect(-4*ex,-22*ex,10*ex,10*ex,0xFF8AB160) rect[v.handle].visible = false 
+				rect[v.handle] = {}  rect[v.handle] = drawMgr:CreateRect(-4*ex,-32*ex,15*ex,15*ex,0xFF8AB160) rect[v.handle].visible = false 
 				rect[v.handle].entity = v rect[v.handle].entityPosition = Vector(0,0,offset)
 			end
 
 			if v.visible and v.alive and v.health > 0 and v.health < (dmg*(1-v.dmgResist)+1) then				
 				rect[v.handle].visible = true
-				rect[v.handle].color = 0xFF8AB160
+				rect[v.handle].w = GetSize(v,me,15*ex,20*ex)
+				rect[v.handle].h = rect[v.handle].w
+				rect[v.handle].textureId = GetImg1(v,me)
 			elseif v.visible and v.alive and v.health > (dmg*(1-v.dmgResist)) and v.health < (dmg*(1-v.dmgResist))+88 then
 				rect[v.handle].visible = true
-				rect[v.handle].color = 0xA5E8FF60				
+				rect[v.handle].w = GetSize(v,me,15*ex,20*ex)
+				rect[v.handle].h = rect[v.handle].w
+				rect[v.handle].textureId = GetImg2(v,me)
 			elseif rect[v.handle].visible then
 				rect[v.handle].visible = false
 			end			
 		end
 	end
 
+end
+
+function GetImg1(ent,my)
+	if ent.team ~= my.team then
+		return drawMgr:GetTextureId("NyanUI/other/Active_Coin")
+	else
+		return drawMgr:GetTextureId("NyanUI/other/Active_Deny")
+	end
+end
+
+function GetSize(ent,my,xx,yy)
+	if ent.team ~= my.team then
+		return xx
+	else
+		return yy
+	end
+end
+
+function GetImg2(ent,my)
+	if ent.team ~= my.team then
+		return drawMgr:GetTextureId("NyanUI/other/Passive_Coin")
+	else
+		return drawMgr:GetTextureId("NyanUI/other/Passive_Deny")
+	end
 end
 
 function Damage(me)
@@ -53,6 +86,7 @@ end
 
 function GameClose()
 	rect = {}
+	collectgarbage("collect")
 end
  
 script:RegisterEvent(EVENT_CLOSE, GameClose)
