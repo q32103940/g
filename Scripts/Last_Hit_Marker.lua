@@ -1,7 +1,19 @@
 --lash hit market
+require("libs.ScriptConfig")
+
+config = ScriptConfig.new()
+config:SetParameter("LastHitKey", "C", config.TYPE_HOTKEY)
+config:SetParameter("DenayHitKey", "X", config.TYPE_HOTKEY)
+config:SetParameter("LastHit", false)
+config:Load()
+
 local rect = {}
 local sleep = 0
 local ex = client.screenSize.x/1600*0.8
+
+local lasthit = config.LastHit
+local lasthitKey = config.LastHitKey
+local denyKey = config.DenayHitKey
 
 function Tick( tick )
 
@@ -10,7 +22,7 @@ function Tick( tick )
 
 	local me = entityList:GetMyHero()	
 	if not me then return end
-	
+
 	if client.gameTime > 1800 or me.dmgMin > 100 then
 		GameClose()
 		script:Disable()
@@ -35,6 +47,19 @@ function Tick( tick )
 				rect[v.handle].w = GetSize(v,me,15*ex,20*ex)
 				rect[v.handle].h = rect[v.handle].w
 				rect[v.handle].textureId = GetImg1(v,me)
+				if lasthit then
+					if IsKeyDown(lasthitKey) then
+						if v.team ~= me.team and me:GetDistance2D(v) < me.attackRange + 200 then
+							entityList:GetMyPlayer():Attack(v)
+							break
+						end
+					elseif IsKeyDown(denyKey) then
+						if v.team == me.team and me:GetDistance2D(v) < me.attackRange + 200 then
+							entityList:GetMyPlayer():Attack(v)
+							break
+						end
+					end
+				end							
 			elseif v.visible and v.alive and v.health > (dmg*(1-v.dmgResist)) and v.health < (dmg*(1-v.dmgResist))+88 then
 				rect[v.handle].visible = true
 				rect[v.handle].w = GetSize(v,me,15*ex,20*ex)
