@@ -1,10 +1,11 @@
 --lash hit market
 require("libs.ScriptConfig")
+require("libs.Utils")
 
 config = ScriptConfig.new()
 config:SetParameter("LastHitKey", "C", config.TYPE_HOTKEY)
 config:SetParameter("DenayHitKey", "X", config.TYPE_HOTKEY)
-config:SetParameter("LastHit", false)
+config:SetParameter("LastHit", true)
 config:Load()
 
 local rect = {}
