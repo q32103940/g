@@ -194,13 +194,13 @@ function Tick(tick)
 					if not hero[v.handle].spell then hero[v.handle].spell = {} end
 
 					if not hero[v.handle].spell[a] then hero[v.handle].spell[a] = {}
-						hero[v.handle].spell[a].bg = drawMgr:CreateRect(a*16-46,81,14,12,0x00000095) hero[v.handle].spell[a].bg.visible = false hero[v.handle].spell[a].bg.entity = v hero[v.handle].spell[a].bg.entityPosition = Vector(0,0,offset)
-						hero[v.handle].spell[a].nl = drawMgr:CreateRect(a*16-47,80,16,14,0xCE131399,true) hero[v.handle].spell[a].nl.visible = false hero[v.handle].spell[a].nl.entity = v hero[v.handle].spell[a].nl.entityPosition = Vector(0,0,offset)
-						hero[v.handle].spell[a].lvl1 = drawMgr:CreateRect(a*16-45,91,2,2,0xFFFF00FF) hero[v.handle].spell[a].lvl1.visible = false hero[v.handle].spell[a].lvl1.entity = v hero[v.handle].spell[a].lvl1.entityPosition = Vector(0,0,offset)
-						hero[v.handle].spell[a].lvl2 = drawMgr:CreateRect(a*16-42,91,2,2,0xFFFF00FF) hero[v.handle].spell[a].lvl2.visible = false hero[v.handle].spell[a].lvl2.entity = v hero[v.handle].spell[a].lvl2.entityPosition = Vector(0,0,offset)
-						hero[v.handle].spell[a].lvl3 = drawMgr:CreateRect(a*16-39,91,2,2,0xFFFF00FF) hero[v.handle].spell[a].lvl3.visible = false hero[v.handle].spell[a].lvl3.entity = v hero[v.handle].spell[a].lvl3.entityPosition = Vector(0,0,offset)
-						hero[v.handle].spell[a].lvl4 = drawMgr:CreateRect(a*16-36,91,2,2,0xFFFF00FF) hero[v.handle].spell[a].lvl4.visible = false hero[v.handle].spell[a].lvl4.entity = v hero[v.handle].spell[a].lvl4.entityPosition = Vector(0,0,offset)
-						hero[v.handle].spell[a].textT = drawMgr:CreateText(0,80,0xFFFFFFff,"",F12) hero[v.handle].spell[a].textT.visible = false hero[v.handle].spell[a].textT.entity = v hero[v.handle].spell[a].textT.entityPosition = Vector(0,0,offset)
+						hero[v.handle].spell[a].bg = drawMgr:CreateRect(a*18-46,81,16,14,0x00000095) hero[v.handle].spell[a].bg.visible = false hero[v.handle].spell[a].bg.entity = v hero[v.handle].spell[a].bg.entityPosition = Vector(0,0,offset)
+						hero[v.handle].spell[a].nl = drawMgr:CreateRect(a*18-47,80,18,16,0xCE131399,true) hero[v.handle].spell[a].nl.visible = false hero[v.handle].spell[a].nl.entity = v hero[v.handle].spell[a].nl.entityPosition = Vector(0,0,offset)
+						hero[v.handle].spell[a].lvl1 = drawMgr:CreateRect(a*18-44,92,2,2,0xFFFF00FF) hero[v.handle].spell[a].lvl1.visible = false hero[v.handle].spell[a].lvl1.entity = v hero[v.handle].spell[a].lvl1.entityPosition = Vector(0,0,offset)
+						hero[v.handle].spell[a].lvl2 = drawMgr:CreateRect(a*18-41,92,2,2,0xFFFF00FF) hero[v.handle].spell[a].lvl2.visible = false hero[v.handle].spell[a].lvl2.entity = v hero[v.handle].spell[a].lvl2.entityPosition = Vector(0,0,offset)
+						hero[v.handle].spell[a].lvl3 = drawMgr:CreateRect(a*18-38,92,2,2,0xFFFF00FF) hero[v.handle].spell[a].lvl3.visible = false hero[v.handle].spell[a].lvl3.entity = v hero[v.handle].spell[a].lvl3.entityPosition = Vector(0,0,offset)
+						hero[v.handle].spell[a].lvl4 = drawMgr:CreateRect(a*18-35,92,2,2,0xFFFF00FF) hero[v.handle].spell[a].lvl4.visible = false hero[v.handle].spell[a].lvl4.entity = v hero[v.handle].spell[a].lvl4.entityPosition = Vector(0,0,offset)
+						hero[v.handle].spell[a].textT = drawMgr:CreateText(0,80,0xFFFFFFAA,"",F13) hero[v.handle].spell[a].textT.visible = false hero[v.handle].spell[a].textT.entity = v hero[v.handle].spell[a].textT.entityPosition = Vector(0,0,offset)
 					end
 
 					local Spell = v:GetAbility(a)
@@ -208,24 +208,26 @@ function Tick(tick)
 					if v.alive and v.visible and Spell ~= nil and Spell.name ~= "attribute_bonus" and not Spell.hidden then
 						hero[v.handle].spell[a].bg.visible = true
 						if Spell.state == 16 then
-							hero[v.handle].spell[a].nl.visible = true hero[v.handle].spell[a].nl.color = 0xCE131399
+							hero[v.handle].spell[a].nl.visible = true hero[v.handle].spell[a].nl.textureId = drawMgr:GetTextureId("NyanUI/other/spell_nolearn")
 							hero[v.handle].spell[a].textT.visible = false
 						elseif Spell.state == -1 then
-							hero[v.handle].spell[a].nl.visible = true hero[v.handle].spell[a].nl.color = 0x00994C99
+							hero[v.handle].spell[a].nl.visible = true hero[v.handle].spell[a].nl.textureId = drawMgr:GetTextureId("NyanUI/other/spell_ready")
 							hero[v.handle].spell[a].textT.visible = false					
 						elseif Spell.cd > 0 then
 							local cooldown = math.ceil(Spell.cd)
-							if cooldown > 100 then shift1 = -3 elseif cooldown < 10 then shift1 = 2 else shift1 = 0 end
-							hero[v.handle].spell[a].nl.visible = true hero[v.handle].spell[a].nl.color = 0xA1A4A199
-							hero[v.handle].spell[a].textT.visible = true hero[v.handle].spell[a].textT.x = a*16-44+shift1 hero[v.handle].spell[a].textT.text = ""..cooldown hero[v.handle].spell[a].textT.color = 0xFFFFFFff
+							local shift1 = nil
+							if cooldown > 99 then cooldown = "99" shift1 = 1 elseif cooldown < 10 then shift1 = 4 else shift1 = 2 end
+							hero[v.handle].spell[a].nl.visible = true hero[v.handle].spell[a].nl.textureId = drawMgr:GetTextureId("NyanUI/other/spell_cooldown")
+							hero[v.handle].spell[a].textT.visible = true hero[v.handle].spell[a].textT.x = a*18-45+shift1 hero[v.handle].spell[a].textT.text = ""..cooldown hero[v.handle].spell[a].textT.color = 0xFFFFFFff
 						elseif Spell.state == 17 then
-							hero[v.handle].spell[a].nl.visible = true hero[v.handle].spell[a].nl.color = 0xCC660099
+							hero[v.handle].spell[a].nl.visible = true hero[v.handle].spell[a].nl.textureId = drawMgr:GetTextureId("NyanUI/other/spell_passive")
 							hero[v.handle].spell[a].textT.visible = false
 						elseif v.mana - Spell.manacost < 0 and Spell.cd == 0 then
 							local ManaCost = math.floor(math.ceil(Spell.manacost) - v.mana)
-							if ManaCost > 100 then shift2 = -3 elseif ManaCost < 10 then shift2 = 2 else shift2 = 0 end
-							hero[v.handle].spell[a].nl.visible = true hero[v.handle].spell[a].nl.color = 0x047AFF99
-							hero[v.handle].spell[a].textT.visible = true hero[v.handle].spell[a].textT.x = a*16-44+shift2 hero[v.handle].spell[a].textT.text = ""..ManaCost hero[v.handle].spell[a].textT.color = 0xBBA9EEff
+							local shift2 = nil
+							if ManaCost > 99 then ManaCost = "99" shift2 = 1 elseif ManaCost < 10 then shift2 = 4 else shift2 = 2 end
+							hero[v.handle].spell[a].nl.visible = true hero[v.handle].spell[a].nl.textureId = drawMgr:GetTextureId("NyanUI/other/spell_nomana")
+							hero[v.handle].spell[a].textT.visible = true hero[v.handle].spell[a].textT.x = a*18-45+shift2 hero[v.handle].spell[a].textT.text = ""..ManaCost hero[v.handle].spell[a].textT.color = 0xBBA9EEff
 						elseif hero[v.handle].spell[a].nl.visible then
 							hero[v.handle].spell[a].nl.visible = false
 							hero[v.handle].spell[a].textT.visible = false
@@ -274,68 +276,63 @@ function Tick(tick)
 					if not hero[v.handle].item then hero[v.handle].item = {} end
 
 					if not hero[v.handle].item[c] then hero[v.handle].item[c] = {}
-						hero[v.handle].item[c].gem = drawMgr:CreateText(0, 95,0x7CFC0099,"G",F12) hero[v.handle].item[c].gem.visible = false hero[v.handle].item[c].gem.entity = v hero[v.handle].item[c].gem.entityPosition = Vector(0,0,offset)
-						hero[v.handle].item[c].dust = drawMgr:CreateText(0, 95,0xFF00FF99,"D",F12) hero[v.handle].item[c].dust.visible = false hero[v.handle].item[c].dust.entity = v hero[v.handle].item[c].dust.entityPosition = Vector(0,0,offset)
-						hero[v.handle].item[c].sentry = drawMgr:CreateText(0, 95,0x00BFFF99,"S",F12) hero[v.handle].item[c].sentry.visible = false hero[v.handle].item[c].sentry.entity = v hero[v.handle].item[c].sentry.entityPosition = Vector(0,0,offset)
-						hero[v.handle].item[c].sphere = drawMgr:CreateText(0, 95,0x67C5EE99,"",F12) hero[v.handle].item[c].sphere.visible = false hero[v.handle].item[c].sphere.entity = v hero[v.handle].item[c].sphere.entityPosition = Vector(0,0,offset)
-						hero[v.handle].item[c].sword = drawMgr:CreateText(0, 95,0xC731F599,"",F12) hero[v.handle].item[c].sword.visible = false hero[v.handle].item[c].sword.entity = v hero[v.handle].item[c].sword.entityPosition = Vector(0,0,offset)			
+						hero[v.handle].item[c].gem = drawMgr:CreateRect(0,-manaY+7,18,16,0x7CFC0099) hero[v.handle].item[c].gem.visible = false hero[v.handle].item[c].gem.entity = v hero[v.handle].item[c].gem.entityPosition = Vector(0,0,offset)
+						hero[v.handle].item[c].dust = drawMgr:CreateRect(0,-manaY+6,18,16,0x7CFC0099) hero[v.handle].item[c].dust.visible = false hero[v.handle].item[c].dust.entity = v hero[v.handle].item[c].dust.entityPosition = Vector(0,0,offset)
+						hero[v.handle].item[c].sentryImg = drawMgr:CreateRect(0,-manaY+7,16,14,0x7CFC0099) hero[v.handle].item[c].sentryImg.visible = false hero[v.handle].item[c].sentryImg.entity = v hero[v.handle].item[c].sentryImg.entityPosition = Vector(0,0,offset)
+						hero[v.handle].item[c].sentryTxt = drawMgr:CreateText(0,-manaY+10,0xffffffFF,"",F11) hero[v.handle].item[c].sentryTxt.visible = false hero[v.handle].item[c].sentryTxt.entity = v hero[v.handle].item[c].sentryTxt.entityPosition = Vector(0,0,offset)					
+						hero[v.handle].item[c].sphereImg = drawMgr:CreateRect(0,-manaY+7,16,14,0x7CFC0099) hero[v.handle].item[c].sphereImg.visible = false hero[v.handle].item[c].sphereImg.entity = v hero[v.handle].item[c].sphereImg.entityPosition = Vector(0,0,offset)
+						hero[v.handle].item[c].sphereTxt = drawMgr:CreateText(0,-manaY+7,0xffffffFF,"",F13) hero[v.handle].item[c].sphereTxt.visible = false hero[v.handle].item[c].sphereTxt.entity = v hero[v.handle].item[c].sphereTxt.entityPosition = Vector(0,0,offset)						
 					end
 
 					local Items = v:GetItem(c)
 
 					if v.alive and v.visible and Items ~= nil then
-					
-						hero[v.handle].item[c].vvv = true
 						
 						if Items.name == "item_gem" then
-							enemies[v.classId] = enemies[v.classId]  + 15
-							hero[v.handle].item[c].gem.visible = true hero[v.handle].item[c].gem.x = enemies[v.classId] - 45
+							enemies[v.classId] = enemies[v.classId]  + 20
+							hero[v.handle].item[c].gem.visible = true hero[v.handle].item[c].gem.x = enemies[v.classId]-manaX-18 hero[v.handle].item[c].gem.textureId = drawMgr:GetTextureId("NyanUI/other/O_gem")						
 						else
 							hero[v.handle].item[c].gem.visible = false
 						end
 						if Items.name == "item_dust" then
-							enemies[v.classId] = enemies[v.classId]  + 15
-							hero[v.handle].item[c].dust.visible = true hero[v.handle].item[c].dust.x = enemies[v.classId] - 45 hero[v.handle].item[c].dust.text = "D"..v:GetItem(c).charges
+							enemies[v.classId] = enemies[v.classId]  + 20
+							hero[v.handle].item[c].dust.visible = true hero[v.handle].item[c].dust.x = enemies[v.classId]-manaX-18 hero[v.handle].item[c].dust.textureId = drawMgr:GetTextureId("NyanUI/other/O_dust")	
 						else
 							hero[v.handle].item[c].dust.visible = false
 						end
 						if Items.name == "item_ward_sentry" then
-							enemies[v.classId] = enemies[v.classId]  + 15
-							hero[v.handle].item[c].sentry.visible = true hero[v.handle].item[c].sentry.x = enemies[v.classId] - 45 hero[v.handle].item[c].sentry.text = "S"..v:GetItem(c).charges
+							enemies[v.classId] = enemies[v.classId]  + 20
+							local charg = Items.charges
+							hero[v.handle].item[c].sentryImg.visible = true hero[v.handle].item[c].sentryImg.x = enemies[v.classId]-manaX-18 hero[v.handle].item[c].sentryImg.textureId = drawMgr:GetTextureId("NyanUI/other/O_sentry")
+							hero[v.handle].item[c].sentryTxt.visible = true hero[v.handle].item[c].sentryTxt.x = enemies[v.classId]-manaX-8 hero[v.handle].item[c].sentryTxt.text = ""..charg
 						else
-							hero[v.handle].item[c].sentry.visible = false
+							hero[v.handle].item[c].sentryImg.visible = false
+							hero[v.handle].item[c].sentryTxt.visible = false
 						end
 
 						if Items.name == "item_sphere" then
-							enemies[v.classId] = enemies[v.classId]  + 15
+							enemies[v.classId] = enemies[v.classId]  + 20
+							hero[v.handle].item[c].sphereImg.visible = true hero[v.handle].item[c].sphereImg.x = enemies[v.classId]-manaX-16 hero[v.handle].item[c].sphereImg.textureId = drawMgr:GetTextureId("NyanUI/other/O_sphere")
 							if Items.cd ~= 0 then
-								local cdL = math.ceil(v:GetItem(c).cd)
-								hero[v.handle].item[c].sphere.visible = true hero[v.handle].item[c].sphere.x = enemies[v.classId] - 45 hero[v.handle].item[c].sphere.text = ""..cdL
+								local cdL = math.ceil(Items.cd)
+								local shift4 = nil
+								if cdL < 10 then shift4 = 2 else shift4 = 0 end
+								hero[v.handle].item[c].sphereTxt.visible = true hero[v.handle].item[c].sphereTxt.x = enemies[v.classId]-manaX-14 + shift4 hero[v.handle].item[c].sphereTxt.text = ""..cdL
 							else
-								hero[v.handle].item[c].sphere.visible = true hero[v.handle].item[c].sphere.x = enemies[v.classId] - 45 hero[v.handle].item[c].sphere.text = "L"
+								hero[v.handle].item[c].sphereTxt.visible = false
 							end
 						else
-							hero[v.handle].item[c].sphere.visible = false
+							hero[v.handle].item[c].sphereTxt.visible = false
+							hero[v.handle].item[c].sphereImg.visible = false
 						end
 
-						if Items.name == "item_invis_sword" then
-							enemies[v.classId] = enemies[v.classId]  + 15
-							if Items.cd ~= 0 then
-								local cdS = math.ceil(v:GetItem(c).cd)
-								hero[v.handle].item[c].sword.visible = true hero[v.handle].item[c].sword.x = enemies[v.classId] - 45 hero[v.handle].item[c].sword.text = ""..cdS
-							else
-								hero[v.handle].item[c].sword.visible = true hero[v.handle].item[c].sword.x = enemies[v.classId] - 45 hero[v.handle].item[c].sword.text = "SB"
-							end
-						else
-							hero[v.handle].item[c].sword.visible = false
-						end
-					elseif hero[v.handle].item[c].vvv then
+					else					
 						hero[v.handle].item[c].gem.visible = false
 						hero[v.handle].item[c].dust.visible = false
-						hero[v.handle].item[c].sentry.visible = false
-						hero[v.handle].item[c].sphere.visible = false
-						hero[v.handle].item[c].sword.visible = false
-						hero[v.handle].item[c].vvv = false
+						hero[v.handle].item[c].sentryImg.visible = false
+						hero[v.handle].item[c].sentryTxt.visible = false
+						hero[v.handle].item[c].sphereTxt.visible = false
+						hero[v.handle].item[c].sphereImg.visible = false						
 					end
 
 				end
