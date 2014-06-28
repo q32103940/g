@@ -19,6 +19,8 @@ local TAssis = nil
 local RC = {} local ss = {}
 --ancient
 local blastmsg = nil local TCold = nil
+--pl
+local effPL = nil
 --all
 local check = true 
 local enemy = {}
@@ -62,6 +64,8 @@ heroes = {
 {"npc_dota_hero_rubick",rubick},
 {"npc_dota_hero_kunkka",kunkka},
 {"npc_dota_hero_ancient_apparition",aa},
+{"npc_dota_hero_phantom_assassin",pa},
+{"npc_dota_hero_phantom_lancer",pl},
 }
 
 function Main(tick)
@@ -107,6 +111,8 @@ function Main(tick)
 	if heroes[7][2] ~= 1 then WhatARubick(hero,me,cast,tick) end
 	if heroes[8][2] ~= 1 then Boat(cast,me) end
 	if heroes[9][2] ~= 1 then Ancient(cast,me,hero,heroes[9][1]) end
+	if heroes[10][2] ~= 1 then PhantomKa(me,hero) end
+	if heroes[11][2] ~= 1 then PhantomL(me,hero) end
 
 end
 
@@ -185,7 +191,7 @@ function RangeCast(me,hero)
 							ss[v.handle] = true
 							for a = 1, count do
 								local pss = RCVector(v, range[spell.level]* a)
-								RC[a] = Effect(pss, "fire_torch" )
+								RC[a] = Effect(pss, "blueTorch_flame" )
 								RC[a]:SetVector(1,Vector(0,0,0))
 								RC[a]:SetVector(0, pss)
 							end
@@ -203,7 +209,7 @@ end
 
 function Arrow(cast,me,hero,heroName)
 	if not icon then
-		icon = drawMgr:CreateRect(0,0,16,16,0x000000ff) icon.visible = false
+		icon = drawMgr:CreateRect(0,0,20,20,0x000000ff) icon.visible = false
 	end
 	local arrow = FindArrow(cast,me)
 	if arrow then
@@ -217,7 +223,7 @@ function Arrow(cast,me,hero,heroName)
 		end
 		if arrow.visibleToEnemy and not vec then
 			vec = arrow.position
-			if GetDistance2D(vec,start) < 75 then
+			if GetDistance2D(vec,start) < 50 then
 				vec = nil
 			end
 		end
@@ -340,7 +346,7 @@ function Boat(cast,me)
 		end
 		if ship.visibleToEnemy and not vec1 then
 			vec1 = ship.position
-			if GetDistance2D(vec1,start1) < 75 then
+			if GetDistance2D(vec1,start1) < 50 then
 				vec1 = nil
 			end
 		end
@@ -427,6 +433,40 @@ function FindSpell(target,spellName)
 	end
 end
 
+function PhantomKa(me,hero) 
+	if not PKIcon then
+		PKIcon = drawMgr:CreateRect(0,0,20,20,0x000000ff) PKIcon.visible = false
+	end
+	for i,v in ipairs(hero) do
+		if v.classId == CDOTA_Unit_Hero_PhantomAssassin then
+			if v:DoesHaveModifier("modifier_phantom_assassin_blur_active") then
+				PKIcon.visible = true
+				local PKMinimap = MapToMinimap(v.position.x,v.position.y)
+				PKIcon.x = PKMinimap.x-20/2
+				PKIcon.y = PKMinimap.y-20/2
+				PKIcon.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..v.name:gsub("npc_dota_hero_",""))
+			else
+				PKIcon.visible = false
+			end
+		end
+	end
+end
+
+function PhantomL(me,tab)
+	local pl = GetPL(me,tab)
+	local illlus = entityList:FindEntities(function (v) return v.type==LuaEntity.TYPE_HERO and v.illusion and v.team ~= me.team and v.classId == CDOTA_Unit_Hero_PhantomLancer  and v.unitState == -1031241196 end)[1]
+
+	if not pl and illlus then
+		if not effPL then
+			effPL = Effect(illlus,"phantomlancer_SpiritLance_target_slowparent")				
+		end
+	elseif effPL then
+		effPL = nil
+		collectgarbage("collect")
+	end
+ 
+end
+
 function FindAB(first, second, distance)
 	local xAngle = math.deg(math.atan(math.abs(second.x - first.x)/math.abs(second.y - first.y)))
 	local retValue = nil
@@ -453,6 +493,17 @@ function RCVector(ent, dis)
 	reVector.z = reVector.z+100
 	return reVector
 end	
+
+function GetPL(me,tab)
+	for i,v in ipairs(tab) do
+		if v.team ~= me.team and v.visible then
+			if v.classId == CDOTA_Unit_Hero_PhantomLancer then
+				return true
+			end
+		end
+	end
+	return false
+end
 	
 function FindByModifierS(target,mod,me)
 	for i,v in ipairs(target) do
@@ -515,6 +566,10 @@ function Roshan( kill )
 end
 
 function GameClose()
+	if stage ~= 1 then
+		script:UnregisterEvent(Roha)
+		stage = 1
+	end
 	script:Reload()
 end
 
