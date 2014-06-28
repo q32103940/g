@@ -1474,7 +1474,7 @@ function LuaEntityNPC:CanReincarnate()
 		return true
 	end
 	local reincarnation = self:FindSpell("skeleton_king_reincarnation")
-	if reincarnation and reincarnation.cd == 0 and self.mana > 140 then
+	if reincarnation and reincarnation.level ~= 0 and reincarnation.cd == 0 and self.mana > 140 then
 		return true
 	end
 	return false
