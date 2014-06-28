@@ -39,15 +39,22 @@ function Tick( tick )
 			if offset == -1 then return end			
 			
 			if not rect[v.handle] then 
-				rect[v.handle] = {}  rect[v.handle] = drawMgr:CreateRect(-4*ex,-32*ex,15*ex,15*ex,0xFF8AB160) rect[v.handle].visible = false 
+				rect[v.handle] = {}  rect[v.handle] = drawMgr:CreateRect(-4*ex,-32*ex,0,0,0xFF8AB160) rect[v.handle].visible = false 
 				rect[v.handle].entity = v rect[v.handle].entityPosition = Vector(0,0,offset)
 			end
 
 			if v.visible and v.alive and v.health > 0 and v.health < (dmg*(1-v.dmgResist)+1) then				
-				rect[v.handle].visible = true
-				rect[v.handle].w = GetSize(v,me,15*ex,20*ex)
-				rect[v.handle].h = rect[v.handle].w
-				rect[v.handle].textureId = GetImg1(v,me)
+				rect[v.handle].visible = true	
+				if v.team == me.team then
+					rect[v.handle].w = 20*ex
+					rect[v.handle].h = 20*ex
+					rect[v.handle].textureId = drawMgr:GetTextureId("NyanUI/other/Active_Deny")
+				else
+					rect[v.handle].w = 15*ex
+					rect[v.handle].h = 15*ex
+					rect[v.handle].textureId = drawMgr:GetTextureId("NyanUI/other/Active_Coin")
+				end
+				--------------
 				if lasthit then
 					if IsKeyDown(lasthitKey) then
 						if v.team ~= me.team and me:GetDistance2D(v) < me.attackRange + 200 then
@@ -60,42 +67,25 @@ function Tick( tick )
 							break
 						end
 					end
-				end							
+				end		
+				---------------
 			elseif v.visible and v.alive and v.health > (dmg*(1-v.dmgResist)) and v.health < (dmg*(1-v.dmgResist))+88 then
 				rect[v.handle].visible = true
-				rect[v.handle].w = GetSize(v,me,15*ex,20*ex)
-				rect[v.handle].h = rect[v.handle].w
-				rect[v.handle].textureId = GetImg2(v,me)
+				if v.team == me.team then
+					rect[v.handle].w = 20*ex
+					rect[v.handle].h = 20*ex
+					rect[v.handle].textureId = drawMgr:GetTextureId("NyanUI/other/Passive_Deny")
+				else
+					rect[v.handle].w = 15*ex
+					rect[v.handle].h = 15*ex
+					rect[v.handle].textureId = drawMgr:GetTextureId("NyanUI/other/Passive_Coin")
+				end
 			elseif rect[v.handle].visible then
 				rect[v.handle].visible = false
 			end			
 		end
 	end
 
-end
-
-function GetImg1(ent,my)
-	if ent.team ~= my.team then
-		return drawMgr:GetTextureId("NyanUI/other/Active_Coin")
-	else
-		return drawMgr:GetTextureId("NyanUI/other/Active_Deny")
-	end
-end
-
-function GetSize(ent,my,xx,yy)
-	if ent.team ~= my.team then
-		return xx
-	else
-		return yy
-	end
-end
-
-function GetImg2(ent,my)
-	if ent.team ~= my.team then
-		return drawMgr:GetTextureId("NyanUI/other/Passive_Coin")
-	else
-		return drawMgr:GetTextureId("NyanUI/other/Passive_Deny")
-	end
 end
 
 function Damage(me)
