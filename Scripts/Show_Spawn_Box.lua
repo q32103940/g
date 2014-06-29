@@ -34,18 +34,6 @@ local eff3 = {} local eff4 = {}
 
 local effec = "candle_flame_medium" -- ambient_gizmo_model
 
---[[
-
-	a----b
-	|	 |
-	|	 |
-	d----c
-	
-	a 2240;-4288
-	c 3776;-5312
-
-]]
-
 function Key(msg,code)
 
 	if msg ~= KEY_UP or code ~= toggleKey or client.chat or not client.connected or client.loading or client.console then
