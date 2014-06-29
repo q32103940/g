@@ -112,10 +112,8 @@ end
 
 function GameClose()
 	eff = {}
-	eff1 = {}
-	eff2 = {}
-	eff3 = {}
-	eff4 = {}
+	eff1 = {} eff2 = {}
+	eff3 = {} eff4 = {}
 	collectgarbage("collect")
 end
 
