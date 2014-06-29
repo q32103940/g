@@ -21,7 +21,6 @@ spots = {
 {-1921,3138,-964,2308}, -- camp by rune
 {-832,4098,-3,3203}, -- medium camp
 {447,3778,1659,2822} -- hard camp by mid
-
 }
 
 local toggleKey = config.Hotkey
