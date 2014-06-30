@@ -28,7 +28,7 @@ else
 end
 
 --Stuff
-local hero = {} local note = {} local reg = false
+local hero = {} local note = {} local reg = false local combo = false
 local activ = true local draw = true local myhero = nil
 
 --Draw function
@@ -179,6 +179,9 @@ function Key(msg,code)
 	if IsKeyDown(toggleKey) then
 		activ = not activ
 	end
+	if IsKeyDown(ComboKey) then
+		combo = not combo
+	end	
 	if IsMouseOnButton(xx,yy,24,24) then
 		if msg == LBUTTON_DOWN then
 			activ = (not activ)
@@ -260,11 +263,13 @@ function KillGlobal(me,ability,damage,adamage,target)
 								note[v.handle] = true
 								GenerateSideMessage(v.name,Spell.name)
 							end
-							if activ and AutoGlobal or (activ and not AutoGlobal and IsKeyDown(ComboKey)) then
+							if activ and AutoGlobal or (activ and not AutoGlobal and combo) then
 								if target == 1 then
-									me:SafeCastAbility(Spell,v) break
+									me:SafeCastAbility(Spell,v) 
+									combo = false break
 								elseif target == 3 then
-									me:SafeCastAbility(Spell) break
+									me:SafeCastAbility(Spell)
+									combo = false break
 								end
 							end
 						else
@@ -639,6 +644,7 @@ function GameClose()
 	dmgCalc.visible = false
 	hero = {}
 	myhero = nil
+	combo = false
 	collectgarbage("collect")
 	if reg then
 		script:UnregisterEvent(Tick)
