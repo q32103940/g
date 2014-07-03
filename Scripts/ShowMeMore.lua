@@ -209,7 +209,7 @@ end
 
 function Arrow(cast,me,hero,heroName)
 	if not icon then
-		icon = drawMgr:CreateRect(0,0,20,20,0x000000ff) icon.visible = false
+		icon = drawMgr:CreateRect(0,0,18,18,0x000000ff) icon.visible = false
 	end
 	local arrow = FindArrow(cast,me)
 	if arrow then
@@ -435,7 +435,7 @@ end
 
 function PhantomKa(me,hero) 
 	if not PKIcon then
-		PKIcon = drawMgr:CreateRect(0,0,20,20,0x000000ff) PKIcon.visible = false
+		PKIcon = drawMgr:CreateRect(0,0,18,18,0x000000ff) PKIcon.visible = false
 	end
 	for i,v in ipairs(hero) do
 		if v.classId == CDOTA_Unit_Hero_PhantomAssassin then
@@ -570,6 +570,7 @@ function GameClose()
 		script:UnregisterEvent(Roha)
 		stage = 1
 	end
+	collectgarbage("collect")
 	script:Reload()
 end
 
