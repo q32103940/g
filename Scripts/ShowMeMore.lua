@@ -10,7 +10,7 @@ local TArrow = {}
 local TBoat = {}
 --charge
 local TCharge = {} local speeed = 600
-local speed = {600,650,700,750} local a = nil
+local speed = {600,650,700,750} local aa = nil
 --infest
 local TInfest = nil
 --sniper
@@ -566,12 +566,22 @@ function Roshan( kill )
 end
 
 function GameClose()
+	check = true
 	if stage ~= 1 then
 		script:UnregisterEvent(Roha)
-		stage = 1
 	end
+	stage = 1
+	effects = {} TArrow = {}
+	TBoat = {} TCharge = {} speeed = 600
+	aa = nil TInfest = nil	TAssis = nil
+	RC = {} ss = {}	blastmsg = nil TCold = nil
+	effPL = nil	enemy = {}
+	icon = nil
+	PKIcon = nil
+	TAssis = nil
+	TCharge[1] = nil
+	TCharge[2] = nil
 	collectgarbage("collect")
-	script:Reload()
 end
 
 script:RegisterEvent(EVENT_TICK, Main)
