@@ -25,28 +25,11 @@ spots = {
 }
 
 local toggleKey = config.Hotkey
-
 local check = false
-
 local eff = {}
-local eff1 = {}
-local eff2 = {}
-local eff3 = {}
-local eff4 = {}
-
+local eff1 = {} local eff2 = {}
+local eff3 = {} local eff4 = {}
 local effec = "candle_flame_medium" -- ambient_gizmo_model
-
---[[
-
-	a----b
-	|	 |
-	|	 |
-	d----c
-	
-	a 2240;-4288
-	c 3776;-5312
-
-]]
 
 function Key(msg,code)
 
@@ -128,10 +111,8 @@ end
 
 function GameClose()
 	eff = {}
-	eff1 = {}
-	eff2 = {}
-	eff3 = {}
-	eff4 = {}
+	eff1 = {} eff2 = {}
+	eff3 = {} eff4 = {}
 	collectgarbage("collect")
 end
 
