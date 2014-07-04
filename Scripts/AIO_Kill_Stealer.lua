@@ -12,6 +12,8 @@ config:Load()
 local toggleKey = config.Active
 local ComboKey = config.Combokey
 local AutoGlobal = config.Auto
+local xx = nil
+local yy = nil
 
 if math.floor(client.screenRatio*100) == 177 then
 	xx = client.screenSize.x/300
