@@ -50,23 +50,20 @@ function Tick(tick)
 		end	
 	end
 
-
 end
 
 function Nyx(target)
 	if target.classId == CDOTA_Unit_Hero_Nyx_Assassin and target:DoesHaveModifier("modifier_nyx_assassin_vendetta") then
 		return false
-	else
-		return true
 	end
+	return true
 end
 
 function Draw(one,two)
 	if one and two then
 		return true
-	else
-		return false
 	end
+	return false
 end
 
 function Key()
