@@ -194,12 +194,12 @@ function Tick(tick)
 					if not hero[v.handle].spell then hero[v.handle].spell = {} end
 
 					if not hero[v.handle].spell[a] then hero[v.handle].spell[a] = {}
-						hero[v.handle].spell[a].bg = drawMgr:CreateRect(a*18-46,81,16,14,0x00000095) hero[v.handle].spell[a].bg.visible = false hero[v.handle].spell[a].bg.entity = v hero[v.handle].spell[a].bg.entityPosition = Vector(0,0,offset)
-						hero[v.handle].spell[a].nl = drawMgr:CreateRect(a*18-47,80,18,16,0xCE131399,true) hero[v.handle].spell[a].nl.visible = false hero[v.handle].spell[a].nl.entity = v hero[v.handle].spell[a].nl.entityPosition = Vector(0,0,offset)
-						hero[v.handle].spell[a].lvl1 = drawMgr:CreateRect(a*18-44,92,2,2,0xFFFF00FF) hero[v.handle].spell[a].lvl1.visible = false hero[v.handle].spell[a].lvl1.entity = v hero[v.handle].spell[a].lvl1.entityPosition = Vector(0,0,offset)
-						hero[v.handle].spell[a].lvl2 = drawMgr:CreateRect(a*18-41,92,2,2,0xFFFF00FF) hero[v.handle].spell[a].lvl2.visible = false hero[v.handle].spell[a].lvl2.entity = v hero[v.handle].spell[a].lvl2.entityPosition = Vector(0,0,offset)
-						hero[v.handle].spell[a].lvl3 = drawMgr:CreateRect(a*18-38,92,2,2,0xFFFF00FF) hero[v.handle].spell[a].lvl3.visible = false hero[v.handle].spell[a].lvl3.entity = v hero[v.handle].spell[a].lvl3.entityPosition = Vector(0,0,offset)
-						hero[v.handle].spell[a].lvl4 = drawMgr:CreateRect(a*18-35,92,2,2,0xFFFF00FF) hero[v.handle].spell[a].lvl4.visible = false hero[v.handle].spell[a].lvl4.entity = v hero[v.handle].spell[a].lvl4.entityPosition = Vector(0,0,offset)
+						hero[v.handle].spell[a].bg = drawMgr:CreateRect(a*18-54,81,16,14,0x00000095) hero[v.handle].spell[a].bg.visible = false hero[v.handle].spell[a].bg.entity = v hero[v.handle].spell[a].bg.entityPosition = Vector(0,0,offset)
+						hero[v.handle].spell[a].nl = drawMgr:CreateRect(a*18-55,80,18,16,0xCE131399,true) hero[v.handle].spell[a].nl.visible = false hero[v.handle].spell[a].nl.entity = v hero[v.handle].spell[a].nl.entityPosition = Vector(0,0,offset)
+						hero[v.handle].spell[a].lvl1 = drawMgr:CreateRect(a*18-52,92,2,2,0xFFFF00FF) hero[v.handle].spell[a].lvl1.visible = false hero[v.handle].spell[a].lvl1.entity = v hero[v.handle].spell[a].lvl1.entityPosition = Vector(0,0,offset)
+						hero[v.handle].spell[a].lvl2 = drawMgr:CreateRect(a*18-49,92,2,2,0xFFFF00FF) hero[v.handle].spell[a].lvl2.visible = false hero[v.handle].spell[a].lvl2.entity = v hero[v.handle].spell[a].lvl2.entityPosition = Vector(0,0,offset)
+						hero[v.handle].spell[a].lvl3 = drawMgr:CreateRect(a*18-46,92,2,2,0xFFFF00FF) hero[v.handle].spell[a].lvl3.visible = false hero[v.handle].spell[a].lvl3.entity = v hero[v.handle].spell[a].lvl3.entityPosition = Vector(0,0,offset)
+						hero[v.handle].spell[a].lvl4 = drawMgr:CreateRect(a*18-43,92,2,2,0xFFFF00FF) hero[v.handle].spell[a].lvl4.visible = false hero[v.handle].spell[a].lvl4.entity = v hero[v.handle].spell[a].lvl4.entityPosition = Vector(0,0,offset)
 						hero[v.handle].spell[a].textT = drawMgr:CreateText(0,80,0xFFFFFFAA,"",F13) hero[v.handle].spell[a].textT.visible = false hero[v.handle].spell[a].textT.entity = v hero[v.handle].spell[a].textT.entityPosition = Vector(0,0,offset)
 					end
 
@@ -218,7 +218,7 @@ function Tick(tick)
 							local shift1 = nil
 							if cooldown > 99 then cooldown = "99" shift1 = 1 elseif cooldown < 10 then shift1 = 4 else shift1 = 2 end
 							hero[v.handle].spell[a].nl.visible = true hero[v.handle].spell[a].nl.textureId = drawMgr:GetTextureId("NyanUI/other/spell_cooldown")
-							hero[v.handle].spell[a].textT.visible = true hero[v.handle].spell[a].textT.x = a*18-45+shift1 hero[v.handle].spell[a].textT.text = ""..cooldown hero[v.handle].spell[a].textT.color = 0xFFFFFFff
+							hero[v.handle].spell[a].textT.visible = true hero[v.handle].spell[a].textT.x = a*18-53+shift1 hero[v.handle].spell[a].textT.text = ""..cooldown hero[v.handle].spell[a].textT.color = 0xFFFFFFff
 						elseif Spell.state == 17 then
 							hero[v.handle].spell[a].nl.visible = true hero[v.handle].spell[a].nl.textureId = drawMgr:GetTextureId("NyanUI/other/spell_passive")
 							hero[v.handle].spell[a].textT.visible = false
@@ -227,7 +227,7 @@ function Tick(tick)
 							local shift2 = nil
 							if ManaCost > 99 then ManaCost = "99" shift2 = 1 elseif ManaCost < 10 then shift2 = 4 else shift2 = 2 end
 							hero[v.handle].spell[a].nl.visible = true hero[v.handle].spell[a].nl.textureId = drawMgr:GetTextureId("NyanUI/other/spell_nomana")
-							hero[v.handle].spell[a].textT.visible = true hero[v.handle].spell[a].textT.x = a*18-45+shift2 hero[v.handle].spell[a].textT.text = ""..ManaCost hero[v.handle].spell[a].textT.color = 0xBBA9EEff
+							hero[v.handle].spell[a].textT.visible = true hero[v.handle].spell[a].textT.x = a*18-53+shift2 hero[v.handle].spell[a].textT.text = ""..ManaCost hero[v.handle].spell[a].textT.color = 0xBBA9EEff
 						elseif hero[v.handle].spell[a].nl.visible then
 							hero[v.handle].spell[a].nl.visible = false
 							hero[v.handle].spell[a].textT.visible = false
@@ -253,8 +253,7 @@ function Tick(tick)
 							hero[v.handle].spell[a].lvl3.visible = false
 							hero[v.handle].spell[a].lvl4.visible = false
 						end
-					else
-						if hero[v.handle].spell[a].bg.visible then
+					elseif hero[v.handle].spell[a].bg.visible then
 							hero[v.handle].spell[a].bg.visible = false
 							hero[v.handle].spell[a].nl.visible = false
 							hero[v.handle].spell[a].lvl1.visible = false
@@ -276,8 +275,6 @@ function Tick(tick)
 					hero[v.handle].spell[5].bg.textureId =  drawMgr:GetTextureId("NyanUI/spellicons/"..v:GetAbility(5).name)
 					hero[v.handle].spell[6].bg.textureId =  drawMgr:GetTextureId("NyanUI/spellicons/"..v:GetAbility(6).name)
 				end
-			end
-			
 			end
 			--Items
 			if overlayItem then
@@ -358,13 +355,12 @@ function Tick(tick)
 			local color = Color(v,me)
 			
 			if not panel[v.playerId] then panel[v.playerId] = {}
-				panel[v.playerId].hpT = drawMgr:CreateText(0,y_,0xFF3333ff,"",F12) panel[v.playerId].hpT.visible = false
 				panel[v.playerId].hpINB = drawMgr:CreateRect(0,y_,x_-1,8,0x000000D0) panel[v.playerId].hpINB.visible = false
-				panel[v.playerId].hpIN = drawMgr:CreateRect(0,y_,0,8,color) panel[v.playerId].hpIN.visible = false
-				
+				panel[v.playerId].hpIN = drawMgr:CreateRect(0,y_,0,8,color) panel[v.playerId].hpIN.visible = false				
 				panel[v.playerId].hpB = drawMgr:CreateRect(0,y_,x_-1,8,0x000000ff,true) panel[v.playerId].hpB.visible = false
-				panel[v.playerId].ulti = drawMgr:CreateRect(0,y_-9,14,14,0x0EC14A80) panel[v.playerId].ulti.visible = false			
-				panel[v.playerId].ultiCDT = drawMgr:CreateText(0,y_-9,0xFFFFFF99,"",F12) panel[v.playerId].ultiCDT.visible = false
+				
+				panel[v.playerId].ulti = drawMgr:CreateRect(0,y_-9,14,14,0x0EC14A80) panel[v.playerId].ulti.visible = false		
+				panel[v.playerId].ultiCDT = drawMgr:CreateText(0,y_-9,0xFFFFFF99,"",F13) panel[v.playerId].ultiCDT.visible = false				
 			end			
 
 			for d = 4,8 do
@@ -374,17 +370,17 @@ function Tick(tick)
 						panel[v.playerId].ulti.x = xx-3+x_*v.playerId
 						if ult.cd > 0 then
 							local cooldownUlti = math.ceil(ult.cd)
-							if cooldownUlti > 100 then shift3 = -3 elseif cooldownUlti < 10 then shift3 = 1 else shift3 = -1 end
+							if cooldownUlti > 99 then cooldownUlti = "99" shift3 = -2 elseif cooldownUlti < 10 then shift3 = 0 else shift3 = -2 end							
 							panel[v.playerId].ulti.visible = true 
 							panel[v.playerId].ulti.textureId = drawMgr:GetTextureId("NyanUI/other/ulti_cooldown")
 							panel[v.playerId].ultiCDT.visible = true panel[v.playerId].ultiCDT.x = xx+x_*v.playerId + shift3 panel[v.playerId].ultiCDT.text = ""..cooldownUlti
-						elseif ult.state == LuaEntityAbility.STATE_READY then
+						elseif ult.state == LuaEntityAbility.STATE_READY or ult.state == 17 then
 							panel[v.playerId].ulti.visible = true 
 							panel[v.playerId].ulti.textureId = drawMgr:GetTextureId("NyanUI/other/ulti_ready")
 							panel[v.playerId].ultiCDT.visible = false						
 						elseif ult.state == LuaEntityAbility.STATE_NOMANA then								
 							panel[v.playerId].ulti.textureId = drawMgr:GetTextureId("NyanUI/other/ulti_nomana")
-							panel[v.playerId].ultiCDT.visible = false							
+							panel[v.playerId].ultiCDT.visible = false						
 						end
 					end
 				end
@@ -403,7 +399,6 @@ function Tick(tick)
 			end
 		end
 	end
-	
 	--gliph cooldown
 	local team = 5 - me.team
 	local Time = client:GetGlyphCooldown(team)
