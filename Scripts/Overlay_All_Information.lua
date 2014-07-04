@@ -253,8 +253,7 @@ function Tick(tick)
 							hero[v.handle].spell[a].lvl3.visible = false
 							hero[v.handle].spell[a].lvl4.visible = false
 						end
-					else
-						if hero[v.handle].spell[a].bg.visible then
+					elseif hero[v.handle].spell[a].bg.visible then
 							hero[v.handle].spell[a].bg.visible = false
 							hero[v.handle].spell[a].nl.visible = false
 							hero[v.handle].spell[a].lvl1.visible = false
@@ -276,8 +275,6 @@ function Tick(tick)
 					hero[v.handle].spell[5].bg.textureId =  drawMgr:GetTextureId("NyanUI/spellicons/"..v:GetAbility(5).name)
 					hero[v.handle].spell[6].bg.textureId =  drawMgr:GetTextureId("NyanUI/spellicons/"..v:GetAbility(6).name)
 				end
-			end
-			
 			end
 			--Items
 			if overlayItem then
@@ -363,7 +360,7 @@ function Tick(tick)
 				panel[v.playerId].hpB = drawMgr:CreateRect(0,y_,x_-1,8,0x000000ff,true) panel[v.playerId].hpB.visible = false
 				
 				panel[v.playerId].ulti = drawMgr:CreateRect(0,y_-9,14,14,0x0EC14A80) panel[v.playerId].ulti.visible = false		
-				panel[v.playerId].ultiCDT = drawMgr:CreateText(0,y_-9,0xFFFFFF99,"",F12) panel[v.playerId].ultiCDT.visible = false				
+				panel[v.playerId].ultiCDT = drawMgr:CreateText(0,y_-9,0xFFFFFF99,"",F13) panel[v.playerId].ultiCDT.visible = false				
 			end			
 
 			for d = 4,8 do
@@ -373,17 +370,17 @@ function Tick(tick)
 						panel[v.playerId].ulti.x = xx-3+x_*v.playerId
 						if ult.cd > 0 then
 							local cooldownUlti = math.ceil(ult.cd)
-							if cooldownUlti > 100 then shift3 = -3 elseif cooldownUlti < 10 then shift3 = 1 else shift3 = -1 end
+							if cooldownUlti > 99 then cooldownUlti = "99" shift3 = -2 elseif cooldownUlti < 10 then shift3 = 0 else shift3 = -2 end							
 							panel[v.playerId].ulti.visible = true 
 							panel[v.playerId].ulti.textureId = drawMgr:GetTextureId("NyanUI/other/ulti_cooldown")
 							panel[v.playerId].ultiCDT.visible = true panel[v.playerId].ultiCDT.x = xx+x_*v.playerId + shift3 panel[v.playerId].ultiCDT.text = ""..cooldownUlti
-						elseif ult.state == LuaEntityAbility.STATE_READY then
+						elseif ult.state == LuaEntityAbility.STATE_READY or ult.state == 17 then
 							panel[v.playerId].ulti.visible = true 
 							panel[v.playerId].ulti.textureId = drawMgr:GetTextureId("NyanUI/other/ulti_ready")
 							panel[v.playerId].ultiCDT.visible = false						
 						elseif ult.state == LuaEntityAbility.STATE_NOMANA then								
 							panel[v.playerId].ulti.textureId = drawMgr:GetTextureId("NyanUI/other/ulti_nomana")
-							panel[v.playerId].ultiCDT.visible = false							
+							panel[v.playerId].ultiCDT.visible = false						
 						end
 					end
 				end
@@ -402,7 +399,6 @@ function Tick(tick)
 			end
 		end
 	end
-	
 	--gliph cooldown
 	local team = 5 - me.team
 	local Time = client:GetGlyphCooldown(team)
