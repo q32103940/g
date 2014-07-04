@@ -36,7 +36,7 @@ function Tick(tick)
 		local lvl = string.match (dagon.name, "%d+")
 		if not lvl then lvl = 1 end local dmgD = dmg[lvl*1]
 		local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO,illusion = false,alive=true,visible=true,team = (5-me.team)})
-		if not me:IsChanneling() and NynNyxNyx(me) then
+		if not me:IsChanneling() and Nyx(me) then
 			for i = 1,#enemy do
 				local v = enemy[i]
 				if v.health > 0 and GetDistance2D(v,me) < dagon.castRange and v:CanDie() then
@@ -53,8 +53,8 @@ function Tick(tick)
 
 end
 
-function NynNyxNyx(target)
-	if target.name == "npc_dota_hero_nyx_assassin" and target:DoesHaveModifier("modifier_nyx_assassin_vendetta") then
+function Nyx(target)
+	if target.classId == CDOTA_Unit_Hero_Nyx_Assassin and target:DoesHaveModifier("modifier_nyx_assassin_vendetta") then
 		return false
 	else
 		return true
