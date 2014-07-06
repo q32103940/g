@@ -114,7 +114,7 @@ function Tick(tick)
 	elseif ID == CDOTA_Unit_Hero_Shredder then
 		Kill(false,me,1,{100, 150, 200, 250},nil,300,3)
 	elseif ID == CDOTA_Unit_Hero_ShadowShaman then
-		Kill(false,me,1,{140, 200, 260, 320},nil,nil,1)	
+		Kill(false,me,1,{140, 200, 260, 320},nil,nil,3)	
 	elseif ID == CDOTA_Unit_Hero_Sniper then
 		Kill(false,me,4,{350, 500, 650},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_Sven then
@@ -207,9 +207,10 @@ function Kill(comp,me,ability,damage,adamage,range,target,id,tdamage)
 		local Range = GetRange(Spell,range)
 		local CastPoint = Spell:GetCastPoint(Spell.level)+client.latency/1000		
 		if me.alive and not me:IsChanneling() then
-			local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team,illusion=false})
+			local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team})
 			for i,v in ipairs(enemies) do
-				if v.healthbarOffset ~= -1 then
+				local class = v.type
+				if v.healthbarOffset ~= -1 and (class ~= LuaEntity.TYPE_MEEPO and not v.illusion) or (class == LuaEntity.TYPE_MEEPO and not v.meepoIllusion) then
 					if not hero[v.handle] then
 						hero[v.handle] = drawMgr:CreateText(20,0-45, 0xFFFFFF99, "",F14) hero[v.handle].visible = false hero[v.handle].entity = v hero[v.handle].entityPosition = Vector(0,0,v.healthbarOffset)
 					end
@@ -252,11 +253,10 @@ function KillGlobal(me,ability,damage,adamage,target)
 		local CastPoint = Spell:GetCastPoint(Spell.level)+client.latency/1000
 		if me.alive and not me:IsChanneling() then
 			local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team,illusion=false})
+			local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team})
 			for i,v in ipairs(enemies) do
-				if v.healthbarOffset ~= -1 then
-					if not hero[v.handle] then
-						hero[v.handle] = drawMgr:CreateText(20,0-45, 0xFFFFFF99, "",F14) hero[v.handle].visible = false hero[v.handle].entity = v hero[v.handle].entityPosition = Vector(0,0,v.healthbarOffset)
-					end
+				local class = v.type
+				if v.healthbarOffset ~= -1 and (class ~= LuaEntity.TYPE_MEEPO and not v.illusion) or (class == LuaEntity.TYPE_MEEPO and not v.meepoIllusion) then
 					if v.visible and v.alive and v.health > 1 then
 						hero[v.handle].visible = Drawning(draw,me)
 						local DmgS = math.floor(v:DamageTaken(Dmg,DmgT,me))						
@@ -296,9 +296,10 @@ function KillPrediction(me,ability,damage,cast,project)
 		local DmgT = GetDmgType(Spell,tdamage)
 		local CastPoint = Spell:GetCastPoint(Spell.level)+client.latency/1000
 		if me.alive and not me:IsChanneling() then
-			local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team,illusion=false})			
+			local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team})
 			for i,v in ipairs(enemies) do
-				if v.healthbarOffset ~= -1 then
+				local class = v.type
+				if v.healthbarOffset ~= -1 and (class ~= LuaEntity.TYPE_MEEPO and not v.illusion) or (class == LuaEntity.TYPE_MEEPO and not v.meepoIllusion) then
 					if not hero[v.handle] then
 						hero[v.handle] = drawMgr:CreateText(20,0-45, 0xFFFFFF99, "",F14) hero[v.handle].visible = false hero[v.handle].entity = v hero[v.handle].entityPosition = Vector(0,0,v.healthbarOffset)
 					end
