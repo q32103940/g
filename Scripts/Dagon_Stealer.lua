@@ -35,17 +35,20 @@ function Tick(tick)
 	if visible then
 		local lvl = string.match (dagon.name, "%d+")
 		if not lvl then lvl = 1 end local dmgD = dmg[lvl*1]
-		local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO,illusion = false,alive=true,visible=true,team = (5-me.team)})
+		local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO,alive=true,visible=true,team = (5-me.team)})
 		if not me:IsChanneling() and Nyx(me) then
 			for i = 1,#enemy do
 				local v = enemy[i]
-				if v.health > 0 and GetDistance2D(v,me) < dagon.castRange and v:CanDie() then
-					if not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") then
-						if v.health < v:DamageTaken(dmgD, DAMAGE_MAGC, me) then
-							me:SafeCastAbility(dagon,v)
+				local class = v.type
+				if (class ~= LuaEntity.TYPE_MEEPO and not v.illusion) or (class == LuaEntity.TYPE_MEEPO and not v.meepoIllusion) then
+					if v.health > 0 and GetDistance2D(v,me) < dagon.castRange and v:CanDie() then
+						if not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") then
+							if v.health < v:DamageTaken(dmgD, DAMAGE_MAGC, me) then
+								me:SafeCastAbility(dagon,v)
+							end
 						end
 					end
-				end      
+				end
 			end
 		end	
 	end
