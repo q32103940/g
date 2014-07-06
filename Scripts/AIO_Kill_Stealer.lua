@@ -332,11 +332,13 @@ end
 function Meepo(ent)
 	if ent.type == LuaEntity.TYPE_MEEPO then
 		if not ent.meepoIllusion then
-			return ent
+			return true
 		end
+		return false
 	elseif not ent.illusion then
-		return ent
+		return true
 	end
+	return false
 end
 		
 
