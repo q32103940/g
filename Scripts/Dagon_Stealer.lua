@@ -39,8 +39,7 @@ function Tick(tick)
 		if not me:IsChanneling() and Nyx(me) then
 			for i = 1,#enemy do
 				local v = enemy[i]
-				local class = v.type
-				if (class ~= LuaEntity.TYPE_MEEPO and not v.illusion) or (class == LuaEntity.TYPE_MEEPO and not v.meepoIllusion) then
+				if Meepo(v) then
 					if v.health > 0 and GetDistance2D(v,me) < dagon.castRange and v:CanDie() then
 						if not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") then
 							if v.health < v:DamageTaken(dmgD, DAMAGE_MAGC, me) then
@@ -60,6 +59,16 @@ function Nyx(target)
 		return false
 	end
 	return true
+end
+
+function Meepo(ent)
+	if ent.type == LuaEntity.TYPE_MEEPO then
+		if not ent.meepoIllusion then
+			return ent
+		end
+	elseif not ent.illusion then
+		return ent
+	end
 end
 
 function Draw(one,two)
