@@ -210,7 +210,7 @@ function Kill(comp,me,ability,damage,adamage,range,target,id,tdamage)
 			local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team})
 			for i,v in ipairs(enemies) do
 				local class = v.type
-				if v.healthbarOffset ~= -1 and (class ~= LuaEntity.TYPE_MEEPO and not v.illusion) or (class == LuaEntity.TYPE_MEEPO and not v.meepoIllusion) then
+				if v.healthbarOffset ~= -1 and Meepo(v) then
 					if not hero[v.handle] then
 						hero[v.handle] = drawMgr:CreateText(20,0-45, 0xFFFFFF99, "",F14) hero[v.handle].visible = false hero[v.handle].entity = v hero[v.handle].entityPosition = Vector(0,0,v.healthbarOffset)
 					end
@@ -256,7 +256,7 @@ function KillGlobal(me,ability,damage,adamage,target)
 			local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team})
 			for i,v in ipairs(enemies) do
 				local class = v.type
-				if v.healthbarOffset ~= -1 and (class ~= LuaEntity.TYPE_MEEPO and not v.illusion) or (class == LuaEntity.TYPE_MEEPO and not v.meepoIllusion) then
+				if v.healthbarOffset ~= -1 and Meepo(v) then
 					if v.visible and v.alive and v.health > 1 then
 						hero[v.handle].visible = Drawning(draw,me)
 						local DmgS = math.floor(v:DamageTaken(Dmg,DmgT,me))						
@@ -298,8 +298,7 @@ function KillPrediction(me,ability,damage,cast,project)
 		if me.alive and not me:IsChanneling() then
 			local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team})
 			for i,v in ipairs(enemies) do
-				local class = v.type
-				if v.healthbarOffset ~= -1 and (class ~= LuaEntity.TYPE_MEEPO and not v.illusion) or (class == LuaEntity.TYPE_MEEPO and not v.meepoIllusion) then
+				if v.healthbarOffset ~= -1 and Meepo(v) then
 					if not hero[v.handle] then
 						hero[v.handle] = drawMgr:CreateText(20,0-45, 0xFFFFFF99, "",F14) hero[v.handle].visible = false hero[v.handle].entity = v hero[v.handle].entityPosition = Vector(0,0,v.healthbarOffset)
 					end
@@ -329,6 +328,17 @@ function KillPrediction(me,ability,damage,cast,project)
 		end
 	end	
 end
+
+function Meepo(ent)
+	if ent.type == LuaEntity.TYPE_MEEPO then
+		if not ent.meepoIllusion then
+			return ent
+		end
+	elseif not ent.illusion then
+		return ent
+	end
+end
+		
 
 function SmartGetDmg(complex,lvl,me,tab1,tab2,id)
 	local baseDmg = tab1[lvl]
