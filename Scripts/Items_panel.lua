@@ -154,6 +154,6 @@ function GameClose()
 end
 
 
-script:RegisterEvent(EVENT_CLOSE, GameClose)				
+script:RegisterEvent(EVENT_CLOSE,GameClose)				
 script:RegisterEvent(EVENT_TICK,Tick)
 script:RegisterEvent(EVENT_KEY,Key)
