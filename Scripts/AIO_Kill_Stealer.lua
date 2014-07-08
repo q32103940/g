@@ -257,6 +257,9 @@ function KillGlobal(me,ability,damage,adamage,target)
 			for i,v in ipairs(enemies) do
 				local class = v.type
 				if v.healthbarOffset ~= -1 and not v:IsIllusion() then
+					if not hero[v.handle] then
+						hero[v.handle] = drawMgr:CreateText(20,0-45, 0xFFFFFF99, "",F14) hero[v.handle].visible = false hero[v.handle].entity = v hero[v.handle].entityPosition = Vector(0,0,v.healthbarOffset)
+					end
 					if v.visible and v.alive and v.health > 1 then
 						hero[v.handle].visible = Drawning(draw,me)
 						local DmgS = math.floor(v:DamageTaken(Dmg,DmgT,me))						
