@@ -205,11 +205,10 @@ function Kill(comp,me,ability,damage,adamage,range,target,id,tdamage)
 		local Dmg = SmartGetDmg(comp,Spell.level,me,damage,adamage,id)
 		local DmgT = GetDmgType(Spell,tdamage)
 		local Range = GetRange(Spell,range)
-		local CastPoint = Spell:GetCastPoint(Spell.level)+client.latency/1000		
+		local CastPoint = Spell:FindCastPoint() + client.latency/1000		
 		if me.alive and not me:IsChanneling() then
 			local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team})
 			for i,v in ipairs(enemies) do
-				local class = v.type
 				if v.healthbarOffset ~= -1 and not v:IsIllusion() then
 					if not hero[v.handle] then
 						hero[v.handle] = drawMgr:CreateText(20,0-45, 0xFFFFFF99, "",F14) hero[v.handle].visible = false hero[v.handle].entity = v hero[v.handle].entityPosition = Vector(0,0,v.healthbarOffset)
@@ -221,21 +220,19 @@ function Kill(comp,me,ability,damage,adamage,range,target,id,tdamage)
 						local DmgF = math.floor(v.health - DmgS + CastPoint*v.healthRegen+MorphMustDie(v,CastPoint))
 						hero[v.handle].text = " "..DmgF
 						if activ then
-							if DmgF < 0 and GetDistance2D(me,v) < Range and KSCanDie(v,me) then
-								if me:IsMagicDmgImmune() or (NotDieFromSpell(Spell,v,me) and not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") and NotDieFromBM(v,me,DmgS)) then
-									if target == 1 then
-										me:SafeCastAbility(Spell,v)	break
-									elseif target == 2 then
-										me:SafeCastAbility(Spell,v.position) break
-									elseif target == 3 then
-										me:SafeCastAbility(Spell) break									
-									elseif target == 4 then
-										me:SafeCastAbility(me:GetAbility(4)) break									
-									end
-								end
+							if DmgF < 0 and GetDistance2D(me,v) < Range and KSCanDie(v,me,Spell,DmgS) then								
+								if target == 1 then
+									me:SafeCastAbility(Spell,v)	break
+								elseif target == 2 then
+									me:SafeCastAbility(Spell,v.position) break
+								elseif target == 3 then
+									me:SafeCastAbility(Spell) break									
+								elseif target == 4 then
+									me:SafeCastAbility(me:GetAbility(4)) break									
+								end								
 							end
 						end
-					else
+					elseif hero[v.handle].visible then
 						hero[v.handle].visible = false
 					end
 				end
@@ -247,15 +244,14 @@ end
 function KillGlobal(me,ability,damage,adamage,target)
 	local Spell = me:GetAbility(ability)
 	icon.textureId = drawMgr:GetTextureId("NyanUI/spellicons/"..Spell.name)
+	local count = {}
 	if Spell.level > 0 then
 		local Dmg = SmartGetDmg(comp,Spell.level,me,damage,adamage)
 		local DmgT = GetDmgType(Spell,tdamage)
-		local CastPoint = Spell:GetCastPoint(Spell.level)+client.latency/1000
+		local CastPoint = Spell:FindCastPoint() + client.latency/1000
 		if me.alive and not me:IsChanneling() then
-			local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team,illusion=false})
 			local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team})
-			for i,v in ipairs(enemies) do
-				local class = v.type
+			for i,v in ipairs(enemies) do				
 				if v.healthbarOffset ~= -1 and not v:IsIllusion() then
 					if not hero[v.handle] then
 						hero[v.handle] = drawMgr:CreateText(20,0-45, 0xFFFFFF99, "",F14) hero[v.handle].visible = false hero[v.handle].entity = v hero[v.handle].entityPosition = Vector(0,0,v.healthbarOffset)
@@ -265,30 +261,43 @@ function KillGlobal(me,ability,damage,adamage,target)
 						local DmgS = math.floor(v:DamageTaken(Dmg,DmgT,me))						
 						local DmgF = math.floor(v.health - DmgS + CastPoint*v.healthRegen + MorphMustDie(v,CastPoint))
 						hero[v.handle].text = " "..DmgF	
-						if DmgF < 0 and KSCanDie(v,me) and (not me:IsMagicDmgImmune() and NotDieFromSpell(Spell,v,me) and not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") and NotDieFromBM(v,me,DmgS)) then
+						if DmgF < 0 and KSCanDie(v,me,Spell,DmgS) then
 							if not note[v.handle] then
 								note[v.handle] = true
 								GenerateSideMessage(v.name,Spell.name)
 							end
-							if activ and AutoGlobal or (activ and not AutoGlobal and combo) then
-								if target == 1 then
-									me:SafeCastAbility(Spell,v) 
-									combo = false break
-								elseif target == 3 then
-									me:SafeCastAbility(Spell)
-									combo = false break
+							if activ then
+								if v.meepoIllusion == nil then
+									table.insert(count,v)
+								end
+								if AutoGlobal or combo then
+									if target == 1 then
+										me:SafeCastAbility(Spell,v) 
+										combo = false break
+									elseif target == 3 then
+										me:SafeCastAbility(Spell)
+										combo = false break
+									end
 								end
 							end
-						else
+						elseif note[v.handle] then
 							note[v.handle] = false
 						end						
-					else						
+					elseif hero[v.handle].visible then
 						hero[v.handle].visible = false
 					end
 				end
 			end
 		end
 	end
+	if #count > 1 then
+		if target == 1 then
+			me:SafeCastAbility(Spell,count[1])			
+		elseif target == 3 then
+			me:SafeCastAbility(Spell)			
+		end
+	end
+	
 end
 
 function KillPrediction(me,ability,damage,cast,project)
@@ -297,7 +306,7 @@ function KillPrediction(me,ability,damage,cast,project)
 	if Spell.level > 0 then
 		local Dmg = SmartGetDmg(COMPLEX,Spell.level,me,damage,adamage,id)
 		local DmgT = GetDmgType(Spell,tdamage)
-		local CastPoint = Spell:GetCastPoint(Spell.level)+client.latency/1000
+		local CastPoint = Spell:FindCastPoint() + client.latency/1000
 		if me.alive and not me:IsChanneling() then
 			local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team})
 			for i,v in ipairs(enemies) do
@@ -311,7 +320,7 @@ function KillPrediction(me,ability,damage,cast,project)
 						local DmgF = math.floor(v.health - DmgS + CastPoint*v.healthRegen + MorphMustDie(v,CastPoint))
 						hero[v.handle].text = " "..DmgF
 						if activ then
-							if DmgF < 0 and KSCanDie(v,me) and (not me:IsMagicDmgImmune() and NotDieFromSpell(Spell,v,me) and not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") and NotDieFromBM(v,me,DmgS)) then
+							if DmgF < 0 and KSCanDie(v,me,Spell,DmgS) then
 								local move = v.movespeed local pos = v.position	local distance = GetDistance2D(v,me)
 								if v.activity == LuaEntityNPC.ACTIVITY_MOVE and v:CanMove() then																		
 									local range = Vector(pos.x + move * (distance/(project * math.sqrt(1 - math.pow(move/project,2))) + cast) * math.cos(v.rotR), pos.y + move * (distance/(project * math.sqrt(1 - math.pow(move/project,2))) + cast) * math.sin(v.rotR), pos.z)
@@ -323,7 +332,7 @@ function KillPrediction(me,ability,damage,cast,project)
 								end
 							end
 						end
-					else
+					elseif hero[v.handle].visible then
 						hero[v.handle].visible = false
 					end
 				end
@@ -477,12 +486,21 @@ function GenerateSideMessage(heroName,spellName)
 	test:AddElement(drawMgr:CreateRect(150,10,40,40,0xFFFFFFFF,drawMgr:GetTextureId("NyanUI/spellicons/"..spellName)))
 end
 
-function KSCanDie(hero,me)
+function KSCanDie(hero,me,skill,dmgs)
 	if me.classId == CDOTA_Unit_Hero_Axe then
-		return true
-	else
-		return hero:CanDie()
+		if me:IsMagicDmgImmune() then
+			return true
+		elseif NotDieFromSpell(skill,hero,me) and NotDieFromBM(hero,me,dmgs) then
+			return true
+		end
+	elseif hero:CanDie() then
+		if me:IsMagicDmgImmune() then
+			return true	
+		elseif NotDieFromSpell(skill,hero,me) and not hero:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") and NotDieFromBM(hero,me,dmgs) then
+			return true
+		end
 	end
+	return false
 end
 
 function NotDieFromSpell(skill,hero,me)
