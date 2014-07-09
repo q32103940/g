@@ -264,17 +264,13 @@ function Tick(tick)
 						end
 					end
 				end
-			if v.classId == CDOTA_Unit_Hero_DoomBringer and v.visible then
-				if v:GetAbility(4).name ~= "doom_bringer_empty1" or v:GetAbility(5).name ~= "doom_bringer_empty2" then
-					hero[v.handle].spell[4].bg.textureId =  drawMgr:GetTextureId("NyanUI/spellicons/"..v:GetAbility(4).name)
-					hero[v.handle].spell[5].bg.textureId =  drawMgr:GetTextureId("NyanUI/spellicons/"..v:GetAbility(5).name)
-				end
+			if v.classId == CDOTA_Unit_Hero_DoomBringer and v.visible then				
+				hero[v.handle].spell[4].bg.textureId =  drawMgr:GetTextureId("NyanUI/spellicons/"..v:GetAbility(4).name)
+				hero[v.handle].spell[5].bg.textureId =  drawMgr:GetTextureId("NyanUI/spellicons/"..v:GetAbility(5).name)
 			end
 			if v.classId == CDOTA_Unit_Hero_Rubick and v.visible then
-				if v:GetAbility(5).name ~= "rubick_empty1" or v:GetAbility(6).name ~= "rubick_empty2" then
-					hero[v.handle].spell[5].bg.textureId =  drawMgr:GetTextureId("NyanUI/spellicons/"..v:GetAbility(5).name)
-					hero[v.handle].spell[6].bg.textureId =  drawMgr:GetTextureId("NyanUI/spellicons/"..v:GetAbility(6).name)
-				end
+				hero[v.handle].spell[5].bg.textureId =  drawMgr:GetTextureId("NyanUI/spellicons/"..v:GetAbility(5).name)
+				hero[v.handle].spell[6].bg.textureId =  drawMgr:GetTextureId("NyanUI/spellicons/"..v:GetAbility(6).name)
 			end
 			--Items
 			if overlayItem then
