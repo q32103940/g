@@ -6,7 +6,7 @@ require("libs.SideMessage")
 config = ScriptConfig.new()
 config:SetParameter("Active", "Z", config.TYPE_HOTKEY)
 config:SetParameter("Combokey", "H", config.TYPE_HOTKEY)
-config:SetParameter("Auto", true)
+config:SetParameter("Auto", false)
 config:Load()
 
 local toggleKey = config.Active
