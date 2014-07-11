@@ -6,7 +6,7 @@ require("libs.SideMessage")
 config = ScriptConfig.new()
 config:SetParameter("Active", "Z", config.TYPE_HOTKEY)
 config:SetParameter("Combokey", "H", config.TYPE_HOTKEY)
-config:SetParameter("Auto", false)
+config:SetParameter("Auto", true)
 config:Load()
 
 local toggleKey = config.Active
@@ -66,7 +66,7 @@ function Tick(tick)
 	dmgCalc.visible = draw
 	rect.visible,icon.visible = activ,activ
 	
-	--Kill(false,me,ability,damage,scepter damage,range,target,classId,damage type)
+	--Kill(false,me,ability,damage,scepter damage,range,target(1-target,2-target.position,3-non target),classId,damage type)
 	if ID == CDOTA_Unit_Hero_Abaddon then
 		Kill(false,me,1,{100, 150, 200, 250},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_Axe then		
@@ -89,6 +89,8 @@ function Tick(tick)
 		Kill(false,me,1,{90, 170, 240, 300},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_EarthSpirit then
 		Kill(false,me,1,{125, 125, 125, 125},nil,250,1)
+	elseif ID == CDOTA_Unit_Hero_Earthshaker then
+		Kill(false,me,1,{125, 175, 225, 275},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_Leshrac then
 		Kill(false,me,3,{80, 140, 200, 260},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_Lich then		
@@ -122,7 +124,13 @@ function Tick(tick)
 	elseif ID == CDOTA_Unit_Hero_Tidehunter then
 		Kill(false,me,1,{110, 160, 210, 260},nil,750,1)
 	elseif ID == CDOTA_Unit_Hero_Tinker then
-		Kill(false,me,1,{80, 160, 240, 320},nil,nil,1)
+		if me:GetAbility(1).state == LuaEntityAbility.STATE_READY then
+			Kill(false,me,1,{80, 160, 240, 320},nil,nil,1)
+		elseif me:GetAbility(2).state == LuaEntityAbility.STATE_READY then
+			Kill(false,me,2,{80, 160, 240, 320},nil,2500,3)
+		else	
+			Kill(false,me,1,{80, 160, 240, 320},nil,nil,1)
+		end
 	elseif ID == CDOTA_Unit_Hero_VengefulSpirit then
 		Kill(false,me,1,{100, 175, 250, 325},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_Lina then
