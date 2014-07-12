@@ -1,3 +1,4 @@
+--show sun strike, light strike, torrent, split earth, arrow, charge, infest, assassinate, hook, powershoot, Kunkka's ghost ship, ice blast, cold feed and supports stolen spell usage by rubick.
 require("libs.Utils")
 require("libs.Res")
 require("libs.SideMessage")
