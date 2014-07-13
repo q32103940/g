@@ -11,16 +11,8 @@ local TBoat = {}
 --charge
 local TCharge = {} local speeed = 600
 local speed = {600,650,700,750} local aa = nil
---infest
-local TInfest = nil
---sniper
-local TAssis = nil
 --pudge and wr
 local RC = {} local ss = {}
---ancient
-local blastmsg = nil local TCold = nil
---pl
-local effPL = nil
 --all
 local check = true 
 local enemy = {}
@@ -55,18 +47,18 @@ Range = {122,122,122,122},
 
 heroes = {
 --name, status
-{CDOTA_Unit_Hero_Mirana,mirana},
-{CDOTA_Unit_Hero_SpiritBreaker,bara},
-{CDOTA_Unit_Hero_Life_Stealer,naix},
-{CDOTA_Unit_Hero_Sniper,snipe},
-{CDOTA_Unit_Hero_Windrunner,wr},
-{CDOTA_Unit_Hero_Pudge,pudge},
-{CDOTA_Unit_Hero_Rubick,rubick},
-{CDOTA_Unit_Hero_Kunkka,kunkka},
-{CDOTA_Unit_Hero_AncientApparition,aa},
-{CDOTA_Unit_Hero_PhantomAssassin,pa},
-{CDOTA_Unit_Hero_PhantomLancer,pl},
-{CDOTA_Unit_Hero_Tinker,tk},
+{CDOTA_Unit_Hero_Mirana,0},
+{CDOTA_Unit_Hero_SpiritBreaker,0},
+{CDOTA_Unit_Hero_Life_Stealer,0},
+{CDOTA_Unit_Hero_Sniper,0},
+{CDOTA_Unit_Hero_Windrunner,0},
+{CDOTA_Unit_Hero_Pudge,0},
+{CDOTA_Unit_Hero_Rubick,0},
+{CDOTA_Unit_Hero_Kunkka,0},
+{CDOTA_Unit_Hero_AncientApparition,0},
+{CDOTA_Unit_Hero_PhantomAssassin,0},
+{CDOTA_Unit_Hero_PhantomLancer,0},
+{CDOTA_Unit_Hero_Tinker,0},
 }
 
 function Main(tick)
@@ -169,11 +161,11 @@ function DirectBase(cast,me)
 				if modifiers[1].name == k[1] and (not k.handle or k.handle ~= v.handle) then
 					k.handle = v.handle
 					local Spell = FindSpell(v.owner,k[5])
-						if Spell then
-						local Range = GetSpecial(Spell,k[4],Spell.level+0)
-						local entry = { Effect(v, k[2]),Effect(v, k[3]),  Effect( v, "range_display") }
-						entry[3]:SetVector(1, Vector( Range, 0, 0) )
-						table.insert(effects, entry)
+					if Spell then
+					local Range = GetSpecial(Spell,k[4],Spell.level+0)
+					local entry = { Effect(v, k[2]),Effect(v, k[3]),  Effect( v, "range_display") }
+					entry[3]:SetVector(1, Vector( Range, 0, 0) )
+					table.insert(effects, entry)
 					end
 				end
 			end
@@ -613,23 +605,21 @@ function Roshan( kill )
     end
 end
 
-function GameClose()
-	check = true
+function GameClose()	
 	if stage ~= 1 then
 		script:UnregisterEvent(Roha)
-	end
+		stage = 1
+	end	
+	effects = {}
+	TArrow = {}
+	TBoat = {} TCharge = {} 
+	speeed = 600 aa = nil
+	RC = {} local ss = {}
+	check = true 
+	enemy = {}
 	stage = 1
-	effects = {} TArrow = {}
-	TBoat = {} TCharge = {} speeed = 600
-	aa = nil TInfest = nil	TAssis = nil
-	RC = {} ss = {}	blastmsg = nil TCold = nil
-	effPL = nil	enemy = {}
-	icon = nil
-	PKIcon = nil
-	TAssis = nil
-	TCharge[1] = nil
-	TCharge[2] = nil
 	collectgarbage("collect")
+	script:Reload()
 end
 
 script:RegisterEvent(EVENT_TICK, Main)
