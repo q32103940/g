@@ -66,103 +66,103 @@ function Tick(tick)
 	dmgCalc.visible = draw
 	rect.visible,icon.visible = activ,activ
 	
-	--Kill(false,me,ability,damage,scepter damage,range,target(1-target,2-target.position,3-non target),classId,damage type)
+	--Kill(false,linkin block,me,ability,damage,scepter damage,range,target(1-target,2-target.position,3-non target),classId,damage type)
 	if ID == CDOTA_Unit_Hero_Abaddon then
-		Kill(false,me,1,{100, 150, 200, 250},nil,nil,1)
+		Kill(false,true,me,1,{100, 150, 200, 250},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_Axe then		
-		Kill(false,me,4,{250,350,450},{300,450,625},400,1,nil,DAMAGE_HPRM)
+		Kill(false,false,me,4,{250,350,450},{300,450,625},400,1,nil,DAMAGE_HPRM)
 	elseif ID == CDOTA_Unit_Hero_Bane then
-		Kill(false,me,2,{90, 160, 230, 300},nil,nil,1)
+		Kill(false,true,me,2,{90, 160, 230, 300},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_BountyHunter then
-		Kill(false,me,1,{100, 200, 250, 325},nil,700,1)
+		Kill(false,true,me,1,{100, 200, 250, 325},nil,700,1)
 	elseif ID == CDOTA_Unit_Hero_Broodmother then
-		Kill(false,me,1,{75, 150, 225, 300},nil,nil,1)
+		Kill(false,true,me,1,{75, 150, 225, 300},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_Centaur then
-		Kill(false,me,2,{175, 250, 325, 400},nil,300,1)
+		Kill(false,true,me,2,{175, 250, 325, 400},nil,300,1)
 	elseif ID == CDOTA_Unit_Hero_Chen then
-		Kill(false,me,2,{50, 100, 150, 200},nil,nil,1)
+		Kill(false,true,me,2,{50, 100, 150, 200},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_CrystalMaiden then		
-		Kill(false,me,1,{100, 150, 200, 250},nil,700,2)
+		Kill(false,false,me,1,{100, 150, 200, 250},nil,700,2)
 	elseif ID == CDOTA_Unit_Hero_DeathProphet then		
-		Kill(false,me,1,{100, 175, 250, 300},nil,nil,1)
+		Kill(false,false,me,1,{100, 175, 250, 300},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_DragonKnight then
-		Kill(false,me,1,{90, 170, 240, 300},nil,nil,1)
+		Kill(false,false,me,1,{90, 170, 240, 300},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_EarthSpirit then
-		Kill(false,me,1,{125, 125, 125, 125},nil,250,1)
+		Kill(false,true,me,1,{125, 125, 125, 125},nil,250,1)
 	elseif ID == CDOTA_Unit_Hero_Earthshaker then
-		Kill(false,me,1,{125, 175, 225, 275},nil,nil,1)
+		Kill(false,true,me,1,{125, 175, 225, 275},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_Leshrac then
-		Kill(false,me,3,{80, 140, 200, 260},nil,nil,1)
+		Kill(false,true,me,3,{80, 140, 200, 260},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_Lich then		
-		Kill(false,me,1,{115, 200, 275, 350},nil,nil,1)
+		Kill(false,true,me,1,{115, 200, 275, 350},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_Lion then
-		Kill(false,me,4,{600, 725, 850},{725, 875, 1025},nil,1)
+		Kill(false,true,me,4,{600, 725, 850},{725, 875, 1025},nil,1)
 	elseif ID == CDOTA_Unit_Hero_Luna then		
-		Kill(false,me,1,{75, 150, 210, 260},nil,nil,1)	
+		Kill(false,true,me,1,{75, 150, 210, 260},nil,nil,1)	
 	elseif ID ==CDOTA_Unit_Hero_NightStalker then
-		Kill(false,me,1,{90, 160, 225, 335},nil,nil,1)
+		Kill(false,true,me,1,{90, 160, 225, 335},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_PhantomLancer then
-		Kill(false,me,1,{100, 150, 200, 250},nil,nil,1)
+		Kill(false,true,me,1,{100, 150, 200, 250},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_Puck then
-		Kill(false,me,2,{70, 140, 210, 280},nil,400,3)
+		Kill(false,false,me,2,{70, 140, 210, 280},nil,400,3)
 	elseif ID == CDOTA_Unit_Hero_QueenOfPain then
-		Kill(false,me,3,{85, 165, 225, 300},nil,475,3)
+		Kill(false,false,me,3,{85, 165, 225, 300},nil,475,3)
 	elseif ID == CDOTA_Unit_Hero_Rattletrap then
-		Kill(false,me,3,{80, 120, 160, 200},nil,1000,2)
+		Kill(false,false,me,3,{80, 120, 160, 200},nil,1000,2)
 	elseif ID == CDOTA_Unit_Hero_Rubick then
-		Kill(false,me,3,{70, 140, 210, 280},nil,nil,1)
+		Kill(false,true,me,3,{70, 140, 210, 280},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_SkeletonKing then
-		Kill(false,me,1,{80, 160, 230, 300},nil,nil,1)
+		Kill(false,true,me,1,{80, 160, 230, 300},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_Shredder then
-		Kill(false,me,1,{100, 150, 200, 250},nil,300,3)
+		Kill(false,false,me,1,{100, 150, 200, 250},nil,300,3)
 	elseif ID == CDOTA_Unit_Hero_ShadowShaman then
-		Kill(false,me,1,{140, 200, 260, 320},nil,nil,1)	
+		Kill(false,true,me,1,{140, 200, 260, 320},nil,nil,1)	
 	elseif ID == CDOTA_Unit_Hero_Sniper then
-		Kill(false,me,4,{350, 500, 650},nil,nil,1)
+		Kill(false,true,me,4,{350, 500, 650},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_Sven then
-		Kill(false,me,1,{100, 175, 250, 325},nil,650,1)
+		Kill(false,true,me,1,{100, 175, 250, 325},nil,650,1)
 	elseif ID == CDOTA_Unit_Hero_Tidehunter then
-		Kill(false,me,1,{110, 160, 210, 260},nil,750,1)
+		Kill(false,true,me,1,{110, 160, 210, 260},nil,750,1)
 	elseif ID == CDOTA_Unit_Hero_Tinker then
 		if me:GetAbility(1).state == LuaEntityAbility.STATE_READY then
-			Kill(false,me,1,{80, 160, 240, 320},nil,nil,1)
+			Kill(false,true,me,1,{80, 160, 240, 320},nil,nil,1)
 		elseif me:GetAbility(2).state == LuaEntityAbility.STATE_READY then
-			Kill(false,me,2,{80, 160, 240, 320},nil,2500,3)
+			Kill(false,false,me,2,{80, 160, 240, 320},nil,2500,3)
 		else	
-			Kill(false,me,1,{80, 160, 240, 320},nil,nil,1)
+			Kill(false,true,me,1,{80, 160, 240, 320},nil,nil,1)
 		end
 	elseif ID == CDOTA_Unit_Hero_VengefulSpirit then
-		Kill(false,me,1,{100, 175, 250, 325},nil,nil,1)
+		Kill(false,true,me,1,{100, 175, 250, 325},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_Lina then
-		if not me:AghanimState() then Kill(false,me,4,{450,675,950},nil,nil,1) else Kill(false,me,4,{600,925,1250},nil,900,1,nil,DAMAGE_UNIV) end	
+		if not me:AghanimState() then Kill(false,true,me,4,{450,675,950},nil,nil,1) else Kill(false,true,me,4,{600,925,1250},nil,900,1,nil,DAMAGE_UNIV) end	
 	elseif ID == CDOTA_Unit_Hero_Alchemist then
-		Kill(false,me,2,{32,47,63,78},nil,800,1,ID)
+		Kill(false,false,me,2,{32,47,63,78},nil,800,1,ID)
 	elseif ID == CDOTA_Unit_Hero_Morphling then
-		Kill(false,me,2,{20, 40, 60, 80},nil,nil,1,ID)
+		Kill(false,true,me,2,{20, 40, 60, 80},nil,nil,1,ID)
 	elseif ID == CDOTA_Unit_Hero_Visage then
-		Kill(false,me,2,{20,20,20,20},nil,nil,1,ID)
+		Kill(false,true,me,2,{20,20,20,20},nil,nil,1,ID)
 	elseif ID == CDOTA_Unit_Hero_Undying then
-		Kill(false,me,2,{5,10,15,20},nil,nil,1,ID)
+		Kill(false,true,me,2,{5,10,15,20},nil,nil,1,ID)
 	--complex spells
 	--Kill(true,me,ability,damage,scepter damage,range,target,classId,damage type)
 	elseif me.classId == CDOTA_Unit_Hero_AntiMage then
-		Kill(true,me,4,{.6,.85,1.1},nil,nil,1,ID)
+		Kill(true,true,me,4,{.6,.85,1.1},nil,nil,1,ID)
 	elseif me.classId == CDOTA_Unit_Hero_DoomBringer then
-		Kill(true,me,3,{1,1,1,1},nil,nil,1,ID)
+		Kill(true,true,me,3,{1,1,1,1},nil,nil,1,ID)
 	--[[elseif me.classId == CDOTA_Unit_Hero_Legion_Commander then
 		Kill(true,me,1,{60,100,140,180},nil,nil,2,ID)]]
 	elseif me.classId == CDOTA_Unit_Hero_Mirana then
-		Kill(true,me,1,{75,150,225,300},nil,625,3,ID)
+		Kill(true,false,me,1,{75,150,225,300},nil,625,3,ID)
 	elseif ID == CDOTA_Unit_Hero_Necrolyte then
-		Kill(true,me,4,{0.4,0.6,0.9},{0.6,0.9,1.2},nil,1,ID)	
+		Kill(true,true,me,4,{0.4,0.6,0.9},{0.6,0.9,1.2},nil,1,ID)	
 	elseif ID == CDOTA_Unit_Hero_Nyx_Assassin then
-		Kill(true,me,2,{3.5,4,4.5,5},nil,nil,1,ID)	
+		Kill(true,true,me,2,{3.5,4,4.5,5},nil,nil,1,ID)	
 	elseif ID == CDOTA_Unit_Hero_Obsidian_Destroyer then
-		Kill(true,me,4,{8,9,10},{9,10,11},nil,2,ID)	
+		Kill(true,false,me,4,{8,9,10},{9,10,11},nil,2,ID)	
 	elseif ID == CDOTA_Unit_Hero_Elder_Titan then
-		Kill(true,me,2,{60,100,140,180},nil,nil,2,ID)	
+		Kill(true,false,me,2,{60,100,140,180},nil,nil,2,ID)	
 	elseif ID == CDOTA_Unit_Hero_Shadow_Demon then
-		Kill(true,me,3,{20, 35, 60, 65},nil,nil,4,ID)
+		Kill(true,false,me,3,{20, 35, 60, 65},nil,nil,4,ID)
 	--prediction
 	elseif ID == CDOTA_Unit_Hero_Magnataur then
 		KillPrediction(me,1,{75, 150, 225, 300},0.3,1050)
@@ -175,7 +175,7 @@ function Tick(tick)
 		KillGlobal(me,4,{140,180,225},{155,210,275},1)
 	elseif ID == CDOTA_Unit_Hero_Zuus then
 		KillGlobal(me,4,{225,350,475},{440,540,640},3)
-		Kill(false,me,2,{100,175,275,350},nil,nil,1)
+		Kill(false,true,me,true,2,{100,175,275,350},nil,nil,1)
 	--other
 	--------------------develop--------------------
 	elseif ID == CDOTA_Unit_Hero_Invoker then
@@ -206,7 +206,7 @@ function Key(msg,code)
 	end
 end
 
-function Kill(comp,me,ability,damage,adamage,range,target,id,tdamage)
+function Kill(comp,lsblock,me,ability,damage,adamage,range,target,id,tdamage)
 	local Spell = me:GetAbility(ability)
 	icon.textureId = drawMgr:GetTextureId("NyanUI/spellicons/"..Spell.name)
 	if Spell.level > 0 then
@@ -230,13 +230,13 @@ function Kill(comp,me,ability,damage,adamage,range,target,id,tdamage)
 						if activ then
 							if DmgF < 0 and GetDistance2D(me,v) < Range and KSCanDie(v,me,Spell,DmgS) then								
 								if target == 1 then
-									me:SafeCastAbility(Spell,v)	break
+									KSCastSpell(Spell,v,me,lsblock)	break
 								elseif target == 2 then
-									me:SafeCastAbility(Spell,v.position) break
+									KSCastSpell(Spell,v.position,me,false) break
 								elseif target == 3 then
-									me:SafeCastAbility(Spell) break									
+									KSCastSpell(Spell,nil,me,nil) break
 								elseif target == 4 then
-									me:SafeCastAbility(me:GetAbility(4)) break									
+									KSCastSpell(me:GetAbility(4),nil,me,nil)																	
 								end								
 							end
 						end
@@ -280,9 +280,10 @@ function KillGlobal(me,ability,damage,adamage,target)
 								end
 								if AutoGlobal or combo then
 									if target == 1 then
-										me:SafeCastAbility(Spell,v) 
+										KSCastSpell(Spell,v,me,true)
 										combo = false break
 									elseif target == 3 then
+										KSCastSpell(Spell,nil,me,nil)
 										me:SafeCastAbility(Spell)
 										combo = false break
 									end
@@ -300,9 +301,9 @@ function KillGlobal(me,ability,damage,adamage,target)
 	end
 	if #count > 1 then
 		if target == 1 then
-			me:SafeCastAbility(Spell,count[1])			
+			KSCastSpell(Spell,count[1],me,true)
 		elseif target == 3 then
-			me:SafeCastAbility(Spell)			
+			KSCastSpell(Spell,nil,me,nil)						
 		end
 	end
 	
@@ -332,11 +333,12 @@ function KillPrediction(me,ability,damage,cast,project)
 								local move = v.movespeed local pos = v.position	local distance = GetDistance2D(v,me)
 								if v.activity == LuaEntityNPC.ACTIVITY_MOVE and v:CanMove() then																		
 									local range = Vector(pos.x + move * (distance/(project * math.sqrt(1 - math.pow(move/project,2))) + cast) * math.cos(v.rotR), pos.y + move * (distance/(project * math.sqrt(1 - math.pow(move/project,2))) + cast) * math.sin(v.rotR), pos.z)
-									if GetDistance2D(me,range) < Spell.castRange + 25 then									
-										me:SafeCastAbility(Spell,range)	break
+									if GetDistance2D(me,range) < Spell.castRange + 25 then	
+										 KSCastSpell(Spell,range,me,nil) break
 									end
 								elseif distance < Spell.castRange + 25 then
-									me:SafeCastAbility(Spell,Vector(pos.x + move * 0.05 * math.cos(v.rotR), pos.y + move* 0.05 * math.sin(v.rotR), pos.z)) break
+									local range1 = Vector(pos.x + move * 0.05 * math.cos(v.rotR), pos.y + move* 0.05 * math.sin(v.rotR), pos.z)									
+									KSCastSpell(Spell,range1,me,nil) break
 								end
 							end
 						end
@@ -494,6 +496,18 @@ function GenerateSideMessage(heroName,spellName)
 	test:AddElement(drawMgr:CreateRect(150,10,40,40,0xFFFFFFFF,drawMgr:GetTextureId("NyanUI/spellicons/"..spellName)))
 end
 
+function KSCastSpell(spell,target,me,lsblock)
+	if spell and spell:CanBeCasted() and me:CanCast() and not (target and lsblock == true and target.IsLinkensProtected and target:IsLinkensProtected()) then
+		local prev = SelectUnit(me)
+		if not target then
+			entityList:GetMyPlayer():UseAbility(spell)
+		else
+			entityList:GetMyPlayer():UseAbility(spell,target)
+		end
+		SelectBack(prev)
+	end
+end
+
 function KSCanDie(hero,me,skill,dmgs)
 	if me.classId == CDOTA_Unit_Hero_Axe then
 		if me:IsMagicDmgImmune() then
@@ -529,12 +543,14 @@ end
 
 function MorphMustDie(target,value)
 	if target.classId == CDOTA_Unit_Hero_Morphling then
-		local gainLVL = target:GetAbility(3).level
+		local gain = target:GetAbility(3)
 		local hp = {38,76,114,190}
-		if target:DoesHaveModifier("modifier_morphling_morph_agi") and target.strength > 1 then
-			return value*(0 - hp[gainLVL] + 1)
-		elseif target:DoesHaveModifier("modifier_morphling_morph_str") and target.agility > 1 then
-			return value*hp[gainLVL]
+		if gain and gain.level > 0 then
+			if target:DoesHaveModifier("modifier_morphling_morph_agi") and target.strength > 1 then
+				return value*(0 - hp[gain.level] + 1)
+			elseif target:DoesHaveModifier("modifier_morphling_morph_str") and target.agility > 1 then
+				return value*hp[gain.level]
+			end
 		end
 	end
 	return 0
