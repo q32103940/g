@@ -9,7 +9,7 @@ local TArrow = {}
 --boat
 local TBoat = {}
 --charge
-local TCharge = {} local speeed = 600
+local speeed = 600
 local speed = {600,650,700,750} local aa = nil
 --pudge and wr
 local RC = {} local ss = {}
@@ -23,8 +23,8 @@ local PKIcon = drawMgr:CreateRect(0,0,18,18,0x000000ff) PKIcon.visible = false
 local TInfest = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160) TInfest.visible = false
 local TAssis = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160) TAssis.visible = false
 local TKicon = drawMgr:CreateRect(0,0,18,18,0x000000ff) TKicon.visible = false
-TCharge[1] = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160) TCharge[1].visible = false
-TCharge[2] = drawMgr:CreateRect(0,0,18,18,0xFF8AB160) TCharge[2].visible = false
+local TCharge1 = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160) TCharge1.visible = false
+local TCharge2 = drawMgr:CreateRect(0,0,18,18,0xFF8AB160) TCharge2.visible = false
 
 spells = {
 -- modifier name, effect name, second effect, aoe-range, spell name
@@ -276,10 +276,10 @@ function Charge(cast,me,hero,heroName)
 		if offset == -1 then return end
 		if not TCharge[1].visible then
 			GenerateSideMessage(target.name:gsub("npc_dota_hero_",""),"spirit_breaker_charge_of_darkness")
-			TCharge[1].entity = target
-			TCharge[1].entityPosition = Vector(0,0,offset)
-			TCharge[1].textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName)
-			TCharge[1].visible = true
+			TCharge1.entity = target
+			TCharge1.entityPosition = Vector(0,0,offset)
+			TCharge1.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName)
+			TCharge1.visible = true
 		end
 		local Charged = FindCharge(cast)
 		if Charged then
@@ -288,14 +288,14 @@ function Charge(cast,me,hero,heroName)
 			end
 			local Ddistance = GetDistance2D(Charged,target) - (client.gameTime - time)*speeed
 			local minimap = MapToMinimap((Charged.position.x - target.position.x) * Ddistance / GetDistance2D(Charged,target) + target.position.x,(Charged.position.y - target.position.y) * Ddistance / GetDistance2D(Charged,target) + target.position.y)
-			TCharge[2].x = minimap.x-20/2
-			TCharge[2].y = minimap.y-20/2
-			TCharge[2].visible = ISeeBara
+			TCharge2.x = minimap.x-20/2
+			TCharge2.y = minimap.y-20/2
+			TCharge2.visible = ISeeBara
 		end
-	elseif TCharge[1].visible then
+	elseif TCharge1.visible then
 		aa = nil
-		TCharge[1].visible = false
-		TCharge[2].visible = false
+		TCharge1.visible = false
+		TCharge2.visible = false
 	end
 end
 
