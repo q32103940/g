@@ -593,9 +593,9 @@ function GameClose()
 	end	
 	effects = {}
 	TArrow = {}
-	TBoat = {} TCharge = {} 
+	TBoat = {}
 	speeed = 600 aa = nil
-	RC = {} local ss = {}
+	RC = {} ss = {}
 	check = true 
 	enemy = {}
 	stage = 1
