@@ -17,6 +17,15 @@ local RC = {} local ss = {}
 local check = true 
 local enemy = {}
 local stage = 1
+--drawMgr
+local icon = drawMgr:CreateRect(0,0,18,18,0x000000ff) icon.visible = false
+local PKIcon = drawMgr:CreateRect(0,0,18,18,0x000000ff) PKIcon.visible = false
+local TInfest = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160) TInfest.visible = false
+local TAssis = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160) TAssis.visible = false
+local TKicon = drawMgr:CreateRect(0,0,18,18,0x000000ff) TKicon.visible = false
+TCharge[1] = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160) TCharge[1].visible = false
+TCharge[2] = drawMgr:CreateRect(0,0,18,18,0xFF8AB160) TCharge[2].visible = false
+
 spells = {
 -- modifier name, effect name, second effect, aoe-range, spell name
 {"modifier_invoker_sun_strike", "invoker_sun_strike_team","invoker_sun_strike_ring_b","area_of_effect","invoker_sun_strike" },
@@ -206,9 +215,6 @@ function RangeCast(me,hero)
 end
 
 function Arrow(cast,me,hero,heroName)
-	if not icon then
-		icon = drawMgr:CreateRect(0,0,18,18,0x000000ff) icon.visible = false
-	end
 	local arrow = FindArrow(cast,me)
 	if arrow then
 		if not start then
@@ -252,17 +258,14 @@ function Arrow(cast,me,hero,heroName)
 end
 
 function Charge(cast,me,hero,heroName)
-	if not TCharge[1] then
-		TCharge[1] = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName)) TCharge[1].visible = false
-		TCharge[2] = drawMgr:CreateRect(0,0,20,20,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName)) TCharge[2].visible = false
-	end
 	for i,v in ipairs(hero) do
 		if v.team ~= me.team then
 			if v.name:gsub("npc_dota_hero_","") == heroName then
 				ISeeBara = not v.visible
+				local beg = v:GetAbility(1)
 				if not ISeeBara then time = client.gameTime end
-				if v:GetAbility(1) and v:GetAbility(1).level ~= 0 then
-					speeed = speed[v:GetAbility(1).level]
+				if beg and beg.level ~= 0 then
+					speeed = speed[beg.level]
 				end
 			end
 		end
@@ -275,6 +278,7 @@ function Charge(cast,me,hero,heroName)
 			GenerateSideMessage(target.name:gsub("npc_dota_hero_",""),"spirit_breaker_charge_of_darkness")
 			TCharge[1].entity = target
 			TCharge[1].entityPosition = Vector(0,0,offset)
+			TCharge[1].textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName)
 			TCharge[1].visible = true
 		end
 		local Charged = FindCharge(cast)
@@ -282,8 +286,7 @@ function Charge(cast,me,hero,heroName)
 			if not aa then aa = true
 				time = client.gameTime
 			end
-			local distance = GetDistance2D(Charged,target)
-			local Ddistance = distance - (client.gameTime - time)*speeed
+			local Ddistance = GetDistance2D(Charged,target) - (client.gameTime - time)*speeed
 			local minimap = MapToMinimap((Charged.position.x - target.position.x) * Ddistance / GetDistance2D(Charged,target) + target.position.x,(Charged.position.y - target.position.y) * Ddistance / GetDistance2D(Charged,target) + target.position.y)
 			TCharge[2].x = minimap.x-20/2
 			TCharge[2].y = minimap.y-20/2
@@ -294,13 +297,9 @@ function Charge(cast,me,hero,heroName)
 		TCharge[1].visible = false
 		TCharge[2].visible = false
 	end
-
 end
 
 function Infest(me,hero,tick,heroName)
-	if not TInfest then
-		TInfest = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName)) TInfest.visible = false
-	end
 	local target = FindByModifierI(hero,"modifier_life_stealer_infest_effect",me)
 	if target then
 		local offset = target.healthbarOffset
@@ -309,7 +308,8 @@ function Infest(me,hero,tick,heroName)
 			GenerateSideMessage(target.name:gsub("npc_dota_hero_",""),"life_stealer_infest")
 			TInfest.entity = target
 			TInfest.entityPosition = Vector(0,0,offset)
-			TInfest.visible = true
+			TInfest.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName)
+			TInfest.visible = true			
 		end
 	elseif TInfest.visible then
 		TInfest.visible = false
@@ -317,9 +317,6 @@ function Infest(me,hero,tick,heroName)
 end
 
 function Snipe(me,hero,tick,heroName)
-	if not TAssis then
-		TAssis = drawMgr:CreateRect(-10,-60,26,26,0xFF8AB160,drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName)) TAssis.visible = false
-	end
 	local target = FindByModifierS(hero,"modifier_sniper_assassinate",me)
 	if target then
 		local offset = target.healthbarOffset
@@ -328,6 +325,7 @@ function Snipe(me,hero,tick,heroName)
 			GenerateSideMessage(target.name:gsub("npc_dota_hero_",""),"sniper_assassinate")
 			TAssis.entity = target
 			TAssis.entityPosition = Vector(0,0,offset)
+			TAssis.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName)
 			TAssis.visible = true
 		end
 	elseif TAssis.visible then
@@ -373,7 +371,6 @@ function Ancient(cast,me,hero,heroName)
 	elseif blastmsg then
 		blastmsg = false
 	end
-	local coldclear = false
 	local cold = FindByModifierS(hero,"modifier_cold_feet",me)
 	if cold then
 		if not TCold then
@@ -384,9 +381,6 @@ function Ancient(cast,me,hero,heroName)
 		end
 	elseif TCold ~= nil then
 		TCold = nil
-		coldclear = true
-	end
-	if coldclear then
 		collectgarbage("collect")
 	end
 end
@@ -431,18 +425,15 @@ function FindSpell(target,spellName)
 	end
 end
 
-function PhantomKa(me,hero) 
-	if not PKIcon then
-		PKIcon = drawMgr:CreateRect(0,0,18,18,0x000000ff) PKIcon.visible = false
-	end
+function PhantomKa(me,hero)
 	for i,v in ipairs(hero) do
 		if v.classId == CDOTA_Unit_Hero_PhantomAssassin then
-			if v:DoesHaveModifier("modifier_phantom_assassin_blur_active") then
-				PKIcon.visible = true
+			if v:DoesHaveModifier("modifier_phantom_assassin_blur_active") then				
 				local PKMinimap = MapToMinimap(v.position.x,v.position.y)
 				PKIcon.x = PKMinimap.x-20/2
 				PKIcon.y = PKMinimap.y-20/2
 				PKIcon.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/phantom_assassin")
+				PKIcon.visible = true
 			else
 				PKIcon.visible = false
 			end
@@ -466,11 +457,13 @@ function PhantomL(me,tab)
 end
 
 function Tinker(me,tab,cast) 
-	if not TKicon then
-		TKicon = drawMgr:CreateRect(0,0,18,18,0x000000ff) TKicon.visible = false
-	end
 	local march = FindMarch(cast,me)
 	if march then
+		for i,v in ipairs(tab) do
+			if v.team ~= me.team and v.classId == CDOTA_Unit_Hero_Tinker then				
+				TKicon.visible = not v.visible
+			end
+		end
 		if not TKMinimap then
 			TKpos = march.position
 			TKMinimap = MapToMinimap(march.position.x,march.position.y)
@@ -483,19 +476,7 @@ function Tinker(me,tab,cast)
 	elseif TKMinimap then
 		TKMinimap = nil
 		TKicon.visible = false
-	end
-	for i,v in ipairs(tab) do
-		if v.team ~= me.team then
-			if v.classId == CDOTA_Unit_Hero_Tinker then
-				if march then
-					TKicon.visible = not v.visible
-				else
-					TKMinimap = nil
-					TKicon.visible = false
-				end
-			end
-		end
-	end
+	end	
 end
 
 function FindAB(first, second, distance)
