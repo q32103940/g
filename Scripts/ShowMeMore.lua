@@ -16,7 +16,7 @@ local RC = {} local ss = {}
 --all
 local check = true 
 local enemy = {}
-local stage = 1
+local stage = 1	
 --drawMgr
 local icon = drawMgr:CreateRect(0,0,18,18,0x000000ff) icon.visible = false
 local PKIcon = drawMgr:CreateRect(0,0,18,18,0x000000ff) PKIcon.visible = false
@@ -170,11 +170,11 @@ function DirectBase(cast,me)
 				if modifiers[1].name == k[1] and (not k.handle or k.handle ~= v.handle) then
 					k.handle = v.handle
 					local Spell = FindSpell(v.owner,k[5])
-					if Spell then
-					local Range = GetSpecial(Spell,k[4],Spell.level+0)
-					local entry = { Effect(v, k[2]),Effect(v, k[3]),  Effect( v, "range_display") }
-					entry[3]:SetVector(1, Vector( Range, 0, 0) )
-					table.insert(effects, entry)
+						if Spell then
+						local Range = GetSpecial(Spell,k[4],Spell.level+0)
+						local entry = { Effect(v, k[2]),Effect(v, k[3]),  Effect( v, "range_display") }
+						entry[3]:SetVector(1, Vector( Range, 0, 0) )
+						table.insert(effects, entry)
 					end
 				end
 			end
@@ -274,7 +274,7 @@ function Charge(cast,me,hero,heroName)
 	if target then
 		local offset = target.healthbarOffset
 		if offset == -1 then return end
-		if not TCharge[1].visible then
+		if not TCharge1.visible then
 			GenerateSideMessage(target.name:gsub("npc_dota_hero_",""),"spirit_breaker_charge_of_darkness")
 			TCharge1.entity = target
 			TCharge1.entityPosition = Vector(0,0,offset)
@@ -290,6 +290,7 @@ function Charge(cast,me,hero,heroName)
 			local minimap = MapToMinimap((Charged.position.x - target.position.x) * Ddistance / GetDistance2D(Charged,target) + target.position.x,(Charged.position.y - target.position.y) * Ddistance / GetDistance2D(Charged,target) + target.position.y)
 			TCharge2.x = minimap.x-20/2
 			TCharge2.y = minimap.y-20/2
+			TCharge2.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName)
 			TCharge2.visible = ISeeBara
 		end
 	elseif TCharge1.visible then
@@ -367,7 +368,7 @@ function Ancient(cast,me,hero,heroName)
 		if not blastmsg then
 			blastmsg = true
 			GenerateSideMessage(heroName,"ancient_apparition_ice_blast")
-		end
+		end		
 	elseif blastmsg then
 		blastmsg = false
 	end
@@ -383,6 +384,7 @@ function Ancient(cast,me,hero,heroName)
 		TCold = nil
 		collectgarbage("collect")
 	end
+	
 end
 
 function Roha()	
@@ -599,6 +601,13 @@ function GameClose()
 	check = true 
 	enemy = {}
 	stage = 1
+	icon.visible = false
+	PKIcon.visible = false
+	TInfest.visible = false
+	TAssis.visible = false
+	TKicon.visible = false
+	TCharge1.visible = false
+	TCharge2.visible = false
 	collectgarbage("collect")
 	script:Reload()
 end
