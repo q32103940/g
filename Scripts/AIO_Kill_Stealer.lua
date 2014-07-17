@@ -187,7 +187,7 @@ function Tick(tick)
 end
 
 function Key(msg,code)
-	if client.chat then return end
+	if client.chat or client.console then return end
 	if IsKeyDown(toggleKey) then
 		activ = not activ
 	end
