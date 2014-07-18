@@ -103,8 +103,7 @@ function Main(tick)
 		end
 	end
 
-	DirectBase(cast,me)
-	Sleep(125)
+	DirectBase(cast,me)	Sleep(125)
 	if heroes[1][2] ~= 1 then Arrow(cast,me,hero,"mirana") end
 	if heroes[2][2] ~= 1 then Charge(cast,me,hero,"spirit_breaker") end
 	if heroes[3][2] ~= 1 then Infest(me,hero,tick,"life_stealer") end
@@ -383,48 +382,7 @@ function Ancient(cast,me,hero,heroName)
 	elseif TCold ~= nil then
 		TCold = nil
 		collectgarbage("collect")
-	end
-	
-end
-
-function Roha()	
-	local rosh = entityList:FindEntities({classId=CDOTA_Unit_Roshan})[1]
-	if stage == 1 then
-		RoshanSideMessage("Respawn in","8:00-11:00")
-		stage = 2
-		sleep = math.floor(client.gameTime)		
-	elseif sleep + 300 <= math.floor(client.gameTime) and stage == 2 then
-		RoshanSideMessage("Respawn in:","3:00-6:00")
-		stage = 3
-	elseif sleep + 360 <= math.floor(client.gameTime) and stage == 3 then
-		RoshanSideMessage("Respawn in:","2:00-5:00")
-		stage = 4
-	elseif sleep + 420 <= math.floor(client.gameTime) and stage == 4 then	
-		RoshanSideMessage("Respawn in:","1:00-4:00")
-		stage = 5
-	elseif rosh and rosh.alive and stage == 5 then
-		stage = 1
-		RoshanSideMessage("Respawn","00:00")	
-		script:UnregisterEvent(Roha)
-	end
-end
-
-function GetSpecial(spell,Name,lvl)
-	local specials = spell.specials
-	for _,v in ipairs(specials) do
-		if v.name == Name then
-			return v:GetData( math.min(v.dataCount,lvl) )
-		end
-	end
-end
-
-function FindSpell(target,spellName)
-	local abilities = target.abilities
-	for _,v in ipairs(abilities) do
-		if v.name == spellName then
-			return v
-		end
-	end
+	end	
 end
 
 function PhantomKa(me,hero)
@@ -479,6 +437,46 @@ function Tinker(me,tab,cast)
 		TKMinimap = nil
 		TKicon.visible = false
 	end	
+end
+
+function Roha()	
+	local rosh = entityList:FindEntities({classId=CDOTA_Unit_Roshan})[1]
+	if stage == 1 then
+		RoshanSideMessage("Respawn in","8:00-11:00")
+		stage = 2
+		sleep = math.floor(client.gameTime)		
+	elseif sleep + 300 <= math.floor(client.gameTime) and stage == 2 then
+		RoshanSideMessage("Respawn in:","3:00-6:00")
+		stage = 3
+	elseif sleep + 360 <= math.floor(client.gameTime) and stage == 3 then
+		RoshanSideMessage("Respawn in:","2:00-5:00")
+		stage = 4
+	elseif sleep + 420 <= math.floor(client.gameTime) and stage == 4 then	
+		RoshanSideMessage("Respawn in:","1:00-4:00")
+		stage = 5
+	elseif rosh and rosh.alive and stage == 5 then
+		stage = 1
+		RoshanSideMessage("Respawn","00:00")	
+		script:UnregisterEvent(Roha)
+	end
+end
+
+function GetSpecial(spell,Name,lvl)
+	local specials = spell.specials
+	for _,v in ipairs(specials) do
+		if v.name == Name then
+			return v:GetData( math.min(v.dataCount,lvl) )
+		end
+	end
+end
+
+function FindSpell(target,spellName)
+	local abilities = target.abilities
+	for _,v in ipairs(abilities) do
+		if v.name == spellName then
+			return v
+		end
+	end
 end
 
 function FindAB(first, second, distance)
@@ -593,14 +591,9 @@ function GameClose()
 		script:UnregisterEvent(Roha)
 		stage = 1
 	end	
-	effects = {}
-	TArrow = {}
-	TBoat = {}
-	speeed = 600 aa = nil
-	RC = {} ss = {}
-	check = true 
-	enemy = {}
-	stage = 1
+	effects = {} TArrow = {} TBoat = {}
+	speeed = 600 aa = nil RC = {} ss = {}
+	check = true enemy = {} hero = nil
 	icon.visible = false
 	PKIcon.visible = false
 	TInfest.visible = false
@@ -609,9 +602,8 @@ function GameClose()
 	TCharge1.visible = false
 	TCharge2.visible = false
 	collectgarbage("collect")
-	script:Reload()
 end
 
-script:RegisterEvent(EVENT_TICK, Main)
-script:RegisterEvent(EVENT_CLOSE, GameClose)
+script:RegisterEvent(EVENT_TICK,Main)
+script:RegisterEvent(EVENT_CLOSE,GameClose)
 script:RegisterEvent(EVENT_DOTA,Roshan)
