@@ -92,6 +92,7 @@ function Main(tick)
 		if #enemy == 5 then
 			for l,k in ipairs(heroes) do
 				if enemy[1] ~= k[1] and enemy[2] ~= k[1] and enemy[3] ~= k[1] and enemy[4] ~= k[1] and enemy[5] ~= k[1] then
+					print(tostring(k[1]))
 					k[2] = 1
 				else
 					k[2] = 0
@@ -108,7 +109,7 @@ function Main(tick)
 	if heroes[2][2] ~= 1 then Charge(cast,me,hero,"spirit_breaker") end
 	if heroes[3][2] ~= 1 then Infest(me,hero,tick,"life_stealer") end
 	if heroes[4][2] ~= 1 then Snipe(me,hero,tick,"sniper") end
-	if heroes[5][2] ~= 1 or heroes[6][2] ~= 1 then print("RangeCast") RangeCast(me,hero) end
+	if heroes[5][2] ~= 1 or heroes[6][2] ~= 1 then RangeCast(me,hero) end
 	if heroes[7][2] ~= 1 then WhatARubick(hero,me,cast,tick) end
 	if heroes[8][2] ~= 1 then Boat(cast,me) end
 	if heroes[9][2] ~= 1 then Ancient(cast,me,hero,"ancient_apparition") end
