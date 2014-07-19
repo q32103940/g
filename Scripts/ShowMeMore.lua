@@ -54,22 +54,6 @@ Range = {122,122,122,122},
 }
 }
 
-heroes = {
---name, status
-{CDOTA_Unit_Hero_Mirana,0},
-{CDOTA_Unit_Hero_SpiritBreaker,0},
-{CDOTA_Unit_Hero_Life_Stealer,0},
-{CDOTA_Unit_Hero_Sniper,0},
-{CDOTA_Unit_Hero_Windrunner,0},
-{CDOTA_Unit_Hero_Pudge,0},
-{CDOTA_Unit_Hero_Rubick,0},
-{CDOTA_Unit_Hero_Kunkka,0},
-{CDOTA_Unit_Hero_AncientApparition,0},
-{CDOTA_Unit_Hero_PhantomAssassin,0},
-{CDOTA_Unit_Hero_PhantomLancer,0},
-{CDOTA_Unit_Hero_Tinker,0},
-}
-
 function Main(tick)
 
 	if not client.connected or client.loading or client.console or not SleepCheck() then return end
@@ -79,43 +63,26 @@ function Main(tick)
 	local cast = entityList:GetEntities({classId=CDOTA_BaseNPC})
 	local hero = entityList:GetEntities({type=LuaEntity.TYPE_HERO, illusion = false})
 	
-	if check then
-		if #hero > 9 then
-			if #enemy == 0 then
-				for i,v in ipairs(hero) do
-					if v.team ~= me.team then
-						table.insert(enemy,v.classId)
-					end
-				end
-			end
-		end
-		if #enemy == 5 then
-			for l,k in ipairs(heroes) do
-				if enemy[1] ~= k[1] and enemy[2] ~= k[1] and enemy[3] ~= k[1] and enemy[4] ~= k[1] and enemy[5] ~= k[1] then
-					print(tostring(k[1]))
-					k[2] = 1
-				else
-					k[2] = 0
-				end
-				if k[2]~= nil then
-					check = false
-				end
-			end
+	for i,v in ipairs(hero) do
+		if v.team ~= me.team then
+			local id = v.classId
+			if id == CDOTA_Unit_Hero_Mirana then Arrow(cast,me,v.visible,"mirana") end
+			if id == CDOTA_Unit_Hero_SpiritBreaker then Charge(cast,me,v,hero,"spirit_breaker") end
+			if id == CDOTA_Unit_Hero_Life_Stealer then Infest(me,hero,tick,"life_stealer") end
+			if id == CDOTA_Unit_Hero_Sniper then Snipe(me,hero,tick,"sniper") end
+			if id == CDOTA_Unit_Hero_Windrunner or id == CDOTA_Unit_Hero_Pudge then RangeCast(me,v) end
+			if id == CDOTA_Unit_Hero_Rubick then WhatARubick(hero,me,v,cast,tick) end
+			if id == CDOTA_Unit_Hero_Kunkka then Boat(cast,me) end
+			if id == CDOTA_Unit_Hero_AncientApparition then Ancient(cast,me,hero,"ancient_apparition") end
+			if id == CDOTA_Unit_Hero_PhantomAssassin then PhantomKa(me,v) end
+			if id == CDOTA_Unit_Hero_PhantomLancer then PhantomL(me,v.visible) end
+			if id == CDOTA_Unit_Hero_Tinker then Tinker(me,v,cast) end
 		end
 	end
-
-	DirectBase(cast,me)	Sleep(125)
-	if heroes[1][2] ~= 1 then Arrow(cast,me,hero,"mirana") end
-	if heroes[2][2] ~= 1 then Charge(cast,me,hero,"spirit_breaker") end
-	if heroes[3][2] ~= 1 then Infest(me,hero,tick,"life_stealer") end
-	if heroes[4][2] ~= 1 then Snipe(me,hero,tick,"sniper") end
-	if heroes[5][2] ~= 1 or heroes[6][2] ~= 1 then RangeCast(me,hero) end
-	if heroes[7][2] ~= 1 then WhatARubick(hero,me,cast,tick) end
-	if heroes[8][2] ~= 1 then Boat(cast,me) end
-	if heroes[9][2] ~= 1 then Ancient(cast,me,hero,"ancient_apparition") end
-	if heroes[10][2] ~= 1 then PhantomKa(me,hero) end
-	if heroes[11][2] ~= 1 then PhantomL(me,hero) end
-	if heroes[12][2] ~= 1 then Tinker(me,hero,cast) end
+	
+	DirectBase(cast,me)	
+	
+	Sleep(125)
 
 end
 
@@ -135,29 +102,23 @@ function RoshanSideMessage(title,sms)
 	test:AddElement(drawMgr:CreateText(100,25,-1,""..sms.."",F25) )
 end
 
-function WhatARubick(hero,me,cast,tick)
-	for i,v in ipairs(hero) do
-		if v.team ~= me.team then
-			if v.classId == CDOTA_Unit_Hero_Rubick then
-				local stolen = v:GetAbility(5)
-				if stolen then
-					local name = stolen.name
-					local mename = v.name:gsub("npc_dota_hero_","")
-					if name == "mirana_arrow" then
-						Arrow(cast,me,hero,mename)
-					elseif name == "spirit_breaker_charge_of_darkness" then
-						Charge(cast,me,hero,mename)
-					elseif name == "life_stealer_infest" then
-						Infest(me,hero,tick,mename)
-					elseif name == "sniper_assassinate" then
-						Snipe(me,hero,tick,mename)
-					elseif name == "kunkka_ghostship" then
-						Boat(cast,me)
-					elseif name == "ancient_apparition_ice_blast" then
-						Ancient(cast,me,hero,mename)
-					end
-				end
-			end
+function WhatARubick(hero,me,v,cast,tick)
+	local stolen = v:GetAbility(5)
+	if stolen then
+		local name = stolen.name
+		local mename = v.name:gsub("npc_dota_hero_","")
+		if name == "mirana_arrow" then
+			Arrow(cast,me,v.visible,mename)
+		elseif name == "spirit_breaker_charge_of_darkness" then
+			Charge(cast,me,v,hero,mename)
+		elseif name == "life_stealer_infest" then
+			Infest(me,hero,tick,mename)
+		elseif name == "sniper_assassinate" then
+			Snipe(me,hero,tick,mename)
+		elseif name == "kunkka_ghostship" then
+			Boat(cast,me)
+		elseif name == "ancient_apparition_ice_blast" then
+			Ancient(cast,me,hero,mename)
 		end
 	end
 end
@@ -182,41 +143,36 @@ function DirectBase(cast,me)
 	end
 end
 
-function RangeCast(me,hero)
-	for i,v in ipairs(hero) do
-		if v.team ~= me.team then
-			if RangeCastList[v.name] then
-				local number = RangeCastList[v.name].Spell
-				if number then
-					local spell = v:GetAbility(tonumber(number))
-					if spell and spell.cd ~= 0 then
-						local ind = RangeCastList[v.name].End
-						local count = RangeCastList[v.name].Count
-						local range = RangeCastList[v.name].Range
-						local srart = RangeCastList[v.name].Start
-						if math.floor(spell.cd*100) >= srart[spell.level] and not ss[v.handle] then
-							ss[v.handle] = true
-							for a = 1, count do
-								local pss = RCVector(v, range[spell.level]* a)
-								RC[a] = Effect(pss, "blueTorch_flame" )
-								RC[a]:SetVector(1,Vector(0,0,0))
-								RC[a]:SetVector(0, pss)
-							end
-						elseif (math.floor(spell.cd*100) < ind[spell.level] or v.alive == false) and ss[v.handle] then
-							ss = {}
-							RC = {}
-							collectgarbage("collect")
-						end
-					end
+function RangeCast(me,v)
+	local number = RangeCastList[v.name].Spell
+	if number then
+		local spell = v:GetAbility(tonumber(number))
+		if spell and spell.cd ~= 0 then
+			local ind = RangeCastList[v.name].End
+			local count = RangeCastList[v.name].Count
+			local range = RangeCastList[v.name].Range
+			local srart = RangeCastList[v.name].Start
+			if math.floor(spell.cd*100) >= srart[spell.level] and not ss[v.handle] then
+				ss[v.handle] = true
+				for a = 1, count do
+					local pss = RCVector(v, range[spell.level]* a)
+					RC[a] = Effect(pss, "blueTorch_flame" )
+					RC[a]:SetVector(1,Vector(0,0,0))
+					RC[a]:SetVector(0, pss)
 				end
+			elseif (math.floor(spell.cd*100) < ind[spell.level] or v.alive == false) and ss[v.handle] then
+				ss = {}
+				RC = {}
+				collectgarbage("collect")
 			end
 		end
 	end
 end
 
-function Arrow(cast,me,hero,heroName)
+function Arrow(cast,me,status,heroName)
 	local arrow = FindArrow(cast,me)
 	if arrow then
+		icon.visible = not status
 		if not start then
 			GenerateSideMessage(heroName,"mirana_arrow")
 			start = arrow.position
@@ -241,37 +197,19 @@ function Arrow(cast,me,hero,heroName)
 	elseif vec then
 		TArrow = {}
 		collectgarbage("collect")
-		start,vec = nil,nil
-	end
-	for i,v in ipairs(hero) do
-		if v.team ~= me.team then
-			if v.name:gsub("npc_dota_hero_","") == heroName then
-				if arrow then
-					icon.visible = not v.visible
-				else
-					POTMMinimap = nil
-					icon.visible = false
-				end
-			end
-		end
+		start,vec,POTMMinimap = nil,nil,nil
+		icon.visible = false
 	end
 end
 
-function Charge(cast,me,hero,heroName)
-	for i,v in ipairs(hero) do
-		if v.team ~= me.team then
-			if v.name:gsub("npc_dota_hero_","") == heroName then
-				ISeeBara = not v.visible
-				local beg = v:GetAbility(1)
-				if not ISeeBara then time = client.gameTime end
-				if beg and beg.level ~= 0 then
-					speeed = speed[beg.level]
-				end
-			end
-		end
-	end
+function Charge(cast,me,v,hero,heroName)
+	
 	local target = FindByModifierS(hero,"modifier_spirit_breaker_charge_of_darkness_vision",me)
 	if target then
+		local ISeeBara = not v.visible
+		local beg = v:FindSpell("spirit_breaker_charge_of_darkness")
+		if not ISeeBara then time = client.gameTime end
+		if beg and beg.level ~= 0 then speeed = speed[beg.level] end
 		local offset = target.healthbarOffset
 		if offset == -1 then return end
 		if not TCharge1.visible then
@@ -298,6 +236,7 @@ function Charge(cast,me,hero,heroName)
 		TCharge1.visible = false
 		TCharge2.visible = false
 	end
+	
 end
 
 function Infest(me,hero,tick,heroName)
@@ -386,45 +325,34 @@ function Ancient(cast,me,hero,heroName)
 	end	
 end
 
-function PhantomKa(me,hero)
-	for i,v in ipairs(hero) do
-		if v.classId == CDOTA_Unit_Hero_PhantomAssassin then
-			if v:DoesHaveModifier("modifier_phantom_assassin_blur_active") then				
-				local PKMinimap = MapToMinimap(v.position.x,v.position.y)
-				PKIcon.x = PKMinimap.x-20/2
-				PKIcon.y = PKMinimap.y-20/2
-				PKIcon.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/phantom_assassin")
-				PKIcon.visible = true
-			else
-				PKIcon.visible = false
-			end
-		end
+function PhantomKa(me,v)
+	if v:DoesHaveModifier("modifier_phantom_assassin_blur_active") then				
+		local PKMinimap = MapToMinimap(v.position.x,v.position.y)
+		PKIcon.x = PKMinimap.x-20/2
+		PKIcon.y = PKMinimap.y-20/2
+		PKIcon.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/phantom_assassin")
+		PKIcon.visible = true
+	else
+		PKIcon.visible = false
 	end
 end
 
-function PhantomL(me,tab)
-	local pl = GetPL(me,tab)
+function PhantomL(me,status)
 	local illlus = entityList:FindEntities(function (v) return v.type==LuaEntity.TYPE_HERO and v.illusion and v.team ~= me.team and v.classId == CDOTA_Unit_Hero_PhantomLancer  and v.unitState == -1031241196 end)[1]
-
-	if not pl and illlus then
+	if not status and illlus then
 		if not effPL then
 			effPL = Effect(illlus,"phantomlancer_SpiritLance_target_slowparent")				
 		end
 	elseif effPL then
 		effPL = nil
 		collectgarbage("collect")
-	end
- 
+	end 
 end
 
-function Tinker(me,tab,cast) 
+function Tinker(me,v,cast) 
 	local march = FindMarch(cast,me)
-	if march then
-		for i,v in ipairs(tab) do
-			if v.team ~= me.team and v.classId == CDOTA_Unit_Hero_Tinker then				
-				TKicon.visible = not v.visible
-			end
-		end
+	if march then			
+		TKicon.visible = not v.visible
 		if not TKMinimap then
 			TKpos = march.position
 			TKMinimap = MapToMinimap(march.position.x,march.position.y)
@@ -507,17 +435,6 @@ function RCVector(ent, dis)
 	return reVector
 end	
 
-function GetPL(me,tab)
-	for i,v in ipairs(tab) do
-		if v.team ~= me.team and v.visible then
-			if v.classId == CDOTA_Unit_Hero_PhantomLancer then
-				return true
-			end
-		end
-	end
-	return false
-end
-	
 function FindByModifierS(target,mod,me)
 	for i,v in ipairs(target) do
 		if v.team == me.team and v.visible and v.alive and v:DoesHaveModifier(mod) then
@@ -602,9 +519,6 @@ function GameClose()
 	TKicon.visible = false
 	TCharge1.visible = false
 	TCharge2.visible = false
-	for l,k in ipairs(heroes) do		
-		k[2] = 0
-	end
 	collectgarbage("collect")
 end
 
