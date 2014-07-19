@@ -80,7 +80,7 @@ function Main(tick)
 	local hero = entityList:GetEntities({type=LuaEntity.TYPE_HERO, illusion = false})
 	
 	if check then
-		if #hero == 10 then
+		if #hero > 9 then
 			if #enemy == 0 then
 				for i,v in ipairs(hero) do
 					if v.team ~= me.team then
@@ -108,7 +108,7 @@ function Main(tick)
 	if heroes[2][2] ~= 1 then Charge(cast,me,hero,"spirit_breaker") end
 	if heroes[3][2] ~= 1 then Infest(me,hero,tick,"life_stealer") end
 	if heroes[4][2] ~= 1 then Snipe(me,hero,tick,"sniper") end
-	if heroes[5][2] ~= 1 or heroes[6][2] ~= 1 then RangeCast(me,hero) end
+	if heroes[5][2] ~= 1 or heroes[6][2] ~= 1 then print("RangeCast") RangeCast(me,hero) end
 	if heroes[7][2] ~= 1 then WhatARubick(hero,me,cast,tick) end
 	if heroes[8][2] ~= 1 then Boat(cast,me) end
 	if heroes[9][2] ~= 1 then Ancient(cast,me,hero,"ancient_apparition") end
@@ -601,6 +601,9 @@ function GameClose()
 	TKicon.visible = false
 	TCharge1.visible = false
 	TCharge2.visible = false
+	for l,k in ipairs(heroes) do		
+		k[2] = 0
+	end
 	collectgarbage("collect")
 end
 
