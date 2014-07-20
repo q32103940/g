@@ -66,11 +66,11 @@ function Main(tick)
 		if v.team ~= team then
 			local id = v.classId
 			if id == CDOTA_Unit_Hero_Mirana then Arrow(cast,team,v.visible,"mirana") end
-			if id == CDOTA_Unit_Hero_SpiritBreaker then Charge(cast,team,v,hero,"spirit_breaker") end
+			if id == CDOTA_Unit_Hero_SpiritBreaker then Charge(cast,team,v.visible,v:GetAbility(1),hero,"spirit_breaker") end
 			if id == CDOTA_Unit_Hero_Life_Stealer then Infest(team,hero,"life_stealer") end
 			if id == CDOTA_Unit_Hero_Sniper then Snipe(team,hero,"sniper") end
 			if id == CDOTA_Unit_Hero_Windrunner or id == CDOTA_Unit_Hero_Pudge then RangeCast(v) end
-			if id == CDOTA_Unit_Hero_Rubick then WhatARubick(hero,team,v,cast,tick) end
+			if id == CDOTA_Unit_Hero_Rubick then WhatARubick(hero,team,v.visible,v:GetAbility(5),cast) end
 			if id == CDOTA_Unit_Hero_Kunkka then Boat(cast,team) end
 			if id == CDOTA_Unit_Hero_AncientApparition then Ancient(cast,team,hero,"ancient_apparition") end
 			if id == CDOTA_Unit_Hero_PhantomAssassin then PhantomKa(v) end
@@ -101,23 +101,34 @@ function RoshanSideMessage(title,sms)
 	test:AddElement(drawMgr:CreateText(100,25,-1,""..sms.."",F25) )
 end
 
-function WhatARubick(hero,team,v,cast,tick)
-	local stolen = v:GetAbility(5)
-	if stolen then
-		local name = stolen.name
-		local mename = v.name:gsub("npc_dota_hero_","")
+function WhatARubick(hero,team,status,spell,cast)
+	if spell then
+		local name = spell.name
+		local mename = "rubick"
 		if name == "mirana_arrow" then
-			Arrow(cast,team,v.visible,mename)
+			Rarrow = true
+			Arrow(cast,team,status,mename)
 		elseif name == "spirit_breaker_charge_of_darkness" then
-			Charge(cast,team,v,hero,mename)
+			Rcharge = true
+			Charge(cast,team,status,spell,hero,mename)
 		elseif name == "life_stealer_infest" then
+			Rinfest = true
 			Infest(team,hero,mename)
 		elseif name == "sniper_assassinate" then
+			Rassist = true
 			Snipe(team,hero,mename)
 		elseif name == "kunkka_ghostship" then
 			Boat(cast,team)
 		elseif name == "ancient_apparition_ice_blast" then
 			Ancient(cast,team,hero,mename)
+		elseif Rcharge and TCharge1.visible then
+			TCharge1.visible = false TCharge2.visible = false Rcharge = false
+		elseif Rarrow and icon.visible then
+			icon.visible = false Rarrow = false
+		elseif Rinfest and TInfest.visible then
+			TInfest.visible = false Rinfest = false
+		elseif Rassist and TAssis.visible then
+			TAssis.visible = false Rassist = false
 		end
 	end
 end
@@ -201,14 +212,13 @@ function Arrow(cast,team,status,heroName)
 	end
 end
 
-function Charge(cast,team,v,hero,heroName)
+function Charge(cast,team,status,spell,hero,heroName)
 	
 	local target = FindByModifierS(hero,"modifier_spirit_breaker_charge_of_darkness_vision",team)
 	if target then
-		local ISeeBara = not v.visible
-		local beg = FindSpell(v,"spirit_breaker_charge_of_darkness")
+		local ISeeBara = not status
 		if not ISeeBara then time = client.gameTime end
-		if beg and beg.level ~= 0 then speeed = speed[beg.level] end
+		if spell and spell.level ~= 0 then speeed = speed[spell.level] end
 		local offset = target.healthbarOffset
 		if offset == -1 then return end
 		if not TCharge1.visible then
