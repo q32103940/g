@@ -14,8 +14,6 @@ local speed = {600,650,700,750} local aa = nil
 --pudge and wr
 local RC = {} local ss = {}
 --all
-local check = true 
-local enemy = {}
 local stage = 1	
 --drawMgr
 local icon = drawMgr:CreateRect(0,0,18,18,0x000000ff) icon.visible = false
@@ -74,7 +72,7 @@ function Main(tick)
 			if id == CDOTA_Unit_Hero_Rubick then WhatARubick(hero,me,v,cast,tick) end
 			if id == CDOTA_Unit_Hero_Kunkka then Boat(cast,me) end
 			if id == CDOTA_Unit_Hero_AncientApparition then Ancient(cast,me,hero,"ancient_apparition") end
-			if id == CDOTA_Unit_Hero_PhantomAssassin then PhantomKa(me,v) end
+			if id == CDOTA_Unit_Hero_PhantomAssassin then PhantomKa(v) end
 			if id == CDOTA_Unit_Hero_PhantomLancer then PhantomL(me,v.visible) end
 			if id == CDOTA_Unit_Hero_Tinker then Tinker(me,v,cast) end
 		end
@@ -207,7 +205,7 @@ function Charge(cast,me,v,hero,heroName)
 	local target = FindByModifierS(hero,"modifier_spirit_breaker_charge_of_darkness_vision",me)
 	if target then
 		local ISeeBara = not v.visible
-		local beg = v:FindSpell("spirit_breaker_charge_of_darkness")
+		local beg = FindSpell(v,"spirit_breaker_charge_of_darkness")
 		if not ISeeBara then time = client.gameTime end
 		if beg and beg.level ~= 0 then speeed = speed[beg.level] end
 		local offset = target.healthbarOffset
@@ -325,7 +323,7 @@ function Ancient(cast,me,hero,heroName)
 	end	
 end
 
-function PhantomKa(me,v)
+function PhantomKa(v)
 	if v:DoesHaveModifier("modifier_phantom_assassin_blur_active") then				
 		local PKMinimap = MapToMinimap(v.position.x,v.position.y)
 		PKIcon.x = PKMinimap.x-20/2
@@ -510,8 +508,7 @@ function GameClose()
 		stage = 1
 	end	
 	effects = {} TArrow = {} TBoat = {}
-	speeed = 600 aa = nil RC = {} ss = {}
-	check = true enemy = {} hero = nil
+	speeed = 600 aa = nil RC = {} ss = {}	
 	icon.visible = false
 	PKIcon.visible = false
 	TInfest.visible = false
