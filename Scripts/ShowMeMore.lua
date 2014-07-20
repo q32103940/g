@@ -74,7 +74,7 @@ function Main(tick)
 			if id == CDOTA_Unit_Hero_AncientApparition then Ancient(cast,me,hero,"ancient_apparition") end
 			if id == CDOTA_Unit_Hero_PhantomAssassin then PhantomKa(v) end
 			if id == CDOTA_Unit_Hero_PhantomLancer then PhantomL(me,v.visible) end
-			if id == CDOTA_Unit_Hero_Tinker then Tinker(me,v,cast) end
+			if id == CDOTA_Unit_Hero_Tinker then Tinker(me,v.visible,cast) end
 		end
 	end
 	
@@ -347,10 +347,10 @@ function PhantomL(me,status)
 	end 
 end
 
-function Tinker(me,v,cast) 
+function Tinker(me,status,cast) 
 	local march = FindMarch(cast,me)
 	if march then			
-		TKicon.visible = not v.visible
+		TKicon.visible = not status
 		if not TKMinimap then
 			TKpos = march.position
 			TKMinimap = MapToMinimap(march.position.x,march.position.y)
