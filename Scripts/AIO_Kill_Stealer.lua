@@ -160,7 +160,7 @@ function Tick(tick)
 	elseif ID == CDOTA_Unit_Hero_Nyx_Assassin then
 		Kill(true,true,me,2,{3.5,4,4.5,5},nil,nil,1,ID)	
 	elseif ID == CDOTA_Unit_Hero_Techies then
-		Kill(false,false,me,2,{650,850,1150,1550},nil,200,1)
+		Kill(false,false,me,3,{600,800,1100,1500},nil,300,1,nil,DAMAGE_COMP)
 	elseif ID == CDOTA_Unit_Hero_Tusk then
 		local tkdmg = (me.dmgMin + me.dmgBonus)*3.5
 		Kill(true,false,me,4,{tkdmg, tkdmg, tkdmg, tkdmg},nil,300,5,ID,DAMAGE_PHYS)
