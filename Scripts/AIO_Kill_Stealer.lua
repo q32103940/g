@@ -115,6 +115,8 @@ function Tick(tick)
 		Kill(false,true,me,1,{80, 160, 230, 300},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_Shredder then
 		Kill(false,false,me,1,{100, 150, 200, 250},nil,300,3)
+	elseif ID == CDOTA_Unit_Hero_Spectre then
+		Kill(false,true,me,1,{50, 100, 150, 200},nil,2000,1)
 	elseif ID == CDOTA_Unit_Hero_ShadowShaman then
 		Kill(false,true,me,1,{140, 200, 260, 320},nil,nil,1)	
 	elseif ID == CDOTA_Unit_Hero_Sniper then
@@ -130,7 +132,7 @@ function Tick(tick)
 			Kill(false,false,me,2,{80, 160, 240, 320},nil,2500,3)
 		else	
 			Kill(false,true,me,1,{80, 160, 240, 320},nil,nil,1)
-		end
+		end	
 	elseif ID == CDOTA_Unit_Hero_VengefulSpirit then
 		Kill(false,true,me,1,{100, 175, 250, 325},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_Lina then
@@ -157,6 +159,9 @@ function Tick(tick)
 		Kill(true,true,me,4,{0.4,0.6,0.9},{0.6,0.9,1.2},nil,1,ID)	
 	elseif ID == CDOTA_Unit_Hero_Nyx_Assassin then
 		Kill(true,true,me,2,{3.5,4,4.5,5},nil,nil,1,ID)	
+	elseif ID == CDOTA_Unit_Hero_Tusk then
+		local tkdmg = (me.dmgMin + me.dmgBonus)*3.5
+		Kill(true,false,me,4,{tkdmg, tkdmg, tkdmg, tkdmg},nil,300,5,ID,DAMAGE_PHYS)
 	elseif ID == CDOTA_Unit_Hero_Obsidian_Destroyer then
 		Kill(true,false,me,4,{8,9,10},{9,10,11},nil,2,ID)	
 	elseif ID == CDOTA_Unit_Hero_Elder_Titan then
@@ -175,7 +180,7 @@ function Tick(tick)
 		KillGlobal(me,4,{140,180,225},{155,210,275},1)
 	elseif ID == CDOTA_Unit_Hero_Zuus then
 		KillGlobal(me,4,{225,350,475},{440,540,640},3)
-		Kill(false,true,me,true,2,{100,175,275,350},nil,nil,1)
+		Kill(false,true,me,2,{100,175,275,350},nil,nil,1)
 	--other
 	--------------------develop--------------------
 	elseif ID == CDOTA_Unit_Hero_Invoker then
@@ -187,7 +192,7 @@ function Tick(tick)
 end
 
 function Key(msg,code)
-	if client.chat or client.console then return end
+	if client.chat then return end
 	if IsKeyDown(toggleKey) then
 		activ = not activ
 	end
@@ -236,8 +241,11 @@ function Kill(comp,lsblock,me,ability,damage,adamage,range,target,id,tdamage)
 								elseif target == 3 then
 									KSCastSpell(Spell,nil,me,nil) break
 								elseif target == 4 then
-									KSCastSpell(me:GetAbility(4),nil,me,nil)																	
-								end								
+									KSCastSpell(me:GetAbility(4),nil,me,nil) break
+								elseif target == 5 then										
+									if me:CanAttack() then if me:DoesHaveModifier("modifier_tusk_walrus_punch") then me:Attack(v) break 										
+									elseif Spell:CanBeCasted() and me:CanCast() then me:CastAbility(Spell) me:Attack(v) break end end
+								end
 							end
 						end
 					elseif hero[v.handle].visible then
@@ -429,6 +437,20 @@ function ComplexGetDmg(complex,lvl,me,ent,damage,id)
 				return (math.floor(me.intellectTotal) - math.floor(ent.intellectTotal))*baseDmg
 			end
 			return 0
+		elseif id == CDOTA_Unit_Hero_Tusk then
+			local des = me:FindItem("item_desolator")
+			if des and not ent:DoesHaveModifier("modifier_desolator_buff") then
+				local armor = ent.totalArmor - 7
+				if armor > 0 then
+					local temp = ((0.06 * armor) / (1 + 0.06 * armor))
+					return baseDmg*(1-((0.06 * armor) / (1 + 0.06 * armor)))/(1-ent.dmgResist)
+				else
+					local temp = math.floor((1 - math.pow(.94,-armor))*100)/100
+					return baseDmg/(math.pow(.955,-armor))/(1-ent.dmgResist)
+				end
+			else 
+				return baseDmg
+			end
 		elseif id == CDOTA_Unit_Hero_Elder_Titan then
 			local pasDmg = {1.08,1.16,1.25,1.33}
 			local pas = me:GetAbility(3).level
@@ -465,7 +487,7 @@ end
 function GetDmgType(skill,tip)
 	if tip then
 		return tip
-	else	
+	else
 		local typ = skill.dmgType
 		if typ == LuaEntityAbility.DAMAGE_TYPE_MAGICAL then
 			return DAMAGE_MAGC	
@@ -558,7 +580,7 @@ end
 
 function KillStealer(hero)
 	local hId = hero.classId
-	if hId == CDOTA_Unit_Hero_AncientApparition or hId == CDOTA_Unit_Hero_Legion_Commander or hId == CDOTA_Unit_Hero_Batrider or hId == CDOTA_Unit_Hero_Beastmaster or hId == CDOTA_Unit_Hero_Brewmaster or hId == CDOTA_Unit_Hero_Bristleback or hId == CDOTA_Unit_Hero_ChaosKnight or hId == CDOTA_Unit_Hero_Clinkz or hId == CDOTA_Unit_Hero_DarkSeer or hId == CDOTA_Unit_Hero_Dazzle or hId == CDOTA_Unit_Hero_Disruptor or hId == CDOTA_Unit_Hero_DrowRanger or hId == CDOTA_Unit_Hero_EmberSpirit or hId == CDOTA_Unit_Hero_Enchantress or hId == CDOTA_Unit_Hero_Enigma or hId == CDOTA_Unit_Hero_FacelessVoid or hId == CDOTA_Unit_Hero_Gyrocopter or hId == CDOTA_Unit_Hero_Huskar or hId == CDOTA_Unit_Hero_Jakiro or hId == CDOTA_Unit_Hero_Juggernaut or hId == CDOTA_Unit_Hero_KeeperOfTheLight or hId == CDOTA_Unit_Hero_Kunkka or hId == CDOTA_Unit_Hero_LoneDruid or hId == CDOTA_Unit_Hero_Lycan or hId == CDOTA_Unit_Hero_Medusa or hId == CDOTA_Unit_Hero_Meepo or hId == CDOTA_Unit_Hero_Meepo or hId == CDOTA_Unit_Hero_Oracle or hId == CDOTA_Unit_Hero_Phoenix or hId == CDOTA_Unit_Hero_Pudge or hId == CDOTA_Unit_Hero_Pugna or hId == CDOTA_Unit_Hero_Razor or hId == CDOTA_Unit_Hero_Riki or hId == CDOTA_Unit_Hero_SandKing or hId == CDOTA_Unit_Hero_Silencer or hId == CDOTA_Unit_Hero_Skywrath_Mage or hId == CDOTA_Unit_Hero_Slardar or hId == CDOTA_Unit_Hero_Slark or hId == CDOTA_Unit_Hero_SpiritBreaker or hId == CDOTA_Unit_Hero_StormSpirit or hId == CDOTA_Unit_Hero_Techies or hId == CDOTA_Unit_Hero_TemplarAssassin or hId == CDOTA_Unit_Hero_Terrorblade or hId == CDOTA_Unit_Hero_Tiny or hId == CDOTA_Unit_Hero_Treant or hId == CDOTA_Unit_Hero_TrollWarlord or hId == CDOTA_Unit_Hero_Tusk or hId == CDOTA_Unit_Hero_Ursa or hId == CDOTA_Unit_Hero_Venomancer or hId == CDOTA_Unit_Hero_Viper or hId == CDOTA_Unit_Hero_Warlock or hId == CDOTA_Unit_Hero_Weaver or hId == CDOTA_Unit_Hero_Wisp or hId == CDOTA_Unit_Hero_WitchDoctor or hId == CDOTA_Unit_Hero_AbyssalUnderlord or hId == CDOTA_Unit_Hero_PhantomAssassin then 
+	if hId == CDOTA_Unit_Hero_AncientApparition or hId == CDOTA_Unit_Hero_Legion_Commander or hId == CDOTA_Unit_Hero_Batrider or hId == CDOTA_Unit_Hero_Beastmaster or hId == CDOTA_Unit_Hero_Brewmaster or hId == CDOTA_Unit_Hero_Bristleback or hId == CDOTA_Unit_Hero_ChaosKnight or hId == CDOTA_Unit_Hero_Clinkz or hId == CDOTA_Unit_Hero_DarkSeer or hId == CDOTA_Unit_Hero_Dazzle or hId == CDOTA_Unit_Hero_Disruptor or hId == CDOTA_Unit_Hero_DrowRanger or hId == CDOTA_Unit_Hero_EmberSpirit or hId == CDOTA_Unit_Hero_Enchantress or hId == CDOTA_Unit_Hero_Enigma or hId == CDOTA_Unit_Hero_FacelessVoid or hId == CDOTA_Unit_Hero_Gyrocopter or hId == CDOTA_Unit_Hero_Huskar or hId == CDOTA_Unit_Hero_Jakiro or hId == CDOTA_Unit_Hero_Juggernaut or hId == CDOTA_Unit_Hero_KeeperOfTheLight or hId == CDOTA_Unit_Hero_Kunkka or hId == CDOTA_Unit_Hero_LoneDruid or hId == CDOTA_Unit_Hero_Lycan or hId == CDOTA_Unit_Hero_Medusa or hId == CDOTA_Unit_Hero_Meepo or hId == CDOTA_Unit_Hero_Meepo or hId == CDOTA_Unit_Hero_Oracle or hId == CDOTA_Unit_Hero_Phoenix or hId == CDOTA_Unit_Hero_Pudge or hId == CDOTA_Unit_Hero_Pugna or hId == CDOTA_Unit_Hero_Razor or hId == CDOTA_Unit_Hero_Riki or hId == CDOTA_Unit_Hero_SandKing or hId == CDOTA_Unit_Hero_Silencer or hId == CDOTA_Unit_Hero_Skywrath_Mage or hId == CDOTA_Unit_Hero_Slardar or hId == CDOTA_Unit_Hero_Slark or hId == CDOTA_Unit_Hero_SpiritBreaker or hId == CDOTA_Unit_Hero_StormSpirit or hId == CDOTA_Unit_Hero_Techies or hId == CDOTA_Unit_Hero_TemplarAssassin or hId == CDOTA_Unit_Hero_Terrorblade or hId == CDOTA_Unit_Hero_Tiny or hId == CDOTA_Unit_Hero_Treant or hId == CDOTA_Unit_Hero_TrollWarlord or hId == CDOTA_Unit_Hero_Ursa or hId == CDOTA_Unit_Hero_Venomancer or hId == CDOTA_Unit_Hero_Viper or hId == CDOTA_Unit_Hero_Warlock or hId == CDOTA_Unit_Hero_Weaver or hId == CDOTA_Unit_Hero_Wisp or hId == CDOTA_Unit_Hero_WitchDoctor or hId == CDOTA_Unit_Hero_AbyssalUnderlord or hId == CDOTA_Unit_Hero_PhantomAssassin then 
 		return true
 	end
 	return false
