@@ -187,8 +187,8 @@ function Arrow(cast,team,status,heroName)
 			GenerateSideMessage(heroName,"mirana_arrow")
 			start = arrow.position
 			POTMMinimap = MapToMinimap(start.x,start.y)
-			icon.x = POTMMinimap.x-20/2
-			icon.y = POTMMinimap.y-20/2
+			icon.x = POTMMinimap.x-10
+			icon.y = POTMMinimap.y-10
 			icon.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName)
 		end
 		if arrow.visibleToEnemy and not vec then
@@ -235,8 +235,8 @@ function Charge(cast,team,status,spell,hero,heroName)
 			end
 			local Ddistance = GetDistance2D(Charged,target) - (client.gameTime - time)*speeed
 			local minimap = MapToMinimap((Charged.position.x - target.position.x) * Ddistance / GetDistance2D(Charged,target) + target.position.x,(Charged.position.y - target.position.y) * Ddistance / GetDistance2D(Charged,target) + target.position.y)
-			TCharge2.x = minimap.x-20/2
-			TCharge2.y = minimap.y-20/2
+			TCharge2.x = minimap.x-10
+			TCharge2.y = minimap.y-10
 			TCharge2.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName)
 			TCharge2.visible = ISeeBara
 		end
@@ -287,7 +287,6 @@ function Boat(cast,team)
 	if ship then
 		if not start1 then
 			start1 = ship.position
-			return
 		end
 		if ship.visibleToEnemy and not vec1 then
 			vec1 = ship.position
@@ -304,9 +303,9 @@ function Boat(cast,team)
 			TBoat[2]:SetVector(0,p)
 		end
 	elseif vec1 then
-		TBoat = {}
-		collectgarbage("collect")
+		TBoat = {}		
 		start1,vec1 = nil,nil
+		collectgarbage("collect")
 	end
 end
 
@@ -337,8 +336,8 @@ end
 function PhantomKa(v)
 	if v:DoesHaveModifier("modifier_phantom_assassin_blur_active") then				
 		local PKMinimap = MapToMinimap(v.position.x,v.position.y)
-		PKIcon.x = PKMinimap.x-20/2
-		PKIcon.y = PKMinimap.y-20/2
+		PKIcon.x = PKMinimap.x-10
+		PKIcon.y = PKMinimap.y-10
 		PKIcon.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/phantom_assassin")
 		PKIcon.visible = true
 	else
@@ -365,8 +364,8 @@ function Tinker(team,status,cast)
 		if not TKMinimap then
 			TKpos = march.position
 			TKMinimap = MapToMinimap(march.position.x,march.position.y)
-			TKicon.x = TKMinimap.x-20/2
-			TKicon.y = TKMinimap.y-20/2
+			TKicon.x = TKMinimap.x-10
+			TKicon.y = TKMinimap.y-10
 			TKicon.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/tinker")
 		elseif TKpos ~= march.position then
 			TKMinimap = nil
