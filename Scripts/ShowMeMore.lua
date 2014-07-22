@@ -240,7 +240,6 @@ function Charge(cast,team,status,spell,hero,heroName)
 			TCharge2.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName)
 			TCharge2.visible = ISeeBara
 		end
-		--youtu.be/_f5at2E-1lQ
 	elseif TCharge1.visible then
 		aa = nil
 		TCharge1.visible = false
