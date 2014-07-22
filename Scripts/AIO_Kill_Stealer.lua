@@ -1,4 +1,4 @@
--- a lot of improve. (performance,calculation,prediction)
+-- a lot of improve. (performance,calculation,prediction).
 require("libs.ScriptConfig")
 require("libs.Utils")
 require("libs.SideMessage")
