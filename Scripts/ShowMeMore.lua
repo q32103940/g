@@ -125,6 +125,8 @@ function WhatARubick(hero,team,status,spell,cast)
 			TCharge1.visible = false TCharge2.visible = false Rcharge = false
 		elseif Rarrow and icon.visible then
 			icon.visible = false Rarrow = false
+			TArrow = {}
+			collectgarbage("collect")
 		elseif Rinfest and TInfest.visible then
 			TInfest.visible = false Rinfest = false
 		elseif Rassist and TAssis.visible then
