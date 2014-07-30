@@ -7,18 +7,14 @@ config:Load()
 
 local key = config.Hotkey
 
-local ulti = true
-
 local xx,yy = 10,client.screenSize.y/25.714
 
-local F14 = drawMgr:CreateFont("f14","Arial",14,400)
-local statusText = drawMgr:CreateText(xx,yy,-1,"Press "..string.char(key).." to enable, press again to disable",F14) statusText.visible = false
+local statusText = drawMgr:CreateText(xx,yy,-1,"Press "..string.char(key).." to enable, press again to disable",drawMgr:CreateFont("f14","Arial",14,400)) statusText.visible = false
 
-local stage = 0
 local sleep,start = nil,nil
 local remnants = {}
 local ultistate = {}
-local xx,yy = -30,-40
+local stage,xx,yy = 0,-30,-40
 
 
 function Key(msg,code)
@@ -48,11 +44,18 @@ function Combo(tick)
 	if me.classId ~= CDOTA_Unit_Hero_EarthSpirit then
 		script:Disable()		
 	else
+	
 		statusText.visible = true
-
-		Track()
-
+		
+		Track()		
+				
 		if start then
+		
+			if entityList:GetMyPlayer().selection[1].handle ~= me.handle then
+				start = nil
+				statusText.text = "Status: Off"
+				return
+			end
 			
 			local remnant = me:GetAbility(4)
 			local grip = me:GetAbility(3)
@@ -101,7 +104,7 @@ function Combo(tick)
 			end
 		end
 		
-		if SleepCheck("ulti") and ulti and me:GetAbility(5).cd ~= 0 then
+		if SleepCheck("ulti") and me:GetAbility(5).cd ~= 0 then
 			local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO, illusion=false})
 			for i,v in ipairs(enemy) do
 
