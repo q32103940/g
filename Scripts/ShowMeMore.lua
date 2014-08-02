@@ -10,7 +10,7 @@ local TArrow = {}
 local TBoat = {}
 --charge
 local speeed = 600
-local speed = {600,650,700,750} local aa = nil
+local speed = {600,650,700,750}
 --pudge and wr
 local RC = {} local ss = {}
 --all
@@ -70,12 +70,12 @@ function Main(tick)
 			if id == CDOTA_Unit_Hero_Life_Stealer then Infest(team,hero,"life_stealer") end
 			if id == CDOTA_Unit_Hero_Sniper then Snipe(team,hero,"sniper") end
 			if id == CDOTA_Unit_Hero_Windrunner or id == CDOTA_Unit_Hero_Pudge then RangeCast(v) end
-			if id == CDOTA_Unit_Hero_Rubick then WhatARubick(hero,team,v.visible,v:GetAbility(5),cast) end
-			if id == CDOTA_Unit_Hero_Kunkka then Boat(cast,team) end
+			if id == CDOTA_Unit_Hero_Rubick then WhatARubick(hero,team,v.visible,v:GetAbility(5),cast) end			
 			if id == CDOTA_Unit_Hero_AncientApparition then Ancient(cast,team,hero,"ancient_apparition") end
 			if id == CDOTA_Unit_Hero_PhantomAssassin then PhantomKa(v) end
 			if id == CDOTA_Unit_Hero_PhantomLancer then PhantomL(team,v.visible) end
 			if id == CDOTA_Unit_Hero_Tinker then Tinker(team,v.visible,cast) end
+			if id == CDOTA_Unit_Hero_Kunkka then Boat(cast,team) end
 		end
 	end
 	
@@ -93,12 +93,10 @@ function GenerateSideMessage(heroName,spellName)
 end
 
 function RoshanSideMessage(title,sms)
-	local F25 = drawMgr:CreateFont("defaultFont","Arial",25,500)
-	local F20 = drawMgr:CreateFont("defaultFont","Arial",22,500)
 	local test = sideMessage:CreateMessage(200,60)	
 	test:AddElement(drawMgr:CreateRect(5,5,80,50,0xFFFFFFFF,drawMgr:GetTextureId("NyanUI/heroes_horizontal/roshan")))
-	test:AddElement(drawMgr:CreateText(90,3,-1,title,F20) )
-	test:AddElement(drawMgr:CreateText(100,25,-1,""..sms.."",F25) )
+	test:AddElement(drawMgr:CreateText(90,3,-1,title,drawMgr:CreateFont("defaultFont","Arial",22,500)))
+	test:AddElement(drawMgr:CreateText(100,25,-1,""..sms.."",drawMgr:CreateFont("defaultFont","Arial",25,500)))
 end
 
 function WhatARubick(hero,team,status,spell,cast)
@@ -206,11 +204,11 @@ function Arrow(cast,team,status,heroName)
 				TArrow[z]:SetVector(0,p)
 			end
 		end
-	elseif vec then
-		TArrow = {}
-		collectgarbage("collect")
+	elseif start then
+		TArrow = {}		
 		start,vec,POTMMinimap = nil,nil,nil
 		icon.visible = false
+		collectgarbage("collect")
 	end
 end
 
@@ -219,7 +217,8 @@ function Charge(cast,team,status,spell,hero,heroName)
 	local target = FindByModifierS(hero,"modifier_spirit_breaker_charge_of_darkness_vision",team)
 	if target then
 		local ISeeBara = not status
-		if not ISeeBara then time = client.gameTime end
+		local clock = client.gameTime
+		if not ISeeBara then time = clock end
 		if spell and spell.level ~= 0 then speeed = speed[spell.level] end
 		local offset = target.healthbarOffset
 		if offset == -1 then return end
@@ -232,18 +231,19 @@ function Charge(cast,team,status,spell,hero,heroName)
 		end
 		local Charged = FindCharge(cast)
 		if Charged then
-			if not aa then aa = true
-				time = client.gameTime
+			if not time then
+				time = clock
 			end
-			local Ddistance = GetDistance2D(Charged,target) - (client.gameTime - time)*speeed
-			local minimap = MapToMinimap((Charged.position.x - target.position.x) * Ddistance / GetDistance2D(Charged,target) + target.position.x,(Charged.position.y - target.position.y) * Ddistance / GetDistance2D(Charged,target) + target.position.y)
+			local distance = GetDistance2D(Charged,target)
+			local Ddistance = distance - (clock - time)*speeed
+			local minimap = MapToMinimap((Charged.position.x - target.position.x) * Ddistance / distance + target.position.x,(Charged.position.y - target.position.y) * Ddistance / distance + target.position.y)
 			TCharge2.x = minimap.x-10
 			TCharge2.y = minimap.y-10
 			TCharge2.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/"..heroName)
 			TCharge2.visible = ISeeBara
 		end
 	elseif TCharge1.visible then
-		aa = nil
+		time = nil
 		TCharge1.visible = false
 		TCharge2.visible = false
 	end
@@ -304,7 +304,7 @@ function Boat(cast,team)
 			TBoat[2] = Effect(p,"kunkka_ghostship_marker")
 			TBoat[2]:SetVector(0,p)
 		end
-	elseif vec1 then
+	elseif start1 then
 		TBoat = {}		
 		start1,vec1 = nil,nil
 		collectgarbage("collect")
@@ -329,7 +329,7 @@ function Ancient(cast,team,hero,heroName)
 			TCold:SetVector(0,vpos)
 			TCold:SetVector(1,Vector(740,0,0))
 		end
-	elseif TCold ~= nil then
+	elseif TCold then
 		TCold = nil
 		collectgarbage("collect")
 	end	
@@ -342,7 +342,7 @@ function PhantomKa(v)
 		PKIcon.y = PKMinimap.y-10
 		PKIcon.textureId = drawMgr:GetTextureId("NyanUI/miniheroes/phantom_assassin")
 		PKIcon.visible = true
-	else
+	elseif PKIcon.visible then
 		PKIcon.visible = false
 	end
 end
@@ -520,7 +520,7 @@ function GameClose()
 		stage = 1
 	end	
 	effects = {} TArrow = {} TBoat = {}
-	speeed = 600 aa = nil RC = {} ss = {}	
+	speeed = 600 RC = {} ss = {}	
 	icon.visible = false
 	PKIcon.visible = false
 	TInfest.visible = false
