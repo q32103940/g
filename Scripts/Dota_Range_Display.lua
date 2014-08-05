@@ -65,31 +65,31 @@ function Tick(tick)
 		end
 		text.visible = false
 	end
-
-	for a,v in ipairs(spellList) do
-		if v.level ~= 0 and #spells ~= 0 then
-			spells[a].range = v.castRange
-			if rangelist[me.name] then
-				spells[a].range = num.ran[me:GetAbility(num.spell).level]
-			end
-			local dirty = false
-			if spells[a].state then
-				if not spells[a].effect or spells[a].ranges ~= spells[a].range then
-					spells[a].effect = Effect(me,"range_display")
-					spells[a].effect:SetVector( 1,Vector(spells[a].range,0,0) )
-					spells[a].ranges = spells[a].range
+	if #spells ~= 0 then
+		for a,v in ipairs(spellList) do
+			if v.level ~= 0 and spells[a] then
+				spells[a].range = v.castRange
+				if rangelist[me.name] then
+					spells[a].range = num.ran[me:GetAbility(num.spell).level]
+				end
+				local dirty = false
+				if spells[a].state then
+					if not spells[a].effect or spells[a].ranges ~= spells[a].range then
+						spells[a].effect = Effect(me,"range_display")
+						spells[a].effect:SetVector( 1,Vector(spells[a].range,0,0) )
+						spells[a].ranges = spells[a].range
+						dirty = true
+					end						
+				elseif spells[a].effect then
+					spells[a].effect = nil
 					dirty = true
-				end						
-			elseif spells[a].effect then
-				spells[a].effect = nil
-				dirty = true
-			end
-			if dirty then
-				collectgarbage("collect")
+				end
+				if dirty then
+					collectgarbage("collect")
+				end
 			end
 		end
 	end
-
 end
 
 function Key(msg,code)
