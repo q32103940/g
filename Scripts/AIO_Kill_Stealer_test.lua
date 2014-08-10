@@ -41,13 +41,18 @@ local icon = drawMgr:CreateRect(xx,yy,24,24,0x000000ff) icon.visible = false
 local dmgCalc = drawMgr:CreateText(xx*shft, yy-18*shft, 0x00000099,"Dmg",F14) dmgCalc.visible = false
 
 function Load()
-	if PlayingGame() then
-			reg = true
-			myhero = me.classId
-			script:RegisterEvent(EVENT_TICK,Tick)
-			script:RegisterEvent(EVENT_KEY,Key)
-			script:UnregisterEvent(Load)
-	end
+if PlayingGame() then
+local me = entityList:GetMyHero()
+if KillStealer(me) then
+script:Disable()
+else
+reg = true
+myhero = me.classId
+script:RegisterEvent(EVENT_TICK,Tick)
+script:RegisterEvent(EVENT_KEY,Key)
+script:UnregisterEvent(Load)
+end
+end
 end
 
 function Tick(tick)
