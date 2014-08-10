@@ -42,13 +42,16 @@ local dmgCalc = drawMgr:CreateText(xx*shft, yy-18*shft, 0x00000099,"Dmg",F14) dm
 
 function Load()
 	if PlayingGame() then
-		
+		local me = entityList:GetMyHero()
+		if KillStealer(me) then 
+			--script:Disable() 
+		else
 			reg = true
 			myhero = me.classId
 			script:RegisterEvent(EVENT_TICK,Tick)
 			script:RegisterEvent(EVENT_KEY,Key)
 			script:UnregisterEvent(Load)
-		
+		end
 	end
 end
 
@@ -59,6 +62,24 @@ function Tick(tick)
 	if not me then return end
 	local ID = me.classId	
 	if ID ~= myhero then GameClose() end
+	
+	local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team})
+		for i,v in ipairs(enemies) do
+			if v.healthbarOffset ~= -1 and not v:IsIllusion() then
+				if not hero[v.handle] then
+					hero[v.handle] = drawMgr:CreateText(20,0-45, 0xFFFFFF99, "",F14) hero[v.handle].visible = false hero[v.handle].entity = v hero[v.handle].entityPosition = Vector(0,0,v.healthbarOffset)
+				end
+				if v.visible and v.alive and v.health > 0 then
+					hero[v.handle].visible = draw
+					local life=v.health
+					hero[v.handle].text = " "..life
+					
+				elseif hero[v.handle].visible then
+					hero[v.handle].visible = false
+				end
+			end
+		end
+
 	
 	dmgCalc.visible = draw
 	rect.visible,icon.visible = activ,activ
@@ -210,18 +231,7 @@ function Key(msg,code)
 	end
 end
 
-function hp(tick)
-local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team})
-		for i,v in ipairs(enemies) do
-			if v.healthbarOffset ~= -1 and not v:IsIllusion() then
-				if not hero[v.handle] then
-					hero[v.handle] = drawMgr:CreateText(20,0-45, 0xFFFFFF99, "",F14) hero[v.handle].visible = false hero[v.handle].entity = v hero[v.handle].entityPosition = Vector(0,0,v.healthbarOffset)
-				end
-				
-					hero[v.handle].visible = draw
-					local life=v.health
-					hero[v.handle].text = " "..life
-end
+
 
 
 function Kill(comp,lsblock,me,ability,damage,adamage,range,target,id,tdamage)
