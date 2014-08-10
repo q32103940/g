@@ -212,18 +212,6 @@ function Key(msg,code)
 	end
 end
 
-function hp(tick)
-local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team})
-	for i,v in ipairs(enemies) do
-		if not v:IsIllusion() then
-			if not hero[v.handle] then
-				hero[v.handle] = drawMgr:CreateText(20,0-45, 0xFFFFFF99, "",F14) hero[v.handle].visible = draw hero[v.handle].entity = v hero[v.handle].entityPosition = Vector(0,0,v.healthbarOffset)
-			end
-			local life=v.health
-			hero[v.handle].text = " "..life
-		end
-	end
-end
 
 	
 	
