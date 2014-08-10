@@ -42,10 +42,6 @@ local dmgCalc = drawMgr:CreateText(xx*shft, yy-18*shft, 0x00000099,"Dmg",F14) dm
 
 function Load()
 	if PlayingGame() then
-		local me = entityList:GetMyHero()
-		if KillStealer(me) then 
-			script:Disable() 
-		else
 			reg = true
 			myhero = me.classId
 			script:RegisterEvent(EVENT_TICK,Tick)
@@ -54,6 +50,9 @@ function Load()
 		end
 	end
 end
+
+
+
 
 function Tick(tick)
 	
@@ -75,6 +74,8 @@ function Tick(tick)
 		Kill(false,true,me,2,{90, 160, 230, 300},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_BountyHunter then
 		Kill(false,true,me,1,{100, 200, 250, 325},nil,700,1)
+	elseif ID == CDOTA_Unit_Hero_Disruptor then
+		Kill(false,true,me,1,{40, 60, 80, 1005},nil,800,1)
 	elseif ID == CDOTA_Unit_Hero_Broodmother then
 		Kill(false,true,me,1,{75, 150, 225, 300},nil,nil,1)
 	elseif ID == CDOTA_Unit_Hero_Centaur then
@@ -211,6 +212,20 @@ function Key(msg,code)
 	end
 end
 
+function hp(tick)
+local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team})
+	for i,v in ipairs(enemies) do
+		if not v:IsIllusion() then
+			if not hero[v.handle] then
+					hero[v.handle] = drawMgr:CreateText(20,0-45, 0xFFFFFF99, "",F14) hero[v.handle].visible = draw hero[v.handle].entity = v hero[v.handle].entityPosition = Vector(0,0,v.healthbarOffset)
+			end
+			local life=v.health
+			hero[v.handle].text = " "..life
+		end
+	end
+end
+	
+
 function Kill(comp,lsblock,me,ability,damage,adamage,range,target,id,tdamage)
 	local Spell = me:GetAbility(ability)
 	icon.textureId = drawMgr:GetTextureId("NyanUI/spellicons/"..Spell.name)
@@ -230,7 +245,7 @@ function Kill(comp,lsblock,me,ability,damage,adamage,range,target,id,tdamage)
 					local DmgM = ComplexGetDmg(comp,Spell.level,me,v,Dmg,id)
 					local DmgS = math.floor(v:DamageTaken(DmgM,DmgT,me))
 					local DmgF = math.floor(v.health - DmgS + CastPoint*v.healthRegen+MorphMustDie(v,CastPoint))
-					hero[v.handle].text = " "..DmgF
+					--hero[v.handle].text = " "..DmgF
 					if activ and not me:IsChanneling() then
 						if DmgF < 0 and GetDistance2D(me,v) < Range and KSCanDie(v,me,Spell,DmgS) then								
 							if target == 1 then
@@ -273,7 +288,7 @@ function KillGlobal(me,ability,damage,adamage,target)
 					hero[v.handle].visible = Drawning(draw,me)
 					local DmgS = math.floor(v:DamageTaken(Dmg,DmgT,me))						
 					local DmgF = math.floor(v.health - DmgS + CastPoint*v.healthRegen + MorphMustDie(v,CastPoint))
-					hero[v.handle].text = " "..DmgF	
+					--hero[v.handle].text = " "..DmgF	
 					if DmgF < 0 and KSCanDie(v,me,Spell,DmgS) then
 						if not note[v.handle] then
 							note[v.handle] = true
@@ -330,7 +345,7 @@ function KillPrediction(me,ability,damage,cast,project)
 					hero[v.handle].visible = draw
 					local DmgS = math.floor(v:DamageTaken(Dmg,DmgT,me))
 					local DmgF = math.floor(v.health - DmgS + CastPoint*v.healthRegen + MorphMustDie(v,CastPoint))
-					hero[v.handle].text = " "..DmgF
+					--hero[v.handle].text = " "..DmgF
 					if activ and not me:IsChanneling() then
 						if DmgF < 0 and KSCanDie(v,me,Spell,DmgS) then
 							local move = v.movespeed local pos = v.position	local distance = GetDistance2D(v,me)
@@ -598,7 +613,7 @@ function SmartSS(me)
 					hero[v.handle].visible = draw
 					local DmgS = math.floor(v:DamageTaken(Dmg,DAMAGE_PURE,me))
 					local DmgF = math.floor(v.health - DmgS + CastPoint*v.healthRegen + MorphMustDie(v,CastPoint))
-					hero[v.handle].text = " "..DmgF						
+					--hero[v.handle].text = " "..DmgF						
 					if DmgF < 0 and KSCanDie(v,me) and (not me:IsMagicDmgImmune() and NotDieFromSpell(Spell,v,me) and not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") and NotDieFromBM(v,me,DmgS)) then
 						if not note[v.handle] then
 							note[v.handle] = true
@@ -641,7 +656,7 @@ function SmartKoils(me)
 				if v.visible and v.alive and v.health > 1 then
 					hero[v.handle].visible = draw
 					local DmgF = math.floor(v.health - SFtarget(v,me) - v:DamageTaken(DmgS,DAMAGE_MAGC,me))
-					hero[v.handle].text = " "..DmgF
+					--hero[v.handle].text = " "..DmgF
 					if activ and not me:IsChanneling() then
 						if DmgF < 0 and KSCanDie(v,me) and (not me:IsMagicDmgImmune() and NotDieFromSpell(Spell,v,me) and not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") and NotDieFromBM(v,me,DmgS)) then
 							local distance = GetDistance2D(me,SFrange(v))
