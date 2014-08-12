@@ -28,7 +28,6 @@ function Key(msg,code)
 			active=0
 		end
 	end
-end
 
 function Tick(tick)
 	if not SleepCheck() then return end Sleep(30)
