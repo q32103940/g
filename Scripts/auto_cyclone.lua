@@ -9,7 +9,7 @@ local toggleKey   = config.Active
 local activ       = false
 local monitor     = client.screenSize.x/1600
 local F14         = drawMgr:CreateFont("F14","Tahoma",14*monitor,515*monitor) 
-local statusText  = drawMgr:CreateText(10*monitor,290*monitor,-1,"(" .. string.char(toggleKey) .. ") Auto Hex: Initators",F14) statusText.visible = false
+local statusText  = drawMgr:CreateText(10*monitor,515*monitor,-1,"(" .. string.char(toggleKey) .. ") Auto Cyclone: Off",F14) statusText.visible = false
 
 local hotkeyText
 if string.byte("A") <= toggleKey and toggleKey <= string.byte("Z") then
@@ -21,11 +21,11 @@ end
 function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
 	if IsKeyDown(toggleKey) then
-		activ = 1
+		activ = true
 			statusText.text = "(" .. hotkeyText .. ") Auto Cyclone: Active"
 		else
 			statusText.text = "(" .. hotkeyText .. ") Auto Cyclone: Off"
-			active=0
+			active=false
 		end
 	end
 
