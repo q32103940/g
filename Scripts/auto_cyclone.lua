@@ -9,7 +9,7 @@ local toggleKey   = config.Active
 local activ       = false
 local monitor     = client.screenSize.x/1600
 local F14         = drawMgr:CreateFont("F14","Tahoma",14*monitor,515*monitor) 
-local statusText  = drawMgr:CreateText(10*monitor,515*monitor,-1,"(" .. string.char(toggleKey) .. ") Auto Cyclone: Off",F14) statusText.visible = false
+local statusText  = drawMgr:CreateText(10*monitor,515*monitor,-1,"(" .. string.char(toggleKey) .. ") Auto Cyclone: Off",F14) statusText.visible = true
 
 local hotkeyText
 if string.byte("A") <= toggleKey and toggleKey <= string.byte("Z") then
