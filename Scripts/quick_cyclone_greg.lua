@@ -25,7 +25,7 @@ function Key(msg,code)
 			statusText.text = "(" .. hotkeyText .. ") Auto Cyclone: Active"
 		else
 			statusText.text = "(" .. hotkeyText .. ") Auto Cyclone: Off"
-			active=false
+			activ=false
 		end
 	end
 
@@ -56,7 +56,7 @@ function Disable(me,abilityHex,abilityHexName,sheep)
 		local MI    = v:IsMagicImmune()
 		local invis = me:IsInvisible()
 		if not (SI or MI or invis) then
-			if GetDistance2D(v,me) < 800 and sheep and sheep:CanBeCasted() and activ=true then
+			if GetDistance2D(v,me) < 800 and sheep and sheep:CanBeCasted() and activ then
 				if activ then
 					me:SafeCastItem("item_cyclone",v)
 					break
@@ -76,7 +76,7 @@ function Disable(me,abilityHex,abilityHexName,sheep)
 			elseif abilityHex and abilityHexName then
 				local five = me:GetAbility(abilityHex)
 				local six  = me:FindAbility(abilityHexName)
-				if GetDistance2D(v,me) < six.castRange and six and six:CanBeCasted() and activ=true then
+				if GetDistance2D(v,me) < six.castRange and six and six:CanBeCasted() and activ then
 					if activ then
 						me:SafeCastAbility(five,v)
 						break
