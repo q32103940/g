@@ -2,7 +2,7 @@ require("libs.Utils")
 require("libs.ScriptConfig")
 
 config = ScriptConfig.new()
-config:SetParameter("Hotkey", "48", config.TYPE_HOTKEY)
+--config:SetParameter("Hotkey", "48", config.TYPE_HOTKEY)
 config:Load()
 
 local key = config.Hotkey
