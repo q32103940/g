@@ -172,8 +172,15 @@ function Main(tick)
 			GetCreeps(me)
 		
 			if IsKeyDown(movetomouse) and not client.chat then			
+				if not lasthit  then
+				--and tick > sleep
+					--me:Move(client.mousePosition)
+					sleep = tick + 1
+				me:Stop()	
+				end
 				
-				GetLasthit(me)					
+				GetLasthit(me)
+				
 			end
 		
 			if autounaggro and not lasthit then		
@@ -205,10 +212,10 @@ function GetLasthit(me)
 		local nocrittimeToHealth = creepClass:GetTimeToHealth(nocritDmg)
 		if (GetTick() >= myAttackTickTable.attackRateTick) and ((enablelasthits and me.team ~= creepClass.creepEntity.team) or (enabledenies and not lh and me.team == creepClass.creepEntity.team and creepClass.creepEntity.health < creepClass.creepEntity.maxHealth*0.50)) then
 			if myhero.isRanged then
-				if creepClass.creepEntity.team ~= me.team and (nocrittimeToHealth and (nocrittimeToHealth) < (GetTick() + myhero.attackPoint*1000 + client.latency + (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, creepClass.creepEntity))) - 0.69, 0)/(myhero.turnRate*(1/0.03)))*1000 + ((GetDistance2D(me, creepClass.creepEntity)-math.max((GetDistance2D(me, creepClass.creepEntity) - myhero.attackRange), 0))/myhero.projectileSpeed)*1000 + (math.max((GetDistance2D(me, creepClass.creepEntity) - myhero.attackRange), 0)/me.movespeed)*1000)) then
+				if creepClass.creepEntity.team ~= me.team and (nocrittimeToHealth and (nocrittimeToHealth) < (GetTick() + myhero.attackPoint*1000 + client.latency + (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, creepClass.creepEntity))) - 0.69, 0)/(myhero.turnRate*(1/0.03)))*1000 + ((GetDistance2D(me, creepClass.creepEntity)-math.max((GetDistance2D(me, creepClass.creepEntity) - myhero.attackRange), 0))/(myhero.projectileSpeed))*1000 + (math.max((GetDistance2D(me, creepClass.creepEntity) - myhero.attackRange), 0)/me.movespeed)*1000)) then
 					lh = true
 				end
-				if Dmg >= creepClass.creepEntity.health or (timeToHealth and timeToHealth <= (GetTick() + myhero.attackPoint*1000 + client.latency + geminate_attack + ((GetDistance2D(me, creepClass.creepEntity)-math.max((GetDistance2D(me, creepClass.creepEntity) - myhero.attackRange), 0))/myhero.projectileSpeed)*1000 + (math.max((GetDistance2D(me, creepClass.creepEntity) - myhero.attackRange), 0)/me.movespeed)*1000)) then
+				if Dmg >= creepClass.creepEntity.health or (timeToHealth and timeToHealth <= (GetTick() + myhero.attackPoint*1000 + client.latency + geminate_attack + ((GetDistance2D(me, creepClass.creepEntity)-math.max((GetDistance2D(me, creepClass.creepEntity) - myhero.attackRange), 0))/(myhero.projectileSpeed))*1000 + (math.max((GetDistance2D(me, creepClass.creepEntity) - myhero.attackRange), 0)/me.movespeed)*1000)) then
 					myhero:Hit(creepClass.creepEntity)
 					lasthit = true
 					lhcreep = creepClass.creepEntity
@@ -218,8 +225,7 @@ function GetLasthit(me)
 						lh = true
 					end
 					myAttackTickTable.attackRateTick = GetTick() + myhero.attackRate*1000
-				
-				else me:stop()
+					
 				end
 			else
 				if creepClass.creepEntity.team ~= me.team and (nocrittimeToHealth and (nocrittimeToHealth) < (GetTick() + myhero.attackPoint*1000 + client.latency + (math.max(math.abs(FindAngleR(me) - math.rad(FindAngleBetween(me, creepClass.creepEntity))) - 0.69, 0)/(myhero.turnRate*(1/0.03)))*1000 + (math.max((GetDistance2D(me, creepClass.creepEntity) - myhero.attackRange), 0)/me.movespeed)*1000)) then
@@ -234,8 +240,7 @@ function GetLasthit(me)
 						lh = true
 					end
 					myAttackTickTable.attackRateTick = GetTick() + myhero.attackRate*1000
-				
-				else me:stop()
+					
 				end
 			end
 		end
@@ -243,8 +248,6 @@ function GetLasthit(me)
 	if lasthit or isAttacking(me) or (lhcreep and GetDistance2D(me, lhcreep) <= myhero.attackRange) then
 		if lhcreep and lhcreep.alive and lhcreepclass then
 			myhero:StopAttack(lhcreep,lhcreepclass)
-			
-		else me:stop()
 		end
 	end
 end
