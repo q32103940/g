@@ -43,15 +43,13 @@ local dmgCalc = drawMgr:CreateText(xx*shft, yy-18*shft, 0x00000099,"Dmg",F14) dm
 function Load()
 	if PlayingGame() then
 		local me = entityList:GetMyHero()
-		if KillStealer(me) then 
-			--script:Disable() 
-		else
+		
 			reg = true
 			myhero = me.classId
 			script:RegisterEvent(EVENT_TICK,Tick)
 			script:RegisterEvent(EVENT_KEY,Key)
 			script:UnregisterEvent(Load)
-		end
+		
 	end
 end
 
@@ -83,134 +81,6 @@ function Tick(tick)
 	
 	dmgCalc.visible = draw
 	rect.visible,icon.visible = activ,activ
-	
-	--Kill(false,linkin block,me,ability,damage,scepter damage,range,target(1-target,2-target.position,3-non target),classId,damage type)
-	if ID == CDOTA_Unit_Hero_Abaddon then
-		Kill(false,true,me,1,{100, 150, 200, 250},nil,nil,1)
-	elseif ID == CDOTA_Unit_Hero_Axe then		
-		Kill(false,false,me,4,{250,350,450},{300,450,625},400,1,nil,DAMAGE_HPRM)
-	elseif ID == CDOTA_Unit_Hero_Bane then
-		Kill(false,true,me,2,{90, 160, 230, 300},nil,nil,1)
-	elseif ID == CDOTA_Unit_Hero_BountyHunter then
-		Kill(false,true,me,1,{100, 200, 250, 325},nil,700,1)
-			elseif ID == CDOTA_Unit_Hero_Disruptor then
-		Kill(false,true,me,1,{40, 60, 80, 100},nil,800,1)
-	elseif ID == CDOTA_Unit_Hero_Broodmother then
-		Kill(false,true,me,1,{75, 150, 225, 300},nil,nil,1)
-	elseif ID == CDOTA_Unit_Hero_Centaur then
-		Kill(false,true,me,2,{175, 250, 325, 400},nil,300,1)
-	elseif ID == CDOTA_Unit_Hero_Chen then
-		Kill(false,true,me,2,{50, 100, 150, 200},nil,nil,1)
-	elseif ID == CDOTA_Unit_Hero_CrystalMaiden then		
-		Kill(false,false,me,1,{100, 150, 200, 250},nil,700,2)
-	elseif ID == CDOTA_Unit_Hero_DeathProphet then		
-		Kill(false,false,me,1,{100, 175, 250, 300},nil,nil,1)
-	elseif ID == CDOTA_Unit_Hero_DragonKnight then
-		Kill(false,false,me,1,{90, 170, 240, 300},nil,nil,1)
-	elseif ID == CDOTA_Unit_Hero_EarthSpirit then
-		Kill(false,true,me,1,{125, 125, 125, 125},nil,250,1)
-	elseif ID == CDOTA_Unit_Hero_Earthshaker then
-		Kill(false,true,me,1,{125, 175, 225, 275},nil,nil,1)
-	elseif ID == CDOTA_Unit_Hero_Leshrac then
-		Kill(false,true,me,3,{80, 140, 200, 260},nil,nil,1)
-	elseif ID == CDOTA_Unit_Hero_Lich then		
-		Kill(false,true,me,1,{115, 200, 275, 350},nil,nil,1)
-	elseif ID == CDOTA_Unit_Hero_Lion then
-		Kill(false,true,me,4,{600, 725, 850},{725, 875, 1025},nil,1)
-	elseif ID == CDOTA_Unit_Hero_Luna then		
-		Kill(false,true,me,1,{75, 150, 210, 260},nil,nil,1)	
-	elseif ID ==CDOTA_Unit_Hero_NightStalker then
-		Kill(false,true,me,1,{90, 160, 225, 335},nil,nil,1)
-	elseif ID == CDOTA_Unit_Hero_PhantomLancer then
-		Kill(false,true,me,1,{100, 150, 200, 250},nil,nil,1)
-	elseif ID == CDOTA_Unit_Hero_Puck then
-		Kill(false,false,me,2,{70, 140, 210, 280},nil,400,3)
-	elseif ID == CDOTA_Unit_Hero_QueenOfPain then
-		Kill(false,false,me,3,{85, 165, 225, 300},nil,475,3)
-	elseif ID == CDOTA_Unit_Hero_Rattletrap then
-		Kill(false,false,me,3,{80, 120, 160, 200},nil,1000,2)
-	elseif ID == CDOTA_Unit_Hero_Rubick then
-		Kill(false,true,me,3,{70, 140, 210, 280},nil,nil,1)
-	elseif ID == CDOTA_Unit_Hero_SkeletonKing then
-		Kill(false,true,me,1,{80, 160, 230, 300},nil,nil,1)
-	elseif ID == CDOTA_Unit_Hero_Shredder then
-		Kill(false,false,me,1,{100, 150, 200, 250},nil,300,3)
-	elseif ID == CDOTA_Unit_Hero_Spectre then
-		Kill(false,true,me,1,{50, 100, 150, 200},nil,2000,1)
-	elseif ID == CDOTA_Unit_Hero_ShadowShaman then
-		Kill(false,true,me,1,{140, 200, 260, 320},nil,nil,1)	
-	elseif ID == CDOTA_Unit_Hero_Sniper then
-		Kill(false,true,me,4,{350, 500, 650},nil,nil,1)
-	elseif ID == CDOTA_Unit_Hero_Sven then
-		Kill(false,true,me,1,{100, 175, 250, 325},nil,650,1)
-	elseif ID == CDOTA_Unit_Hero_Tidehunter then
-		Kill(false,true,me,1,{110, 160, 210, 260},nil,750,1)
-	elseif ID == CDOTA_Unit_Hero_Tinker then
-		if me:GetAbility(1).state == LuaEntityAbility.STATE_READY then
-			Kill(false,true,me,1,{80, 160, 240, 320},nil,nil,1)
-		elseif me:GetAbility(2).state == LuaEntityAbility.STATE_READY then
-			Kill(false,false,me,2,{80, 160, 240, 320},nil,2500,3)
-		else	
-			Kill(false,true,me,1,{80, 160, 240, 320},nil,nil,1)
-		end	
-	elseif ID == CDOTA_Unit_Hero_VengefulSpirit then
-		Kill(false,true,me,1,{100, 175, 250, 325},nil,nil,1)
-	elseif ID == CDOTA_Unit_Hero_Lina then
-		if not me:AghanimState() then Kill(false,true,me,4,{450,675,950},nil,nil,1) else Kill(false,true,me,4,{600,925,1250},nil,900,1,nil,DAMAGE_UNIV) end	
-	elseif ID == CDOTA_Unit_Hero_Alchemist then
-		Kill(false,false,me,2,{32,47,63,78},nil,800,1,ID)
-	elseif ID == CDOTA_Unit_Hero_Morphling then
-		Kill(false,true,me,2,{20, 40, 60, 80},nil,nil,1,ID)
-	elseif ID == CDOTA_Unit_Hero_Visage then
-		Kill(false,true,me,2,{20,20,20,20},nil,nil,1,ID)
-	elseif ID == CDOTA_Unit_Hero_Undying then
-		Kill(false,true,me,2,{5,10,15,20},nil,nil,1,ID)
-	--complex spells
-	--Kill(true,me,ability,damage,scepter damage,range,target,classId,damage type)
-	elseif me.classId == CDOTA_Unit_Hero_AntiMage then
-		Kill(true,true,me,4,{.6,.85,1.1},nil,nil,1,ID)
-	elseif me.classId == CDOTA_Unit_Hero_DoomBringer then
-		Kill(true,true,me,3,{1,1,1,1},nil,nil,1,ID)
-	--[[elseif me.classId == CDOTA_Unit_Hero_Legion_Commander then
-		Kill(true,me,1,{60,100,140,180},nil,nil,2,ID)]]
-	elseif me.classId == CDOTA_Unit_Hero_Mirana then
-		Kill(true,false,me,1,{75,150,225,300},nil,625,3,ID)
-	elseif ID == CDOTA_Unit_Hero_Necrolyte then
-		Kill(true,true,me,4,{0.4,0.6,0.9},{0.6,0.9,1.2},nil,1,ID)	
-	elseif ID == CDOTA_Unit_Hero_Nyx_Assassin then
-		Kill(true,true,me,2,{3.5,4,4.5,5},nil,nil,1,ID)	
-	elseif ID == CDOTA_Unit_Hero_Techies then
-		Kill(false,false,me,3,{600,800,1100,1500},nil,300,1,nil,DAMAGE_COMP)
-	elseif ID == CDOTA_Unit_Hero_Tusk then
-		local tkdmg = (me.dmgMin + me.dmgBonus)*3.5
-		Kill(true,false,me,4,{tkdmg, tkdmg, tkdmg, tkdmg},nil,300,5,ID,DAMAGE_PHYS)
-	elseif ID == CDOTA_Unit_Hero_Obsidian_Destroyer then
-		Kill(true,false,me,4,{8,9,10},{9,10,11},nil,2,ID)	
-	elseif ID == CDOTA_Unit_Hero_Elder_Titan then
-		Kill(true,false,me,2,{60,100,140,180},nil,nil,2,ID)	
-	elseif ID == CDOTA_Unit_Hero_Shadow_Demon then
-		Kill(true,false,me,3,{20, 35, 60, 65},nil,nil,4,ID)
-	--prediction
-	elseif ID == CDOTA_Unit_Hero_Magnataur then
-		KillPrediction(me,1,{75, 150, 225, 300},0.3,1050)
-	elseif ID == CDOTA_Unit_Hero_Windrunner then
-		local PowerTime = me:GetAbility(2).channelTime
-		if PowerTime ~= 0 and PowerTime > 0.6 then me:Move(me.position) end
-		KillPrediction(me,2,{108, 180, 252, 334},1.2,3000)
-	--global
-	elseif ID == CDOTA_Unit_Hero_Furion then
-		KillGlobal(me,4,{140,180,225},{155,210,275},1)
-	elseif ID == CDOTA_Unit_Hero_Zuus then
-		KillGlobal(me,4,{225,350,475},{440,540,640},3)
-		Kill(false,true,me,2,{100,175,275,350},nil,nil,1)
-	--other
-	--------------------develop--------------------
-	elseif ID == CDOTA_Unit_Hero_Invoker then
-		SmartSS(me)
-	elseif ID == CDOTA_Unit_Hero_Nevermore then
-		SmartKoils(me)
-	end
-
 end
 
 function Key(msg,code)
