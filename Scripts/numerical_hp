@@ -4,14 +4,8 @@ require("libs.Utils")
 require("libs.SideMessage")
 
 config = ScriptConfig.new()
-config:SetParameter("Active", "Z", config.TYPE_HOTKEY)
-config:SetParameter("Combokey", "H", config.TYPE_HOTKEY)
-config:SetParameter("Auto", true)
 config:Load()
 
-local toggleKey = config.Active
-local ComboKey = config.Combokey
-local AutoGlobal = config.Auto
 local xx = nil
 local yy = nil
 
@@ -34,11 +28,8 @@ local hero = {} local note = {} local reg = false local combo = false
 local activ = true local draw = true local myhero = nil
 
 --Draw function
-local shft = client.screenSize.x/1600
-local F14 = drawMgr:CreateFont("F14","Calibri",14*shft,500*shft)
-local rect = drawMgr:CreateRect(xx-1,yy-1,26,26,0x00000090,true) rect.visible = false
-local icon = drawMgr:CreateRect(xx,yy,24,24,0x000000ff) icon.visible = false
-local dmgCalc = drawMgr:CreateText(xx*shft, yy-18*shft, 0x00000099,"Dmg",F14) dmgCalc.visible = false
+local shft = client.screenSize.x/1680
+local F16 = drawMgr:CreateFont("F16","Calibri",16*shft,800*shft)
 
 function Load()
 	if PlayingGame() then
@@ -55,7 +46,7 @@ end
 
 function Tick(tick)
 	
-	if not SleepCheck() then return end	Sleep(200)
+	if not SleepCheck() then return end	Sleep(100)
 	local me = entityList:GetMyHero()	
 	if not me then return end
 	local ID = me.classId	
@@ -63,15 +54,18 @@ function Tick(tick)
 	
 	local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team})
 		for i,v in ipairs(enemies) do
-			if v.healthbarOffset ~= -1 and not v:IsIllusion() then
+			if v.healthbarOffset ~= -1 then
 				if not hero[v.handle] then
-					hero[v.handle] = drawMgr:CreateText(20,0-45, 0xFFFFFF99, "",F14) hero[v.handle].visible = false hero[v.handle].entity = v hero[v.handle].entityPosition = Vector(0,0,v.healthbarOffset)
+					hero[v.handle] = drawMgr:CreateText(-45,0-46, 0xFFFFFF99, "",F16) hero[v.handle].visible = false hero[v.handle].entity = v hero[v.handle].entityPosition = Vector(0,0,v.healthbarOffset)
 				end
 				if v.visible and v.alive and v.health > 0 then
 					hero[v.handle].visible = draw
-					local life=v.health
-					hero[v.handle].text = " "..life
-					
+					local numlife=v.health
+						if not v:IsIllusion() then
+						hero[v.handle].text = " "..numlife
+						else
+						hero[v.handle].text = "Illusion"
+						end
 				elseif hero[v.handle].visible then
 					hero[v.handle].visible = false
 				end
@@ -79,52 +73,14 @@ function Tick(tick)
 		end
 
 	
-	dmgCalc.visible = draw
-	rect.visible,icon.visible = activ,activ
+	
 end
 
-function Key(msg,code)
-	if client.chat then return end
-	if IsKeyDown(toggleKey) then
-		activ = not activ
-	elseif IsKeyDown(ComboKey) then
-		combo = not combo
-	end	
-	if IsMouseOnButton(xx,yy,24,24) then
-		if msg == LBUTTON_DOWN then
-			activ = (not activ)
-		end
-	elseif IsMouseOnButton(xx*shft, yy-18*shft,24,24) then
-		if msg == LBUTTON_DOWN then
-			draw = (not draw)
-		end
-	end
-end
-
-
-
-
-
-
-function IsMouseOnButton(x,y,h,w)
-	local mx = client.mouseScreenPosition.x
-	local my = client.mouseScreenPosition.y
-	return mx > x and mx <= x + w and my > y and my <= y + h
-end
-
-function GenerateSideMessage(heroName,spellName)
-	local test = sideMessage:CreateMessage(200,60)
-	test:AddElement(drawMgr:CreateRect(10,10,72,40,0xFFFFFFFF,drawMgr:GetTextureId("NyanUI/heroes_horizontal/"..heroName:gsub("npc_dota_hero_",""))))
-	test:AddElement(drawMgr:CreateRect(85,16,62,31,0xFFFFFFFF,drawMgr:GetTextureId("NyanUI/other/arrow_usual")))
-	test:AddElement(drawMgr:CreateRect(150,10,40,40,0xFFFFFFFF,drawMgr:GetTextureId("NyanUI/spellicons/"..spellName)))
-end
 
 
 
 function GameClose()
-	rect.visible = false
-	icon.visible = false
-	dmgCalc.visible = false
+	
 	hero = {}
 	myhero = nil
 	combo = false
