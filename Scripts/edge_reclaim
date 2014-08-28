@@ -1,0 +1,96 @@
+-- test a lot of improve. (performance,calculation,prediction)
+require("libs.ScriptConfig")
+require("libs.Utils")
+require("libs.SideMessage")
+
+config = ScriptConfig.new()
+config:Load()
+
+local xx = nil
+local yy = nil
+
+if math.floor(client.screenRatio*100) == 177 then
+	xx = client.screenSize.x/300
+	yy = client.screenSize.y/1.372
+elseif math.floor(client.screenRatio*100) == 125 then
+	xx = client.screenSize.x/512
+	yy = client.screenSize.y/1.341
+elseif math.floor(client.screenRatio*100) == 160 then
+	xx = client.screenSize.x/512
+	yy = client.screenSize.y/1.378
+else
+	xx = client.screenSize.x/512
+	yy = client.screenSize.y/1.378
+end
+
+--Stuff
+local hero = {} local note = {} local reg = false local combo = false
+local activ = true local draw = true local myhero = nil
+
+local shft = client.screenSize.x/1680
+  local F16 = drawMgr:CreateFont("F16","Calibri",16*shft,800*shft)
+--Draw function
+
+
+function Load()
+	if PlayingGame() then
+		local me = entityList:GetMyHero()
+		
+			reg = true
+			myhero = me.classId
+			script:RegisterEvent(EVENT_TICK,Tick)
+			script:RegisterEvent(EVENT_KEY,Key)
+			script:UnregisterEvent(Load)
+		
+	end
+end
+
+function Tick(tick)
+	
+  fontcolor= 0xFFFFFF99
+  local mx = client.mouseScreenPosition.x
+local my = client.mouseScreenPosition.y
+
+	if (mx < client.screenSize.x*0.4 or mx > client.screenSize.x-client.screenSize.x*0.4) and (my < client.screenSize.y*0.4 or my > client.screenSize.y-client.screenSize.y*0.4) then 
+	fontcolor=0xFF000099
+	end
+local showmx = drawMgr:CreateText(xx*shft, yy-28*shft, fontcolor,"",F16) showmx.visible = false
+local showmy = drawMgr:CreateText(xx*shft, yy-18*shft, fontcolor,"",F16) showmy.visible = false
+	
+	
+	showmx.visible, showmy.visible = draw, draw
+	showmx.text=""..mx
+	showmy.text=""..my
+	
+	
+	
+	if not SleepCheck() then return end	Sleep(100)
+	local me = entityList:GetMyHero()	
+	if not me then return end
+	local ID = me.classId	
+	if ID ~= myhero then GameClose() end
+	
+	
+	
+	
+end
+
+
+
+
+function GameClose()
+	
+	hero = {}
+	myhero = nil
+	combo = false
+	collectgarbage("collect")
+	if reg then
+		script:UnregisterEvent(Tick)
+		script:UnregisterEvent(Key)
+		script:RegisterEvent(EVENT_TICK,Load)
+		reg = false
+	end
+end
+
+script:RegisterEvent(EVENT_CLOSE,GameClose)
+script:RegisterEvent(EVENT_TICK,Load)
