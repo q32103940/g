@@ -49,8 +49,8 @@ end
 function Tick(tick)
 	
   fontcolor= 0xFFFFFF99
-  local mx = client.mouseScreenPosition.x
-local my = client.mouseScreenPosition.y
+  local mx = client.mousePosition.x
+local my = client.mousePosition.y
 
 	if (mx < client.screenSize.x*0.4 or mx > client.screenSize.x-client.screenSize.x*0.4) and (my < client.screenSize.y*0.4 or my > client.screenSize.y-client.screenSize.y*0.4) then 
 	fontcolor=0xFF000099
@@ -80,7 +80,7 @@ function Key(msg,code)
 	if not PlayingGame() then return end
 	local me = entityList:GetMyHero() if not me then return end
 		if msg == LBUTTON_DOWN then
-			me:Move(250,250,250)
+			me:Move(client.mousePosition)
 		end
 	
 
@@ -102,5 +102,5 @@ function GameClose()
 end
 
 script:RegisterEvent(EVENT_CLOSE,GameClose)
---script:RegisterEvent(EVENT_TICK,Load)
+script:RegisterEvent(EVENT_TICK,Load)
 script:RegisterEvent(EVENT_KEY,Key)
