@@ -63,7 +63,7 @@ function Tick(tick)
 					local numlife=v.health
 						if not v:IsIllusion() then
 						hero[v.handle].text = " "..numlife
-						else
+						else if v:IsIllusion() then
 						hero[v.handle].text = "Illusion"
 						end
 				elseif hero[v.handle].visible then
