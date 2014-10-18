@@ -53,8 +53,8 @@ function Tick(tick)
 	if not SleepCheck(main) then return end Sleep(30,main)
 	local me    = entityList:GetMyHero()
 	local ID    = me.classId
-	local sheep = me:FindItem("item_cyclone")
-	if sheep then statusText.visible = true end
+	local haveEul = me:FindItem("item_cyclone")
+	if haveEul then statusText.visible = true end
 	if PlayingGame() and me.alive and not (client.paused or me:IsChanneling()) then
 		if ID == CDOTA_Unit_Hero_Lion then
 			statusText.visible = true
@@ -63,12 +63,12 @@ function Tick(tick)
 			statusText.visible = true
 			Disable(me,2,"shadow_shaman_voodoo",nil)
 		else
-			Disable(me,nil,nil,sheep)
+			Disable(me,nil,nil,haveEul)
 		end
 	end
 end
 
-function Disable(me,abilityHex,abilityHexName,sheep)
+function Disable(me,abilityHex,abilityHexName,haveEul)
 	local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = 5-me.team,alive=true,visible=true,illusion=false})
 	for i,v in ipairs(enemies) do
 		local blink = v:FindItem("item_blink")
@@ -76,7 +76,7 @@ function Disable(me,abilityHex,abilityHexName,sheep)
 		local MI    = v:IsMagicImmune()
 		local invis = me:IsInvisible()
 		if GetDistance2D(v,me) < 800 and not (SI or MI or invis) then
-			if sheep and sheep:CanBeCasted() then
+			if haveEul and haveEul:CanBeCasted() then
 				if blink and blink.cd > 11 then
 					me:SafeCastItem("item_cyclone",v)
 					break
