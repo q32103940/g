@@ -19,6 +19,8 @@ local start = 0
 local me    = entityList:GetMyHero()
 local snapshotPos = {me.position.x,me.position.y}
 local hotkeyText
+local distMoved2D
+local distMoved
 if string.byte("A") <= toggleKey and toggleKey <= string.byte("Z") then
 	hotkeyText = string.char(toggleKey)
 else
@@ -56,7 +58,7 @@ function Tick(tick)
 
 	local myPos = {me.position.x,me.position.y}
 	if not SleepCheck(main) then return end 
-	Sleep(30,main)
+	Sleep(100,main)
 	
 	
 	local ID    = me.classId
@@ -65,12 +67,18 @@ function Tick(tick)
 		if PlayingGame() and me.alive and not (client.paused or me:IsChanneling()) then
 			
 			
-			--client:ExecuteCmd("+dota_camera_center_on_hero")
-			--client:ExecuteCmd("-dota_camera_center_on_hero")
 			
-			local distMoved = {math.abs(math.abs(myPos[1])-math.abs(snapshotPos[1])),math.abs(math.abs(myPos[2])-math.abs(snapshotPos[2]))}
-			debugText1.text =""..distMoved[2]
-			debugText2.text =""..distMoved[1]
+			
+			distMoved2D = {math.abs(math.abs(myPos[1])-math.abs(snapshotPos[1])),math.abs(math.abs(myPos[2])-math.abs(snapshotPos[2]))}
+			distMoved=(distMoved2D[1]^2+distMoved2D[2]^2)^0.5
+			speed=distMoved*10
+			if speed > 1800 then 
+			client:ExecuteCmd("+dota_camera_center_on_hero")
+			client:ExecuteCmd("-dota_camera_center_on_hero")
+			end
+			debugText1.text =""..distMoved2D[2]
+			debugText2.text =""..distMoved2D[1]
+			debugText3.text = ""..speed
 			--end
 		snapshotPos = {me.position.x,me.position.y}
 		end
