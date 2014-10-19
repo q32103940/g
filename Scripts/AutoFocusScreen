@@ -5,10 +5,10 @@ require("libs.HeroInfo")
 
 local monitor     = client.screenSize.x/1600
 local F14         = drawMgr:CreateFont("F14","Tahoma",14*monitor,550*monitor) 
-local debugText1  = drawMgr:CreateText(10*monitor,475*monitor,-1,"debug1",F14) debugText1.visible = true
+--[[local debugText1  = drawMgr:CreateText(10*monitor,475*monitor,-1,"debug1",F14) debugText1.visible = true
 local debugText2  = drawMgr:CreateText(10*monitor,460*monitor,-1,"debug2",F14) debugText2.visible = true
 local debugText3  = drawMgr:CreateText(10*monitor,445*monitor,-1,"debug3",F14) debugText3.visible = true
-
+]]
 
 local me    = entityList:GetMyHero()
 local snapshotPos = {me.position.x,me.position.y}
@@ -33,7 +33,7 @@ function Tick(tick)
 			client:ExecuteCmd("-dota_camera_center_on_hero")
 			end
 			
-			debugText3.text = "Speed:"..speed
+			--debugText3.text = "Speed:"..speed
 			
 		snapshotPos = {me.position.x,me.position.y}
 		end
