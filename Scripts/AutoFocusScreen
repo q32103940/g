@@ -6,13 +6,12 @@ local F14         = drawMgr:CreateFont("F14","Tahoma",14*monitor,550*monitor)
 --local debugText2  = drawMgr:CreateText(10*monitor,460*monitor,-1,"debug2",F14) debugText2.visible = true
 --local debugText3  = drawMgr:CreateText(10*monitor,445*monitor,-1,"debug3",F14) debugText3.visible = true
 
-
-local me = entityList:GetMyHero()
 local snapshotPos
 local distMoved2D
 local speed
 
 function Tick(tick)
+local me = entityList:GetMyHero()
 		if me.alive and not (client.paused or me:IsChanneling()) then
 			
 			local myPos = {me.position.x,me.position.y}
@@ -53,7 +52,7 @@ function GameClose()
 		script:UnregisterEvent(Tick)
 		script:RegisterEvent(EVENT_TICK,Load)
 		reg = false
-	end
+		end
 end
 
 script:RegisterEvent(EVENT_CLOSE,GameClose)
