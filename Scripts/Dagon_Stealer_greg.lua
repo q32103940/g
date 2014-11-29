@@ -20,7 +20,7 @@ function Tick(tick)
  
 if not client.connected or client.loading or client.console or tick < sleep then return end
 
-sleep = tick + 150
+sleep = tick + 10
 
 local me = entityList:GetMyHero()
 
@@ -39,17 +39,27 @@ local lvl = string.match (dagon.name, "%d+")
 if not lvl then lvl = 1 end 
 local dmgD = dmg[lvl*1]
 local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO,alive=true,visible=true,team = (5-me.team)})
+	local purify = me:FindSpell("oracle_purifying_flames")
 if not me:IsChanneling() and Nyx(me) then
 for i = 1,#enemy do
 local v = enemy[i]
-if not v:IsIllusion() and dagon.cd==0 then
-if v.health > 0 and GetDistance2D(v,me) < dagon.castRange and v:CanDie() then
+if not v:IsIllusion() then
+if v.health > 0 and v:CanDie() and GetDistance2D(v,me) < dagon.castRange then
 if not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") then
 	
-	if v.health < v:DamageTaken(dmgD, DAMAGE_MAGC, me) then
+	if dagon.cd==0  and v.health < v:DamageTaken(dmgD, DAMAGE_MAGC, me) then
 	me:SafeCastAbility(dagon,v)
 	
-	elseif v.health < v:DamageTaken(((dmgD+75+2*attribute)*1.4), DAMAGE_MAGC, me) and ethereal and ethereal.cd==0 and dagon.cd==0 then
+	elseif dagon.cd==0 and purify and purify.cd==0 and v.health  < v:DamageTaken(dmgD+90*purify.level, DAMAGE_MAGC, me) then
+	me:SafeCastAbility(dagon,v)
+	
+	elseif ethereal and ethereal.cd==0 and purify and purify.cd==0 and v.health < v:DamageTaken(((90*purify.level+75+2*attribute)*1.4), DAMAGE_MAGC, me)  then
+	me:SafeCastAbility(ethereal,v)
+	
+	elseif ethereal and ethereal.cd==0 and dagon.cd==0 and v.health < v:DamageTaken(((dmgD+75+2*attribute)*1.4), DAMAGE_MAGC, me)  then
+	me:SafeCastAbility(ethereal,v)
+	
+	elseif ethereal and ethereal.cd==0 and dagon.cd==0 and purify and purify.cd==0 and v.health < v:DamageTaken(((dmgD+75+2*attribute+90*purify.level)*1.4), DAMAGE_MAGC, me) then
 	me:SafeCastAbility(ethereal,v)
 	
 	end
@@ -76,13 +86,6 @@ end
 return false
 end
 
-function Key()
-
-if not client.chat and IsKeyDown(key) then
-activated = not activated
-end
-
-end
 
 function GameClose()
 rect.visible = false
@@ -100,5 +103,4 @@ function GetAttribute(me)
 end
  
 script:RegisterEvent(EVENT_CLOSE,GameClose)
-script:RegisterEvent(EVENT_KEY,Key)
 script:RegisterEvent(EVENT_TICK,Tick)
