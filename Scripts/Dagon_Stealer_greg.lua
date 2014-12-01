@@ -18,8 +18,8 @@ local dmg = {400,500,600,700,800}
 local monitor     = client.screenSize.x/1600
 local F14         = drawMgr:CreateFont("F14","Tahoma",14*monitor,550*monitor) 
 local debugText1  = drawMgr:CreateText(10*monitor,475*monitor,-1,"debug1",F14) debugText1.visible = true
-local debugText2  = drawMgr:CreateText(10*monitor,460*monitor,-1,"debug2",F14) debugText2.visible = true
-local debugText3  = drawMgr:CreateText(10*monitor,445*monitor,-1,"debug3",F14) debugText3.visible = true 
+--local debugText2  = drawMgr:CreateText(10*monitor,460*monitor,-1,"debug2",F14) debugText2.visible = true
+--local debugText3  = drawMgr:CreateText(10*monitor,445*monitor,-1,"debug3",F14) debugText3.visible = true 
 --Главная функция
 function Tick(tick)
  
@@ -55,6 +55,7 @@ end
 
 local enemy = entityList:GetEntities({type=LuaEntity.TYPE_HERO,alive=true,visible=true,team = (5-me.team)})
 
+debugText1.text=""..(fortune.level*75+purify.level*90+dmgD)*0.75
 
 for i = 1,#enemy do
 local v = enemy[i]
@@ -63,21 +64,23 @@ if v.health > 0 and v:CanDie() and GetDistance2D(v,me) < 1000  then
 if not v:DoesHaveModifier("modifier_nyx_assassin_spiked_carapace") then
 
 --for fortune's end channel detection (debug)
-relativeangle=me:FindRelativeAngle(v)
-debugText2.text=""..relativeangle
+--relativeangle=me:FindRelativeAngle(v)
+--debugText2.text=""..relativeangle
 --calculates raw dmg from fortunes end if you released the channeling
 if fortune and me:IsChanneling(fortune) and me:FindRelativeAngle(v)<0.05  then 
 fortunedmg=fortune.level*75
 else fortunedmg=0
 end
-debugText1.text=""..fortunedmg
+
 
 --calculates raw dmg from purify flames if you could cast it on the current target
 if purify and purify.cd==0 and GetDistance2D(v,me) < purify.castRange  then
 purifydmg=purify.level*90
 else purifydmg=0
 end
-debugText3.text=""..purifydmg
+--debugText3.text=""..purifydmg
+
+
 
 --dagon only
 if dagon and dagon.cd==0 and GetDistance2D(v,me) < dagon.castRange and v.health < v:DamageTaken(dmgD, DAMAGE_MAGC, me) then
