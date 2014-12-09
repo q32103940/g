@@ -1,5 +1,6 @@
 require("libs.Utils")
 require("libs.ScriptConfig")
+require("libs.TargetFind")
 
 config = ScriptConfig.new()
 --config:SetParameter("Hotkey", "48", config.TYPE_HOTKEY)
@@ -20,7 +21,7 @@ local F14         = drawMgr:CreateFont("F14","Tahoma",14*monitor,550*monitor)
 local debugText1  = drawMgr:CreateText(10*monitor,475*monitor,-1,"debug1",F14) debugText1.visible = true
 --local debugText2  = drawMgr:CreateText(10*monitor,460*monitor,-1,"debug2",F14) debugText2.visible = true
 --local debugText3  = drawMgr:CreateText(10*monitor,445*monitor,-1,"debug3",F14) debugText3.visible = true 
---Главная функция
+--??????? ???????
 function Tick(tick)
  
 if not client.connected or 
@@ -72,7 +73,6 @@ fortunedmg=fortune.level*75
 else fortunedmg=0
 end
 
-
 --calculates raw dmg from purify flames if you could cast it on the current target
 if purify and purify.cd==0 and GetDistance2D(v,me) < purify.castRange  then
 purifydmg=purify.level*90
@@ -82,9 +82,14 @@ end
 
 
 
+
 --dagon only
 if dagon and dagon.cd==0 and GetDistance2D(v,me) < dagon.castRange and v.health < v:DamageTaken(dmgD, DAMAGE_MAGC, me) then
 me:SafeCastAbility(dagon,v, false)
+
+--fortunes only
+elseif v.health < v:DamageTaken(fortunedmg, DAMAGE_MAGC, me) then
+me:AttackMove(client.mousePosition,false)
 
 --fortunes + purify
 elseif v.health < v:DamageTaken(fortunedmg+purifydmg, DAMAGE_MAGC, me) then
@@ -96,8 +101,28 @@ dagon.castRange and v.health < v:DamageTaken(dmgD+fortunedmg, DAMAGE_MAGC, me) t
 me:SafeCastAbility(dagon,v, false)
 
 --fortunes + purify + dagon
-elseif dagon and dagon.cd==0 and GetDistance2D(v,me) < dagon.castRange and GetDistance2D(v,me) < purify.castRange and relativeangle<0.05 and v.health < v:DamageTaken(dmgD+fortunedmg+purifydmg, DAMAGE_MAGC,me) then
+elseif dagon and dagon.cd==0 and GetDistance2D(v,me) < dagon.castRange and GetDistance2D(v,me) < purify.castRange and v.health < v:DamageTaken(dmgD+fortunedmg+purifydmg, DAMAGE_MAGC,me) then
 me:SafeCastAbility(dagon,v, false)
+
+--attempt to cast fortune upon flame detection
+elseif fortune and fortune.cd==0 and v:DoesHaveModifier("modifier_oracle_purifying_flames") and GetDistance2D(v,me) < fortune.castRange  then
+me:SafeCastAbility(fortune,v, false)
+
+
+elseif IsKeyDown(32) then 
+--v = targetFind:GetLowestEHP(fortune.castRange, magic)
+	 if v:DoesHaveModifier("modifier_oracle_purifying_flames") and me:IsChanneling(fortune) and fortunedmg~=0 then
+	 me:AttackMove(client.mousePosition,false)
+	 end
+	 if GetDistance2D(v,me)<fortune.castRange and not me:IsChanneling(fortune) and fortune and fortune.cd==0 then
+	me:SafeCastAbility(fortune,v, false)
+	end
+	if GetDistance2D(v,me)<purify.castRange and  GetDistance2D(v,me)>400 and me:IsChanneling(fortune) and purify and purify.cd==0 then
+	me:SafeCastAbility(purify,v, false)
+	end
+-- me:Move(client.mousePosition,false)
+
+
 
 
 --[[
